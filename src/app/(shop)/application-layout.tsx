@@ -13,7 +13,7 @@ interface ComponentProps {
 
 const ApplicationLayout: React.FC<ComponentProps> = ({ children, header, footer }) => {
   return (
-    <div>
+    <div className="bg-background">
       {/* HEADER */}
       {header ? header : <Header />}
 

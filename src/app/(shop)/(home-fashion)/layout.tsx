@@ -3,7 +3,9 @@ import Header from '@/components/header/header'
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <ApplicationLayout header={<Header variant="bg-transparent-text-white" hasBottomBorder={false} />}>
+    <ApplicationLayout
+      header={<Header variant="bg-transparent-text-white" className="text-primary-500" hasBottomBorder={false} />}
+    >
       {children}
     </ApplicationLayout>
   )

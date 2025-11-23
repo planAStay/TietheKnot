@@ -53,7 +53,7 @@ const SectionCollectionCarousel = ({
 
         <div className="flex-1/3">
           <Text>get 15% discount on your first order!</Text>
-          <Button outline href={'/collections/all'} className="mt-4">
+          <Button outline href={'/collections/all'} className="mt-4 bg-primary">
             SHOP NOW
           </Button>
         </div>
@@ -65,10 +65,12 @@ const SectionCollectionCarousel = ({
         <div className="flex flex-wrap gap-2">
           {groupCollections?.map((group) => (
             <Button
+            
               key={group.handle}
               onClick={() => setGroupSelected(group.handle)}
               // @ts-ignore
               outline={groupSelected !== group.handle}
+              
             >
               {group.title}
             </Button>

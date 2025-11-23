@@ -11,10 +11,10 @@ import SearchIconPopover from './search-icon-popover'
 import UserIconPopover from './user-icon-popover'
 
 const demo_pages_menu = [
-  { name: 'Home skincare', href: '/' },
-  { name: 'Home fashion', href: '/home-fashion' },
-  { name: 'Home hjiab', href: '/home-hjiab' },
-  { name: 'Coming soon', href: '#' },
+  // { name: 'Home skincare', href: '/' },
+  { name: 'Home fashion', href: '/home-fashion' }
+  // { name: 'Home hjiab', href: '/home-hjiab' },
+  // { name: 'Coming soon', href: '#' },
 ]
 const mega_menus = [
   {
