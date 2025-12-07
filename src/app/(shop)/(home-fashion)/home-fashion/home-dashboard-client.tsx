@@ -68,38 +68,38 @@ export default function ClientDashboard() {
   }, [weddingInfo.weddingDate])
 
   return (
-    <div className="bg-gradient-to-b from-rose-50 via-white to-white pt-8 lg:pt-12">
+    <div className="bg-gradient-to-b from-[#DDDED9]/20 via-white to-white pt-8 lg:pt-12">
       <section className="container grid gap-8 py-12 lg:grid-cols-[1.1fr,0.9fr] lg:items-center lg:py-16">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500 via-rose-400 to-indigo-500 p-8 text-white shadow-[0_18px_60px_-24px_rgba(16,24,40,0.28)]">
-          <div className="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-white/15 blur-3xl" aria-hidden />
-          <div className="absolute -right-12 -bottom-14 h-40 w-40 rounded-full bg-white/10 blur-3xl" aria-hidden />
+        <div className="relative overflow-hidden rounded-3xl bg-[#23292E] p-8 text-white shadow-[0_18px_60px_-24px_rgba(35,41,46,0.5)]">
+          <div className="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-[#E4BC62]/20 blur-3xl" aria-hidden />
+          <div className="absolute -right-12 -bottom-14 h-40 w-40 rounded-full bg-[#DFB3AE]/15 blur-3xl" aria-hidden />
           <div className="relative space-y-3">
-            <p className="text-sm uppercase tracking-wide text-rose-50">Your wedding planner</p>
+            <p className="text-sm uppercase tracking-wide text-[#DDDED9]">Your wedding planner</p>
             <Heading level={1} className="text-4xl font-semibold leading-tight text-white sm:text-5xl">
               {coupleNames}
             </Heading>
-            <Text className="text-base text-rose-50/90">
+            <Text className="text-base text-[#DDDED9]/90">
               Track your date, shortlist vendors, and manage quotation requests—all in one calm workspace.
             </Text>
             {countdown ? (
-              <div className="inline-flex flex-wrap items-center gap-3 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur">
+              <div className="inline-flex flex-wrap items-center gap-3 rounded-full bg-[#23292E]/40 px-4 py-2 text-sm font-semibold text-white backdrop-blur">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold leading-none tabular-nums">{countdown.days}</span>
-                  <span className="text-[11px] uppercase tracking-wide text-rose-50/80">days</span>
+                  <span className="text-xl font-bold leading-none tabular-nums text-[#E4BC62]">{countdown.days}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-[#DDDED9]/80">days</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold leading-none tabular-nums">{countdown.hours}</span>
-                  <span className="text-[11px] uppercase tracking-wide text-rose-50/80">h</span>
+                  <span className="text-xl font-bold leading-none tabular-nums text-[#E4BC62]">{countdown.hours}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-[#DDDED9]/80">h</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold leading-none tabular-nums">{countdown.minutes}</span>
-                  <span className="text-[11px] uppercase tracking-wide text-rose-50/80">m</span>
+                  <span className="text-xl font-bold leading-none tabular-nums text-[#E4BC62]">{countdown.minutes}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-[#DDDED9]/80">m</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold leading-none tabular-nums">{countdown.seconds}</span>
-                  <span className="text-[11px] uppercase tracking-wide text-rose-50/80">s</span>
+                  <span className="text-xl font-bold leading-none tabular-nums text-[#E4BC62]">{countdown.seconds}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-[#DDDED9]/80">s</span>
                 </div>
-                <span className="text-[11px] uppercase tracking-wide text-rose-50/80">
+                <span className="text-[11px] uppercase tracking-wide text-[#DDDED9]/80">
                   {countdown.isPast ? 'Date passed' : countdown.isToday ? "Today's the day" : ''}
                 </span>
               </div>
@@ -121,14 +121,14 @@ export default function ClientDashboard() {
         </div>
 
         <div className="grid gap-4">
-          <div className="overflow-hidden rounded-3xl border border-rose-100 bg-white/90 p-4 shadow-[0_12px_40px_-24px_rgba(16,24,40,0.3)] backdrop-blur">
+          <div className="overflow-hidden rounded-3xl border border-[#DFB3AE]/30 bg-white/90 p-4 shadow-[0_12px_40px_-24px_rgba(35,41,46,0.2)] backdrop-blur">
             <WeddingDatePicker className="bg-white" />
           </div>
           <div className="grid grid-cols-3 gap-3">
             {[
-              { label: 'Favorites', value: favorites.length, color: 'from-rose-100 to-rose-200 text-rose-900' },
-              { label: 'Quotes', value: quotations.length, color: 'from-indigo-100 to-indigo-200 text-indigo-900' },
-              { label: 'Vendors', value: favoriteVendors.length, color: 'from-amber-100 to-amber-200 text-amber-900' },
+              { label: 'Favorites', value: favorites.length, color: 'from-[#DFB3AE]/30 to-[#DFB3AE]/50 text-[#23292E]' },
+              { label: 'Quotes', value: quotations.length, color: 'from-[#DDDED9]/40 to-[#DDDED9]/60 text-[#23292E]' },
+              { label: 'Vendors', value: favoriteVendors.length, color: 'from-[#E4BC62]/30 to-[#E4BC62]/50 text-[#23292E]' },
             ].map((item) => (
               <div
                 key={item.label}
@@ -142,7 +142,7 @@ export default function ClientDashboard() {
               </div>
             ))}
           </div>
-          <div className="relative overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-[0_12px_40px_-24px_rgba(16,24,40,0.25)]">
+          <div className="relative overflow-hidden rounded-3xl border border-[#DDDED9]/30 bg-white shadow-[0_12px_40px_-24px_rgba(35,41,46,0.15)]">
             <div className="aspect-[16/9]">
               <Image
                 src="/images/fashion/p6-1.jpg"
@@ -154,17 +154,17 @@ export default function ClientDashboard() {
                 priority={false}
               />
             </div>
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#23292E]/40 via-[#23292E]/5 to-transparent" />
           </div>
         </div>
       </section>
 
       <section className="container mt-6 space-y-4 pb-12">
         <div className="flex items-center justify-between">
-          <Heading level={2} className="text-2xl font-semibold text-zinc-900">
+          <Heading level={2} className="text-2xl font-semibold text-[#23292E]">
             Explore categories
           </Heading>
-          <TextLink href="/collections/all" className="text-sm font-semibold text-rose-700">
+          <TextLink href="/collections/all" className="text-sm font-semibold text-[#DFB3AE]">
             View all
           </TextLink>
         </div>
@@ -174,25 +174,25 @@ export default function ClientDashboard() {
               key={cat.id}
               className={clsx(
                 'rounded-xl border p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg',
-                'border-rose-100 bg-white',
-                idx % 3 === 0 && 'bg-gradient-to-br from-rose-50 to-white',
-                idx % 3 === 1 && 'bg-gradient-to-br from-indigo-50 to-white',
-                idx % 3 === 2 && 'bg-gradient-to-br from-amber-50 to-white'
+                'border-[#DFB3AE]/30 bg-white',
+                idx % 3 === 0 && 'bg-gradient-to-br from-[#DFB3AE]/10 to-white',
+                idx % 3 === 1 && 'bg-gradient-to-br from-[#DDDED9]/15 to-white',
+                idx % 3 === 2 && 'bg-gradient-to-br from-[#E4BC62]/10 to-white'
               )}
             >
-              <Text className="text-xs uppercase text-rose-600">{cat.subcategories.length} subcategories</Text>
-              <Heading level={3} className="text-lg font-semibold text-zinc-900">
+              <Text className="text-xs uppercase text-[#DFB3AE]">{cat.subcategories.length} subcategories</Text>
+              <Heading level={3} className="text-lg font-semibold text-[#23292E]">
                 {cat.name}
               </Heading>
               <Text className="mt-1 text-sm text-zinc-600">{cat.description}</Text>
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-zinc-600">
                 {cat.subcategories.slice(0, 3).map((s) => (
-                  <span key={s.id} className="rounded-full bg-white/70 px-3 py-1 capitalize text-zinc-800 shadow-sm">
+                  <span key={s.id} className="rounded-full bg-[#DDDED9]/20 px-3 py-1 capitalize text-[#23292E] shadow-sm">
                     {s.name}
                   </span>
                 ))}
               </div>
-              <TextLink href={`/collections/${cat.slug}`} className="mt-4 inline-block text-sm font-semibold text-rose-700">
+              <TextLink href={`/collections/${cat.slug}`} className="mt-4 inline-block text-sm font-semibold text-[#E4BC62]">
                 Browse vendors
               </TextLink>
             </div>
@@ -200,13 +200,13 @@ export default function ClientDashboard() {
         </div>
       </section>
 
-      <section className="bg-gradient-to-br from-rose-50 via-white to-indigo-50 py-12">
+      <section className="bg-gradient-to-br from-[#DFB3AE]/10 via-white to-[#E4BC62]/10 py-12">
         <div className="container space-y-4">
           <div className="flex items-center justify-between">
-            <Heading level={2} className="text-2xl font-semibold text-zinc-900">
+            <Heading level={2} className="text-2xl font-semibold text-[#23292E]">
               Featured vendors
             </Heading>
-            <TextLink href="/collections/all" className="text-sm font-semibold text-rose-700">
+            <TextLink href="/collections/all" className="text-sm font-semibold text-[#DFB3AE]">
               Explore more
             </TextLink>
           </div>
@@ -227,8 +227,8 @@ function Badge({ label, tone = 'light' }: { label: string; tone?: 'light' | 'dar
       className={clsx(
         'rounded-full px-3 py-1 text-xs font-semibold shadow-sm',
         tone === 'light'
-          ? 'bg-white/80 text-rose-800'
-          : 'bg-rose-100 text-rose-800'
+          ? 'bg-white/80 text-[#23292E]'
+          : 'bg-[#DFB3AE]/20 text-[#23292E]'
       )}
     >
       {label}
@@ -251,7 +251,7 @@ function CTAButton({
       className={clsx(
         'inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition',
         variant === 'light'
-          ? 'bg-white text-rose-700 shadow-sm hover:bg-rose-50'
+          ? 'bg-white text-[#23292E] shadow-sm hover:bg-[#DDDED9]/50'
           : 'border border-white/50 text-white hover:bg-white/10'
       )}
     >

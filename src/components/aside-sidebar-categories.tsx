@@ -35,31 +35,25 @@ export default function AsideSidebarCategories() {
                   aria-expanded={isOpen}
                   className={clsx(
                     'group flex w-full items-center justify-between rounded-md px-3 py-3 text-left text-lg font-semibold uppercase transition',
-                    'hover:bg-rose-50',
-                    idx === 0 && 'text-rose-800',
-                    idx === 1 && 'text-indigo-800',
-                    idx === 2 && 'text-amber-800',
-                    idx === 3 && 'text-emerald-800',
-                    idx === 4 && 'text-sky-800',
-                    idx === 5 && 'text-purple-800',
-                    idx > 5 && 'text-zinc-800'
+                    'hover:bg-[#DFB3AE]/10',
+                    'text-[#23292E]'
                   )}
                 >
                   <span>{cat.name}</span>
                   <ChevronRightIcon
                     className={clsx(
-                      'h-5 w-5 text-zinc-400 transition-transform',
+                      'h-5 w-5 text-[#E4BC62] transition-transform',
                       isOpen ? 'rotate-90' : 'rotate-0'
                     )}
                   />
                 </button>
                 {isOpen && (
-                  <div className="mb-2 ml-3 space-y-1 border-l border-rose-100 pl-3">
+                  <div className="mb-2 ml-3 space-y-1 border-l border-[#DFB3AE]/30 pl-3">
                     {cat.subcategories.map((sub) => (
                       <TextLink
                         key={sub.id}
                         href={`/collections/${cat.slug}?subcategory=${sub.slug}`}
-                        className="block rounded-md px-2 py-1 text-sm font-medium capitalize text-zinc-700 hover:bg-rose-50 hover:text-rose-700"
+                        className="block rounded-md px-2 py-1 text-sm font-medium capitalize text-zinc-700 hover:bg-[#E4BC62]/10 hover:text-[#E4BC62]"
                       >
                         {sub.name}
                       </TextLink>
@@ -71,8 +65,8 @@ export default function AsideSidebarCategories() {
           })}
         </div>
 
-        <div className="mt-5 rounded-md border border-rose-100 bg-white p-4 text-sm text-rose-800 shadow-sm">
-          <TextLink href="/collections/all" className="font-semibold text-rose-700">
+        <div className="mt-5 rounded-md border border-[#DFB3AE]/30 bg-white p-4 text-sm text-[#23292E] shadow-sm">
+          <TextLink href="/collections/all" className="font-semibold text-[#E4BC62]">
             See all categories
           </TextLink>
         </div>

@@ -29,7 +29,7 @@ const Header = ({ className, hasBottomBorder = true, variant = 'default' }: Head
       <nav aria-label="Global" className="container">
         <div
           className={clsx(
-            'flex items-center justify-between border-zinc-950/10 py-6 dark:border-white/10',
+            'flex items-center justify-between border-[#DDDED9]/30 py-6',
             hasBottomBorder && 'border-b',
             !hasBottomBorder && 'has-[.bitpan-popover-full-panel]:border-b'
           )}
@@ -45,19 +45,19 @@ const Header = ({ className, hasBottomBorder = true, variant = 'default' }: Head
 
           {/* MAIN CENTER MENUS */}
           <div className="hidden lg:flex lg:items-center lg:gap-x-5">
-            <TextLink href="/" className="text-[15px] font-semibold text-zinc-900">
+            <TextLink href="/" className="text-[15px] font-semibold text-[#23292E]">
               Landing
             </TextLink>
-            <TextLink href="/home-fashion" className="text-[15px] font-semibold text-zinc-900">
+            <TextLink href="/home-fashion" className="text-[15px] font-semibold text-[#23292E]">
               Dashboard
             </TextLink>
-            <TextLink href="/collections/all" className="text-[15px] font-semibold text-zinc-900">
+            <TextLink href="/collections/all" className="text-[15px] font-semibold text-[#23292E]">
               Categories
             </TextLink>
-            <TextLink href="/favorites" className="text-[15px] font-semibold text-rose-700">
+            <TextLink href="/favorites" className="text-[15px] font-semibold text-[#DFB3AE]">
               Favorites
             </TextLink>
-            <TextLink href="/quotations" className="text-[15px] font-semibold text-rose-700">
+            <TextLink href="/quotations" className="text-[15px] font-semibold text-[#E4BC62]">
               Quotations
             </TextLink>
           </div>
