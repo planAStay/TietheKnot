@@ -70,29 +70,74 @@ export default function LandingPage() {
             Browse all categories
           </TextLink>
         </div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((cat) => (
-            <div
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((cat, idx) => (
+            <Link
               key={cat.id}
-              className="group relative overflow-hidden rounded-2xl border border-[#DFB3AE]/30 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+              href={`/collections/${cat.slug}`}
+              className="group relative overflow-hidden rounded-3xl border-2 border-[#DFB3AE]/20 bg-gradient-to-br from-white via-[#DDDED9]/5 to-[#DFB3AE]/10 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 hover:border-[#E4BC62]/40 hover:shadow-[0_20px_60px_rgb(0,0,0,0.12)]"
             >
-              <div className="absolute -right-8 -top-10 h-24 w-24 rounded-full bg-[#E4BC62]/10 blur-2xl" aria-hidden />
-              <Text className="text-xs uppercase text-[#DFB3AE]">{cat.subcategories.length} options</Text>
-              <Heading level={3} className="mt-1 text-xl font-semibold text-[#23292E]">
-                {cat.name}
-              </Heading>
-              <Text className="mt-1 text-sm text-zinc-600">{cat.description}</Text>
-              <div className="mt-3 flex flex-wrap gap-2 text-xs text-zinc-500">
-                {cat.subcategories.slice(0, 4).map((s) => (
-                  <span key={s.id} className="rounded-full bg-[#E4BC62]/10 px-2.5 py-1 capitalize text-[#E4BC62]">
-                    {s.name}
-                  </span>
-                ))}
+              {/* Decorative corner flourish */}
+              <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-gradient-to-br from-[#E4BC62]/20 via-[#DFB3AE]/15 to-transparent opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" aria-hidden />
+              <div className="absolute -left-8 -bottom-8 h-24 w-24 rounded-full bg-[#DFB3AE]/10 blur-xl transition-all duration-500 group-hover:scale-150 group-hover:bg-[#E4BC62]/20" aria-hidden />
+              
+              {/* Elegant top accent line */}
+              <div className="absolute left-0 top-0 h-1 w-0 bg-gradient-to-r from-[#E4BC62] via-[#DFB3AE] to-[#E4BC62] transition-all duration-700 group-hover:w-full" aria-hidden />
+              
+              {/* Category icon placeholder - decorative element */}
+              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#E4BC62]/20 to-[#DFB3AE]/20 shadow-inner ring-1 ring-[#DFB3AE]/20 transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg group-hover:ring-[#E4BC62]/40">
+                <svg className="h-6 w-6 text-[#E4BC62] transition-transform duration-500 group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
               </div>
-              <TextLink href={`/collections/${cat.slug}`} className="mt-4 inline-block text-sm font-semibold text-[#E4BC62]">
-                View vendors
-              </TextLink>
-            </div>
+
+              <div className="relative">
+                {/* Options badge */}
+                <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#E4BC62]/15 to-[#DFB3AE]/15 px-3 py-1 ring-1 ring-[#E4BC62]/20">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#E4BC62] transition-all duration-300 group-hover:animate-pulse" />
+                  <Text className="text-xs font-medium uppercase tracking-wider text-[#E4BC62]">
+                    {cat.subcategories.length} options
+                  </Text>
+                </div>
+
+                {/* Title */}
+                <Heading level={3} className="mb-2 text-2xl font-semibold leading-tight text-[#23292E] transition-colors duration-300 group-hover:text-[#E4BC62]">
+                  {cat.name}
+                </Heading>
+
+                {/* Description */}
+                <Text className="mb-4 text-sm leading-relaxed text-zinc-600 transition-colors duration-300 group-hover:text-zinc-700">
+                  {cat.description}
+                </Text>
+
+                {/* Subcategories tags */}
+                <div className="mb-4 flex flex-wrap gap-2">
+                  {cat.subcategories.slice(0, 4).map((s) => (
+                    <span 
+                      key={s.id} 
+                      className="rounded-full bg-white/80 px-3 py-1 text-xs font-medium capitalize text-[#23292E]/70 shadow-sm ring-1 ring-[#DFB3AE]/20 transition-all duration-300 group-hover:bg-[#E4BC62]/10 group-hover:text-[#E4BC62] group-hover:ring-[#E4BC62]/30"
+                    >
+                      {s.name}
+                    </span>
+                  ))}
+                </div>
+
+                {/* CTA with arrow */}
+                <div className="flex items-center gap-2 text-sm font-semibold text-[#DFB3AE] transition-all duration-300 group-hover:gap-3 group-hover:text-[#E4BC62]">
+                  <span>View vendors</span>
+                  <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Decorative corner element - bottom right */}
+              <div className="absolute -bottom-2 -right-2 h-16 w-16 opacity-5 transition-all duration-500 group-hover:opacity-10" aria-hidden>
+                <svg viewBox="0 0 100 100" fill="currentColor" className="text-[#E4BC62]">
+                  <path d="M50,10 Q90,50 50,90 Q10,50 50,10" />
+                </svg>
+              </div>
+            </Link>
           ))}
         </div>
       </section>

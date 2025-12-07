@@ -245,6 +245,46 @@ const categories: TCategory[] = CATEGORY_DEFINITIONS.map((category) => ({
 const priceRanges: TVendor['priceRange'][] = ['$', '$$', '$$$']
 const VENDORS_PER_SUBCATEGORY = 4
 
+// Map categories to their image directories
+const categoryImageMap: Record<string, string> = {
+  'photography-and-videography': 'photography',
+  'venues': 'venues',
+  'bridal-and-groom-styling': 'bridal',
+  'fashion-and-attire': 'bridal',
+  'decor-and-flowers': 'decor',
+  'entertainment': 'entertainment',
+  'food-and-beverages': 'catering',
+  'wedding-planning-and-coordination': 'planning',
+  'transportation': 'transportation',
+  'stationery-and-invitations': 'planning',
+  'wedding-accessories-and-extras': 'decor',
+  'gifts-and-souvenirs': 'catering',
+  'technology-services': 'photography',
+  'logistics-and-support-services': 'planning',
+  'religious-cultural-services': 'venues',
+  'post-wedding-services': 'planning',
+  'future-events-for-phase-2-expansion': 'entertainment',
+}
+
+// Get appropriate image for a vendor
+const getVendorImage = (categorySlug: string, imageIndex: number): string => {
+  const imageFolder = categoryImageMap[categorySlug] || 'venues'
+  const imageNumber = (imageIndex % 8) + 1
+  
+  // Determine image name based on folder
+  const imageName = imageFolder === 'photography' ? `photo-${imageNumber}.jpg` :
+                    imageFolder === 'venues' ? `venue-${imageNumber}.jpg` :
+                    imageFolder === 'bridal' ? `bridal-${imageNumber}.jpg` :
+                    imageFolder === 'decor' ? `decor-${imageNumber}.jpg` :
+                    imageFolder === 'entertainment' ? `entertainment-${imageNumber}.jpg` :
+                    imageFolder === 'catering' ? `catering-${imageNumber}.jpg` :
+                    imageFolder === 'planning' ? `planning-${(imageIndex % 4) + 1}.jpg` :
+                    imageFolder === 'transportation' ? `transport-${(imageIndex % 4) + 1}.jpg` :
+                    `venue-${imageNumber}.jpg`
+  
+  return `/images/wedding/${imageFolder}/${imageName}`
+}
+
 const buildVendor = (
   category: TCategory,
   subcategory: TCategory['subcategories'][number],
@@ -264,7 +304,7 @@ const buildVendor = (
     rating: Math.min(rating, 4.9),
     tags: [category.name, subcategory.name],
     heroImage: {
-      src: '/placeholder.webp',
+      src: getVendorImage(category.slug, variantIndex),
       alt: `${subcategory.name} showcase`,
     },
     description: `${subcategory.name} offered by our ${category.name.toLowerCase()} partners.`,
