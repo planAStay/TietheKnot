@@ -1,5 +1,6 @@
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
+import AsideSidebarCategories from '@/components/aside-sidebar-categories'
 import Footer from '@/components/footer'
 import Header from '@/components/header/header'
 import FeatureSection4 from '@/components/sections/feature-section-4'
@@ -27,6 +28,7 @@ const ApplicationLayout: React.FC<ComponentProps> = ({ children, header, footer 
 
       {/* ASIDES */}
       <AsideSidebarNavigation />
+      <AsideSidebarCategories />
       <AsideSidebarCart />
     </div>
   )

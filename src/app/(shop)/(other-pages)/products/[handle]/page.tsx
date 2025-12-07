@@ -1,146 +1,91 @@
 import { Divider } from '@/components/divider'
 import { Heading } from '@/components/heading'
-import ProductCardHorizontal from '@/components/product-card-horizontal'
-import { Text } from '@/components/text'
-import {
-  getFashionProducts,
-  getHijabProducts,
-  getProductByHandle,
-  getProductReviews,
-  getSkincareProducts,
-  TProductItem,
-} from '@/data'
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
+import VendorCard from '@/components/vendor-card'
+import VendorDetailClient from '../vendor-detail-client'
+import { getVendorByHandle, getVendorsByCategory } from '@/data-wedding'
 import clsx from 'clsx'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import FeaturedSection from '../featured-section'
-import ProductDetailContent from '../product-detail-content'
-import ProductFaqsSection from '../product-faqs-section'
-import { ProductForm } from '../product-form'
-import { ProductGallery } from '../product-gallery'
-import ProductRelatedSection from '../product-related-section'
-import ProductReviewSection from '../product-reviews-section'
-import ProductUsageSection from '../product-usage-section'
+import Image from 'next/image'
 
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
   const { handle } = await params
-  const product = await getProductByHandle(handle)
-  if (!product) {
+  const vendor = getVendorByHandle(handle)
+  if (!vendor) {
     return {
-      title: 'Product not found',
-      description: 'Product not found',
+      title: 'Vendor not found',
+      description: 'Vendor not found',
     }
   }
 
-  const { title, description } = product
-  return { title, description }
+  const { name, description } = vendor
+  return { title: name, description }
 }
 
-export default async function Product({ params }: { params: Promise<{ handle: string }> }) {
+export default async function VendorPage({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params
-  const product = await getProductByHandle(handle)
-  if (!product?.id) {
-    return notFound()
-  }
-
-  // for demo product. you need to change for the yourself
-  let otherProducts = [] as TProductItem[]
-  if (product?.collections[0].handle === 'luxury-fashion') {
-    otherProducts = await getFashionProducts()
-  } else if (product?.collections[0].handle === 'skincare-essentials') {
-    otherProducts = await getSkincareProducts()
-  } else {
-    otherProducts = await getHijabProducts()
-  }
-  const combineProduct = otherProducts?.[1]
-  const relatedProducts = otherProducts?.slice(1, 6)
-  const productReviews = await getProductReviews()
-
-  const { images, description } = product
+  const vendor = getVendorByHandle(handle)
+  if (!vendor) return notFound()
+  const related = getVendorsByCategory(vendor.category).filter((v) => v.handle !== vendor.handle).slice(0, 3)
 
   return (
-    <div className={clsx('product-page relative space-y-12 sm:space-y-16')}>
+    <div className={clsx('relative space-y-12 sm:space-y-16')}>
       <div className="absolute inset-x-0 -top-px z-10 h-px bg-white"></div>
 
       <main className="container">
-        <div className="lg:flex">
-          {/* Galleries */}
-          <div className="relative w-full lg:w-1/2">
-            <div className="sticky top-0">
-              <ProductGallery media={images} />
-            </div>
+        <div className="lg:grid lg:grid-cols-2 lg:gap-10">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
+            <Image
+              src={vendor.heroImage.src}
+              alt={vendor.heroImage.alt}
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
           </div>
 
-          {/* Product Details */}
-          <div className="w-full pt-10 lg:w-1/2 lg:pt-16 lg:pl-10 xl:pl-14 2xl:pl-16">
-            <div className="sticky top-16">
-              {/* Heading, Price, Options,...  */}
-              <ProductForm product={product} />
-
-              {combineProduct ? (
-                <div className="mt-10 rounded-lg bg-zinc-100 p-5">
-                  <Text className="mb-3 font-semibold">PAIR IT WITH</Text>
-                  <ProductCardHorizontal product={combineProduct} />
-                </div>
-              ) : null}
-
-              <FeaturedSection className="mt-10 lg:mt-16" />
-            </div>
-          </div>
+          <VendorDetailClient vendor={vendor} />
         </div>
 
-        <Divider className="my-16 sm:my-24 lg:my-28" />
+        <Divider className="my-12 lg:my-16" />
 
-        {/* THE CONTENT OF PRODUCT  */}
-        <Heading bigger className="text-center">
-          <span data-slot="italic">all about the</span> <br />
-          <span>PRODUCT</span>
-        </Heading>
+        <section className="space-y-6">
+          <Heading level={2} className="text-2xl font-semibold">
+            Packages
+          </Heading>
+          <div className="grid gap-4 md:grid-cols-2">
+            {vendor.packages?.map((pkg) => (
+              <div key={pkg.name} className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
+                <p className="text-sm font-semibold text-zinc-900">{pkg.name}</p>
+                {pkg.priceFrom ? <p className="text-sm text-rose-700">From ${pkg.priceFrom}</p> : null}
+                {pkg.description ? <p className="mt-1 text-sm text-zinc-600">{pkg.description}</p> : null}
+                {pkg.features ? (
+                  <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-zinc-600">
+                    {pkg.features.map((f) => (
+                      <li key={f}>{f}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </section>
 
-        {/* MAIN TAB GROUP */}
-        <TabGroup className="mt-14 lg:mt-16 xl:mt-20">
-          <TabList className="flex w-full justify-center gap-4 rounded-full bg-zinc-50 p-1">
-            <Tab className="w-full rounded-full focus-visible:outline-none data-selected:bg-zinc-900 data-selected:text-white">
-              <Text className="py-4">About</Text>
-            </Tab>
-            <Tab className="w-full rounded-full focus-visible:outline-none data-selected:bg-zinc-900 data-selected:text-white">
-              <Text className="py-4">Reviews</Text>
-            </Tab>
-            <Tab className="w-full rounded-full focus-visible:outline-none data-selected:bg-zinc-900 data-selected:text-white">
-              <Text className="py-4">Benefits</Text>
-            </Tab>
-            <Tab className="w-full rounded-full focus-visible:outline-none data-selected:bg-zinc-900 data-selected:text-white">
-              <Text className="py-4">Faqs</Text>
-            </Tab>
-          </TabList>
-          <TabPanels className="mt-10 lg:mt-16">
-            <TabPanel>
-              <ProductDetailContent
-                content={description}
-                imageSrc={
-                  product?.collections[0].handle === 'skincare-essentials'
-                    ? '/images/skincare/feature-1.webp'
-                    : '/images/fashion/feature-1.png'
-                }
-              />
-            </TabPanel>
-            <TabPanel>
-              <ProductReviewSection reviews={productReviews} />
-            </TabPanel>
-            <TabPanel>
-              <ProductUsageSection imageSrc="/images/skincare/feature-3.png" />
-            </TabPanel>
-            <TabPanel>
-              <ProductFaqsSection imageSrc="/images/skincare/hero.png" />
-            </TabPanel>
-          </TabPanels>
-        </TabGroup>
+        <Divider className="my-12 lg:my-16" />
 
-        <Divider className="my-16 sm:my-24 lg:my-28" />
-
-        {/* RELATED PRODUCT */}
-        {relatedProducts ? <ProductRelatedSection products={relatedProducts} /> : null}
+        {related.length ? (
+          <section>
+            <Heading level={2} className="text-2xl font-semibold">
+              You might also like
+            </Heading>
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {related.map((item) => (
+                <VendorCard key={item.id} vendor={item} />
+              ))}
+            </div>
+          </section>
+        ) : null}
       </main>
     </div>
   )

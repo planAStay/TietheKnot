@@ -22,6 +22,7 @@ export function Aside({
   children,
   type,
   contentMaxWidthClassName = 'max-w-lg',
+  animated = true,
 }: {
   heading?: string
   logoOnHeading?: boolean
@@ -29,6 +30,7 @@ export function Aside({
   children: React.ReactNode
   type: AsideType
   contentMaxWidthClassName?: string
+  animated?: boolean
 }) {
   const { type: activeType, close } = useAside()
   const open = type === activeType
@@ -40,20 +42,25 @@ export function Aside({
   return (
     <Dialog as="div" className="relative z-50" onClose={onClose} open={open}>
       <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-slate-900/50 duration-300 ease-out data-closed:opacity-0"
+        {...(animated ? { transition: true } : {})}
+        className={clsx(
+          'fixed inset-0 bg-slate-900/50',
+          animated && 'duration-300 ease-out data-closed:opacity-0'
+        )}
       />
 
       <div className="fixed inset-0">
         <div className="absolute inset-0 overflow-hidden">
           <div className={clsx('fixed inset-y-0 flex max-w-full', openFrom === 'right' && 'right-0')}>
             <DialogPanel
-              transition
+              {...(animated ? { transition: true } : {})}
               className={clsx(
                 contentMaxWidthClassName,
-                'h-screen w-screen translate-x-0 overflow-hidden bg-white text-start align-middle shadow-xl ease-out data-leave:duration-300 data-leave:data-closed:translate-x-full',
-                openFrom === 'left' && 'data-enter:duration-100 data-enter:data-closed:-translate-x-full',
-                openFrom === 'right' && 'data-enter:duration-100 data-enter:data-closed:translate-x-full'
+                'h-screen w-screen translate-x-0 overflow-hidden bg-white text-start align-middle shadow-xl',
+                animated &&
+                  'ease-out data-leave:duration-300 data-enter:duration-100',
+                animated && openFrom === 'left' && 'data-enter:data-closed:-translate-x-full data-leave:data-closed:-translate-x-full',
+                animated && openFrom === 'right' && 'data-enter:data-closed:translate-x-full data-leave:data-closed:translate-x-full'
               )}
             >
               <div className="flex h-full flex-col px-4 md:px-8">
@@ -113,7 +120,14 @@ export function useDrawer(openDefault = false) {
   }
 }
 
-type AsideType = 'search' | 'cart' | 'mobile' | 'closed' | 'sidebar-navigation' | 'category-filters'
+type AsideType =
+  | 'search'
+  | 'cart'
+  | 'mobile'
+  | 'closed'
+  | 'sidebar-navigation'
+  | 'category-filters'
+  | 'categories-panel'
 type AsideContextValue = {
   type: AsideType
   open: (mode: AsideType) => void
