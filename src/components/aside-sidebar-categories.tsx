@@ -35,25 +35,25 @@ export default function AsideSidebarCategories() {
                   aria-expanded={isOpen}
                   className={clsx(
                     'group flex w-full items-center justify-between rounded-md px-3 py-3 text-left text-lg font-semibold uppercase transition',
-                    'hover:bg-[#DFB3AE]/10',
-                    'text-[#23292E]'
+                    'hover:bg-[#f4e4e0]/50',
+                    'text-[#5a4a42]'
                   )}
                 >
                   <span>{cat.name}</span>
                   <ChevronRightIcon
                     className={clsx(
-                      'h-5 w-5 text-[#E4BC62] transition-transform',
+                      'h-5 w-5 text-[#d4a5a5] transition-transform',
                       isOpen ? 'rotate-90' : 'rotate-0'
                     )}
                   />
                 </button>
                 {isOpen && (
-                  <div className="mb-2 ml-3 space-y-1 border-l border-[#DFB3AE]/30 pl-3">
+                  <div className="mb-2 ml-3 space-y-1 border-l border-[#d4a5a5]/30 pl-3">
                     {cat.subcategories.map((sub) => (
                       <TextLink
                         key={sub.id}
                         href={`/collections/${cat.slug}?subcategory=${sub.slug}`}
-                        className="block rounded-md px-2 py-1 text-sm font-medium capitalize text-zinc-700 hover:bg-[#E4BC62]/10 hover:text-[#E4BC62]"
+                        className="block rounded-md px-2 py-1 text-sm font-medium capitalize text-zinc-700 hover:bg-[#f4e4e0]/50 hover:text-[#d4a5a5]"
                       >
                         {sub.name}
                       </TextLink>
@@ -65,8 +65,8 @@ export default function AsideSidebarCategories() {
           })}
         </div>
 
-        <div className="mt-5 rounded-md border border-[#DFB3AE]/30 bg-white p-4 text-sm text-[#23292E] shadow-sm">
-          <TextLink href="/collections/all" className="font-semibold text-[#E4BC62]">
+        <div className="mt-5 rounded-md border border-[#d4a5a5]/30 bg-white p-4 text-sm text-[#5a4a42] shadow-sm">
+          <TextLink href="/collections/all" className="font-semibold text-[#c9a58a]">
             See all categories
           </TextLink>
         </div>

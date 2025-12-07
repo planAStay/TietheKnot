@@ -5,11 +5,11 @@ import { Text, TextLink } from '@/components/text'
 import { useWedding } from '@/lib/wedding-context'
 
 const statusColor: Record<string, string> = {
-  requested: 'text-[#E4BC62] bg-[#E4BC62]/10',
-  pending: 'text-[#E4BC62] bg-[#E4BC62]/10',
+  requested: 'text-[#c9a58a] bg-[#f7e7ce]/50',
+  pending: 'text-[#c9a58a] bg-[#f7e7ce]/50',
   responded: 'text-emerald-700 bg-emerald-50',
   booked: 'text-emerald-700 bg-emerald-50',
-  declined: 'text-[#DFB3AE] bg-[#DFB3AE]/10',
+  declined: 'text-[#d4a5a5] bg-[#f4e4e0]/50',
 }
 
 export default function QuotationsPage() {
@@ -18,10 +18,10 @@ export default function QuotationsPage() {
   return (
     <div className="container py-10">
       <div className="flex items-center justify-between">
-        <Heading level={1} className="text-3xl font-semibold text-[#23292E]">
+        <Heading level={1} className="text-3xl font-semibold text-[#5a4a42]">
           Quotations
         </Heading>
-        <TextLink href="/collections/all" className="text-sm font-semibold text-[#E4BC62]">
+        <TextLink href="/collections/all" className="text-sm font-semibold text-[#c9a58a]">
           Find more vendors
         </TextLink>
       </div>
@@ -30,16 +30,16 @@ export default function QuotationsPage() {
       </Text>
 
       {quotations.length === 0 ? (
-        <div className="mt-6 rounded-lg border border-dashed border-[#DDDED9]/60 bg-white p-6 text-center">
+        <div className="mt-6 rounded-lg border border-dashed border-[#d4a5a5]/40 bg-white p-6 text-center">
           <Text className="text-sm text-zinc-600">No requests yet. Ask for quotes from vendor pages.</Text>
         </div>
       ) : (
         <div className="mt-8 space-y-3">
           {quotations.map((q) => (
-            <div key={q.id} className="rounded-lg border border-[#DDDED9]/40 bg-white p-4 shadow-sm">
+            <div key={q.id} className="rounded-lg border border-[#d4a5a5]/30 bg-white p-4 shadow-sm">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <Text className="text-sm font-semibold text-[#23292E]">{q.vendorName}</Text>
+                  <Text className="text-sm font-semibold text-[#5a4a42]">{q.vendorName}</Text>
                   <Text className="text-xs text-zinc-500 capitalize">
                     {q.category} • {q.subcategory}
                   </Text>

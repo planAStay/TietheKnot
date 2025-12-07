@@ -50,20 +50,20 @@ export default async function Collection({
           <Text className="mt-3 text-center text-zinc-600">Choose a category to start planning.</Text>
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {categories.map((cat) => (
-              <div key={cat.id} className="rounded-lg border border-[#DDDED9]/40 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
-                <Text className="text-xs uppercase text-[#DFB3AE]">{cat.subcategories.length} subcategories</Text>
-                <Heading level={3} className="text-xl font-semibold text-[#23292E]">
+              <div key={cat.id} className="rounded-lg border border-[#d4a5a5]/30 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+                <Text className="text-xs uppercase text-[#d4a5a5]">{cat.subcategories.length} subcategories</Text>
+                <Heading level={3} className="text-xl font-semibold text-[#5a4a42]">
                   {cat.name}
                 </Heading>
                 <Text className="mt-2 text-sm text-zinc-600">{cat.description}</Text>
                 <div className="mt-3 flex flex-wrap gap-2 text-xs text-zinc-500">
                   {cat.subcategories.map((s) => (
-                    <span key={s.id} className="rounded-full bg-[#DDDED9]/30 px-2 py-1 capitalize text-[#23292E]">
+                    <span key={s.id} className="rounded-full bg-[#f4e4e0]/50 px-2 py-1 capitalize text-[#5a4a42]">
                       {s.name}
                     </span>
                   ))}
                 </div>
-                <TextLink href={`/collections/${cat.slug}`} className="mt-4 inline-block text-sm font-semibold text-[#E4BC62]">
+                <TextLink href={`/collections/${cat.slug}`} className="mt-4 inline-block text-sm font-semibold text-[#c9a58a]">
                   View vendors
                 </TextLink>
               </div>
@@ -127,19 +127,19 @@ export default async function Collection({
             </Heading>
             <Text className="mt-3 max-w-xl">{category.description}</Text>
             {selectedSubcategory && (
-              <div className="mt-4 rounded-full bg-[#E4BC62]/20 px-3 py-1 text-sm font-semibold text-[#E4BC62]">
+              <div className="mt-4 rounded-full bg-[#f7e7ce]/50 px-3 py-1 text-sm font-semibold text-[#c9a58a]">
                 Showing {selectedSubcategory.name}
               </div>
             )}
           </div>
 
-          <div className="mx-auto mt-2 w-full max-w-5xl space-y-3 rounded-2xl border border-[#DFB3AE]/30 bg-white/80 p-4 shadow-sm backdrop-blur">
+          <div className="mx-auto mt-2 w-full max-w-5xl space-y-3 rounded-2xl border border-[#d4a5a5]/30 bg-white/80 p-4 shadow-sm backdrop-blur">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <Text className="text-sm font-semibold text-[#23292E]">Filters</Text>
+              <Text className="text-sm font-semibold text-[#5a4a42]">Filters</Text>
               {hasFilters && (
                 <Link
                   href={clearHref}
-                  className="text-sm font-semibold text-[#E4BC62] hover:text-[#E4BC62]/80"
+                  className="text-sm font-semibold text-[#c9a58a] hover:text-[#c9a58a]/80"
                   prefetch={false}
                 >
                   Clear all
@@ -160,8 +160,8 @@ export default async function Collection({
                       className={clsx(
                         'rounded-full border px-3 py-1 text-sm font-semibold transition',
                         active
-                          ? 'border-[#E4BC62]/60 bg-[#E4BC62]/20 text-[#E4BC62] shadow-sm'
-                          : 'border-[#DDDED9]/60 bg-white text-zinc-700 hover:border-[#DFB3AE]/60 hover:text-[#DFB3AE]'
+                          ? 'border-[#c9a58a]/60 bg-[#f7e7ce]/50 text-[#c9a58a] shadow-sm'
+                          : 'border-[#d4a5a5]/40 bg-white text-zinc-700 hover:border-[#d4a5a5]/60 hover:text-[#d4a5a5]'
                       )}
                     >
                       {sub.name}
@@ -185,8 +185,8 @@ export default async function Collection({
                         className={clsx(
                           'rounded-full border px-3 py-1 text-sm font-semibold transition',
                           active
-                            ? 'border-[#E4BC62]/60 bg-[#E4BC62]/20 text-[#E4BC62] shadow-sm'
-                            : 'border-[#DDDED9]/60 bg-white text-zinc-700 hover:border-[#DFB3AE]/60 hover:text-[#DFB3AE]'
+                            ? 'border-[#c9a58a]/60 bg-[#f7e7ce]/50 text-[#c9a58a] shadow-sm'
+                            : 'border-[#d4a5a5]/40 bg-white text-zinc-700 hover:border-[#d4a5a5]/60 hover:text-[#d4a5a5]'
                         )}
                       >
                         {price}
@@ -209,8 +209,8 @@ export default async function Collection({
                         className={clsx(
                           'rounded-full border px-3 py-1 text-sm font-semibold transition',
                           active
-                            ? 'border-[#E4BC62]/60 bg-[#E4BC62]/20 text-[#E4BC62] shadow-sm'
-                            : 'border-[#DDDED9]/60 bg-white text-zinc-700 hover:border-[#DFB3AE]/60 hover:text-[#DFB3AE]'
+                            ? 'border-[#c9a58a]/60 bg-[#f7e7ce]/50 text-[#c9a58a] shadow-sm'
+                            : 'border-[#d4a5a5]/40 bg-white text-zinc-700 hover:border-[#d4a5a5]/60 hover:text-[#d4a5a5]'
                         )}
                       >
                         {rating.toFixed(1)}+
@@ -227,7 +227,7 @@ export default async function Collection({
           <div className="pt-10 pb-16 sm:pt-12 sm:pb-24">
             <section>
               {vendors.length === 0 ? (
-                <div className="rounded-lg border border-[#DDDED9]/60 bg-white p-6 text-center text-zinc-600">
+                <div className="rounded-lg border border-[#d4a5a5]/40 bg-white p-6 text-center text-zinc-600">
                   No vendors found{selectedSubcategory ? ` for ${selectedSubcategory.name}` : ''}.
                 </div>
               ) : (

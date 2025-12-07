@@ -13,7 +13,7 @@ export default function WeddingDatePill({ compact = true }: { compact?: boolean 
   if (!dateStr) {
     return (
       <div
-        className={`flex items-center gap-2 rounded-full bg-rose-50 font-semibold text-rose-700 shadow-sm ${baseClasses}`}
+        className={`flex items-center gap-2 rounded-full bg-[#f4e4e0] font-semibold text-[#d4a5a5] shadow-sm ${baseClasses}`}
       >
         <CalendarDaysIcon className="h-4 w-4" />
         Add your date
@@ -24,7 +24,7 @@ export default function WeddingDatePill({ compact = true }: { compact?: boolean 
   const days = differenceInDays(target, new Date())
   return (
     <div
-      className={`flex items-center gap-2 rounded-full bg-rose-600/10 font-semibold text-rose-700 shadow-sm ${baseClasses}`}
+      className={`flex items-center gap-2 rounded-full bg-[#d4a5a5]/15 font-semibold text-[#d4a5a5] shadow-sm ${baseClasses}`}
     >
       <CalendarDaysIcon className="h-4 w-4" />
       <span className="whitespace-nowrap">

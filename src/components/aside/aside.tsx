@@ -44,7 +44,7 @@ export function Aside({
       <DialogBackdrop
         {...(animated ? { transition: true } : {})}
         className={clsx(
-          'fixed inset-0 bg-[#23292E]/60',
+          'fixed inset-0 bg-[#5a4a42]/60',
           animated && 'duration-300 ease-out data-closed:opacity-0'
         )}
       />
@@ -65,7 +65,7 @@ export function Aside({
             >
               <div className="flex h-full flex-col px-4 md:px-8">
                 <header
-                  className={`flex h-16 flex-shrink-0 items-center border-b border-[#DDDED9]/40 md:h-20 ${
+                  className={`flex h-16 flex-shrink-0 items-center border-b border-[#d4a5a5]/30 md:h-20 ${
                     hasHeading ? 'justify-between' : 'justify-end'
                   }`}
                 >
@@ -73,14 +73,14 @@ export function Aside({
                     <>
                       {!!heading && !logoOnHeading && (
                         <DialogTitle>
-                          <span className="font-serif text-2xl font-medium text-[#23292E]">{heading}</span>
+                          <span className="font-serif text-2xl font-medium text-[#5a4a42]">{heading}</span>
                         </DialogTitle>
                       )}
                       {logoOnHeading && <Logo />}
                     </>
                   )}
 
-                  <button type="button" className="group -m-4 cursor-pointer p-4 text-[#23292E] hover:text-[#DFB3AE]" onClick={onClose}>
+                  <button type="button" className="group -m-4 cursor-pointer p-4 text-[#5a4a42] hover:text-[#d4a5a5]" onClick={onClose}>
                     <HugeiconsIcon
                       className="transition-transform duration-200 group-hover:rotate-90"
                       icon={Cancel01Icon}

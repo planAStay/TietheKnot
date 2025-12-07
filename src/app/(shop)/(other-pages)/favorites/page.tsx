@@ -11,10 +11,10 @@ export default function FavoritesPage() {
   return (
     <div className="container py-10">
       <div className="flex items-center justify-between">
-        <Heading level={1} className="text-3xl font-semibold text-[#23292E]">
+        <Heading level={1} className="text-3xl font-semibold text-[#5a4a42]">
           Favorites
         </Heading>
-        <TextLink href="/collections/all" className="text-sm font-semibold text-[#E4BC62]">
+        <TextLink href="/collections/all" className="text-sm font-semibold text-[#c9a58a]">
           Browse categories
         </TextLink>
       </div>
@@ -23,7 +23,7 @@ export default function FavoritesPage() {
       </Text>
 
       {favoriteVendors.length === 0 ? (
-        <div className="mt-6 rounded-lg border border-dashed border-[#DDDED9]/60 bg-white p-6 text-center">
+        <div className="mt-6 rounded-lg border border-dashed border-[#d4a5a5]/40 bg-white p-6 text-center">
           <Text className="text-sm text-zinc-600">No favorites yet. Add vendors to start your list.</Text>
         </div>
       ) : (

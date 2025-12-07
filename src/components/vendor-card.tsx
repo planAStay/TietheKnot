@@ -18,7 +18,7 @@ export default function VendorCard({ vendor, className }: VendorCardProps) {
   const isFav = favorites.some((f) => f.vendorHandle === vendor.handle)
 
   return (
-    <div className={clsx('group relative w-full rounded-lg border border-[#DDDED9]/40 bg-white p-3 shadow-sm hover:shadow-md transition-shadow', className)}>
+    <div className={clsx('group relative w-full rounded-lg border border-[#d4a5a5]/30 bg-white p-3 shadow-sm hover:shadow-md transition-shadow', className)}>
       <Link href={`/products/${vendor.handle}`} className="block overflow-hidden rounded-md">
         <div className="relative aspect-[4/3]">
           <Image
@@ -33,13 +33,13 @@ export default function VendorCard({ vendor, className }: VendorCardProps) {
 
       <div className="mt-3 flex items-start justify-between gap-2">
         <div>
-          <Text className="text-sm font-semibold text-[#23292E]">{vendor.name}</Text>
+          <Text className="text-sm font-semibold text-[#5a4a42]">{vendor.name}</Text>
           <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
-            <span className="rounded-full bg-[#E4BC62]/20 px-2 py-0.5 text-[#E4BC62] font-medium">{vendor.priceRange}</span>
-            <span className="rounded-full bg-[#DDDED9]/30 px-2 py-0.5 capitalize text-[#23292E]">{vendor.subcategory}</span>
+            <span className="rounded-full bg-[#f7e7ce]/50 px-2 py-0.5 text-[#c9a58a] font-medium">{vendor.priceRange}</span>
+            <span className="rounded-full bg-[#f4e4e0]/50 px-2 py-0.5 capitalize text-[#5a4a42]">{vendor.subcategory}</span>
           </div>
           <div className="mt-1 flex items-center gap-1 text-xs text-zinc-500">
-            <MapPinIcon className="h-4 w-4 text-[#DFB3AE]" />
+            <MapPinIcon className="h-4 w-4 text-[#d4a5a5]" />
             <span>{vendor.location}</span>
           </div>
         </div>
@@ -49,10 +49,10 @@ export default function VendorCard({ vendor, className }: VendorCardProps) {
           aria-label="Toggle favorite"
           className={clsx(
             'rounded-full p-2 transition',
-            isFav ? 'bg-[#DFB3AE]/20 text-[#DFB3AE]' : 'bg-[#DDDED9]/30 text-zinc-500 hover:bg-[#DDDED9]/50'
+            isFav ? 'bg-[#d4a5a5]/20 text-[#d4a5a5]' : 'bg-[#f4e4e0]/50 text-zinc-500 hover:bg-[#f4e4e0]'
           )}
         >
-          <HeartIcon className={clsx('h-5 w-5', isFav && 'fill-[#DFB3AE]')} />
+          <HeartIcon className={clsx('h-5 w-5', isFav && 'fill-[#d4a5a5]')} />
         </button>
       </div>
 

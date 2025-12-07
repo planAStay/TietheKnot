@@ -61,39 +61,39 @@ export default function WeddingDatePicker({ className = '' }: { className?: stri
     [weddingInfo.partnerOne, weddingInfo.partnerTwo].filter(Boolean).join(' & ') || 'Add your names'
 
   return (
-    <div className={`rounded-xl border border-[#DFB3AE]/30 bg-white p-5 shadow-sm ${className}`}>
+    <div className={`rounded-xl border border-[#d4a5a5]/30 bg-white p-5 shadow-sm ${className}`}>
       <div className="flex flex-col gap-4">
         <div className="space-y-1">
-          <p className="text-xs uppercase tracking-wide text-[#DFB3AE]">Your wedding</p>
-          <div className="text-2xl font-semibold text-[#23292E]">{coupleNames}</div>
+          <p className="text-xs uppercase tracking-wide text-[#d4a5a5]">Your wedding</p>
+          <div className="text-2xl font-semibold text-[#5a4a42]">{coupleNames}</div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-[1.1fr,0.9fr]">
-          <div className="rounded-lg border border-[#DDDED9]/40 bg-white px-3 py-2">
+          <div className="rounded-lg border border-[#d4a5a5]/30 bg-white px-3 py-2">
             <label className="text-xs text-zinc-600">Partner one</label>
             <input
               type="text"
               value={weddingInfo.partnerOne || ''}
               onChange={(e) => setWeddingInfo({ ...weddingInfo, partnerOne: e.target.value })}
               placeholder="Name"
-              className="mt-1 w-full rounded-md border border-[#DDDED9]/40 px-3 py-2 text-sm focus:border-[#E4BC62] focus:outline-none"
+              className="mt-1 w-full rounded-md border border-[#d4a5a5]/30 px-3 py-2 text-sm focus:border-[#d4a5a5] focus:outline-none"
             />
           </div>
-          <div className="rounded-lg border border-[#DDDED9]/40 bg-white px-3 py-2">
+          <div className="rounded-lg border border-[#d4a5a5]/30 bg-white px-3 py-2">
             <label className="text-xs text-zinc-600">Partner two</label>
             <input
               type="text"
               value={weddingInfo.partnerTwo || ''}
               onChange={(e) => setWeddingInfo({ ...weddingInfo, partnerTwo: e.target.value })}
               placeholder="Name"
-              className="mt-1 w-full rounded-md border border-[#DDDED9]/40 px-3 py-2 text-sm focus:border-[#E4BC62] focus:outline-none"
+              className="mt-1 w-full rounded-md border border-[#d4a5a5]/30 px-3 py-2 text-sm focus:border-[#d4a5a5] focus:outline-none"
             />
           </div>
         </div>
 
-        <div className="rounded-lg border border-[#DDDED9]/40 bg-white p-3">
+        <div className="rounded-lg border border-[#d4a5a5]/30 bg-white p-3">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-[#23292E]">Wedding date</p>
+            <p className="text-sm font-semibold text-[#5a4a42]">Wedding date</p>
             {dateStr ? <span className="text-xs text-zinc-500">{format(new Date(dateStr), 'PPP')}</span> : null}
           </div>
           <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
@@ -101,27 +101,27 @@ export default function WeddingDatePicker({ className = '' }: { className?: stri
               type="date"
               value={dateStr || ''}
               onChange={(e) => setWeddingInfo({ ...weddingInfo, weddingDate: e.target.value })}
-              className="w-full rounded-md border border-[#DDDED9]/40 px-3 py-2 text-sm focus:border-[#E4BC62] focus:outline-none sm:w-auto"
+              className="w-full rounded-md border border-[#d4a5a5]/30 px-3 py-2 text-sm focus:border-[#d4a5a5] focus:outline-none sm:w-auto"
             />
             {countdown !== null ? (
-              <div className="flex flex-wrap items-center gap-3 rounded-md bg-[#E4BC62]/20 px-3 py-2 text-sm font-semibold text-[#23292E]">
+              <div className="flex flex-wrap items-center gap-3 rounded-md bg-[#f7e7ce]/50 px-3 py-2 text-sm font-semibold text-[#5a4a42]">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold leading-none tabular-nums text-[#E4BC62]">{countdown.days}</span>
-                  <span className="text-[11px] uppercase tracking-wide text-[#23292E]/70">days</span>
+                  <span className="text-xl font-bold leading-none tabular-nums text-[#c9a58a]">{countdown.days}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-[#5a4a42]/70">days</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold leading-none tabular-nums text-[#E4BC62]">{countdown.hours}</span>
-                  <span className="text-[11px] uppercase tracking-wide text-[#23292E]/70">h</span>
+                  <span className="text-xl font-bold leading-none tabular-nums text-[#c9a58a]">{countdown.hours}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-[#5a4a42]/70">h</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold leading-none tabular-nums text-[#E4BC62]">{countdown.minutes}</span>
-                  <span className="text-[11px] uppercase tracking-wide text-[#23292E]/70">m</span>
+                  <span className="text-xl font-bold leading-none tabular-nums text-[#c9a58a]">{countdown.minutes}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-[#5a4a42]/70">m</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold leading-none tabular-nums text-[#E4BC62]">{countdown.seconds}</span>
-                  <span className="text-[11px] uppercase tracking-wide text-[#23292E]/70">s</span>
+                  <span className="text-xl font-bold leading-none tabular-nums text-[#c9a58a]">{countdown.seconds}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-[#5a4a42]/70">s</span>
                 </div>
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-[#23292E]/70">
+                <span className="text-[11px] font-semibold uppercase tracking-wide text-[#5a4a42]/70">
                   {countdown.isPast ? 'Date passed' : countdown.isToday ? "Today's the day" : 'Countdown'}
                 </span>
               </div>

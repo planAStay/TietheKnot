@@ -8,43 +8,66 @@
   --font-serif: 'Playfair Display', serif;
   --font-sans--font-feature-settings: 'cv11';
 
-  /* Brand palette */
-  --color-text: #4b5549;
-  --color-background: #f9faf5;
-  --color-primary: #8a9980;
-  --color-secondary: #b9c4b1;
-  --color-accent: #dac9be;
+  /* Wedding-themed Brand Palette */
+  /* Main colors: Soft Blush, Rose Gold, Champagne, Ivory, Sage */
+  --color-text: #5a4a42;
+  --color-background: #fdfbf7;
+  --color-primary: #d4a5a5;
+  --color-secondary: #e8c4b8;
+  --color-accent: #c9a58a;
+  
+  /* Wedding accent colors */
+  --color-blush: #f4e4e0;
+  --color-rose-gold: #d4a5a5;
+  --color-champagne: #f7e7ce;
+  --color-sage: #b8c5b0;
+  --color-dusty-rose: #d5a6a6;
+  --color-ivory: #fdfbf7;
+  --color-mauve: #c9a5a5;
+  --color-terracotta: #c9a58a;
 
-  /* Base surfaces & neutrals tuned to the new palette */
-  --color-white: var(--color-background);
-  --color-zinc-50: #f9faf5;
-  --color-zinc-100: #f2f4ec;
-  --color-zinc-200: #e8ecdf;
-  --color-zinc-300: #dcded1;
-  --color-zinc-400: #d1d6c7;
-  --color-zinc-500: #b9c4b1;
-  --color-zinc-600: #a0ad9a;
-  --color-zinc-700: #8a9980;
-  --color-zinc-800: #6f7d69;
-  --color-zinc-900: #4b5549;
-  --color-zinc-950: #2f362e;
+  /* Base surfaces & neutrals with warm wedding tones */
+  --color-white: #ffffff;
+  --color-zinc-50: #fdfbf7;
+  --color-zinc-100: #f9f4ef;
+  --color-zinc-200: #f4e8df;
+  --color-zinc-300: #ead8cd;
+  --color-zinc-400: #dcc9ba;
+  --color-zinc-500: #c5aea0;
+  --color-zinc-600: #a89080;
+  --color-zinc-700: #8a7368;
+  --color-zinc-800: #6b5b52;
+  --color-zinc-900: #5a4a42;
+  --color-zinc-950: #3d312c;
 
-  /* Map interactive indigo accents to primary shades */
-  --color-indigo-200: #e3e7db;
-  --color-indigo-300: #cdd4c5;
-  --color-indigo-400: #aab7a0;
+  /* Map interactive indigo accents to romantic rose/blush shades */
+  --color-indigo-200: #f4e4e0;
+  --color-indigo-300: #e8c4b8;
+  --color-indigo-400: #d8b4a8;
   --color-indigo-500: var(--color-primary);
-  --color-indigo-600: #6f7d69;
-  --color-indigo-700: #596454;
-  --color-indigo-900: #2f362e;
+  --color-indigo-600: #b88a8a;
+  --color-indigo-700: #9a7070;
+  --color-indigo-900: #6b5050;
 
-  /* Soft accents used by badges and highlights */
-  --color-amber-400: var(--color-accent);
-  --color-amber-500: #cdb9ac;
-  --color-amber-600: #b9a291;
-  --color-emerald-500: var(--color-primary);
-  --color-emerald-600: #6f7d69;
-  --color-emerald-700: #596454;
+  /* Soft romantic accents for badges and highlights */
+  --color-amber-400: var(--color-champagne);
+  --color-amber-500: #e8d4b8;
+  --color-amber-600: #d4c09a;
+  --color-emerald-500: var(--color-sage);
+  --color-emerald-600: #9aaa8a;
+  --color-emerald-700: #7d8e70;
+  
+  /* Rose and pink tones for wedding elements */
+  --color-rose-50: #fff5f3;
+  --color-rose-100: #ffe8e5;
+  --color-rose-200: #ffd0ca;
+  --color-rose-300: #ffb3aa;
+  --color-rose-400: #ff8a7d;
+  --color-rose-500: #f86355;
+  --color-rose-600: var(--color-dusty-rose);
+  --color-rose-700: #b87c7c;
+  --color-rose-800: #9a6565;
+  --color-rose-900: #7d5353;
 }
 
 :root {
