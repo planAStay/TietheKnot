@@ -8,11 +8,64 @@ import { Heading } from '@/components/heading'
 import { Text, TextLink } from '@/components/text'
 import Image from 'next/image'
 import clsx from 'clsx'
+import { useEffect, useState } from 'react'
 
 export default function ClientDashboard() {
   const categories = getVendorCategories()
   const featured = getAllVendors().filter((v) => v.featured).slice(0, 4)
-  const { favorites, favoriteVendors, quotations } = useWedding()
+  const { favorites, favoriteVendors, quotations, weddingInfo } = useWedding()
+
+  const coupleNames =
+    [weddingInfo.partnerOne, weddingInfo.partnerTwo].filter(Boolean).join(' & ') || 'Your wedding planner'
+
+  type CountdownState =
+    | {
+        days: number
+        hours: number
+        minutes: number
+        seconds: number
+        label: string
+        isToday: boolean
+        isPast: boolean
+      }
+    | null
+
+  const computeCountdown = (dateStr?: string | null): CountdownState => {
+    if (!dateStr) return null
+    const target = new Date(dateStr)
+    const now = new Date()
+    const diffMs = target.getTime() - now.getTime()
+    if (diffMs < 0) {
+      return {
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        label: 'Date passed',
+        isToday: false,
+        isPast: true,
+      }
+    }
+    const totalSeconds = Math.floor(diffMs / 1000)
+    const days = Math.floor(totalSeconds / 86400)
+    const hours = Math.floor((totalSeconds % 86400) / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = totalSeconds % 60
+    const isToday = days === 0
+    const label = isToday ? 'Today' : 'Days to go'
+    return { days, hours, minutes, seconds, label, isToday, isPast: false }
+  }
+
+  const [countdown, setCountdown] = useState<CountdownState>(() => computeCountdown(weddingInfo.weddingDate))
+
+  useEffect(() => {
+    setCountdown(computeCountdown(weddingInfo.weddingDate))
+    if (!weddingInfo.weddingDate) return
+    const id = setInterval(() => {
+      setCountdown(computeCountdown(weddingInfo.weddingDate))
+    }, 1000)
+    return () => clearInterval(id)
+  }, [weddingInfo.weddingDate])
 
   return (
     <div className="bg-gradient-to-b from-rose-50 via-white to-white pt-8 lg:pt-12">
@@ -23,11 +76,34 @@ export default function ClientDashboard() {
           <div className="relative space-y-3">
             <p className="text-sm uppercase tracking-wide text-rose-50">Your wedding planner</p>
             <Heading level={1} className="text-4xl font-semibold leading-tight text-white sm:text-5xl">
-              Plan with ease, celebrate with joy.
+              {coupleNames}
             </Heading>
             <Text className="text-base text-rose-50/90">
               Track your date, shortlist vendors, and manage quotation requests—all in one calm workspace.
             </Text>
+            {countdown ? (
+              <div className="inline-flex flex-wrap items-center gap-3 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold leading-none tabular-nums">{countdown.days}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-rose-50/80">days</span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold leading-none tabular-nums">{countdown.hours}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-rose-50/80">h</span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold leading-none tabular-nums">{countdown.minutes}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-rose-50/80">m</span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-bold leading-none tabular-nums">{countdown.seconds}</span>
+                  <span className="text-[11px] uppercase tracking-wide text-rose-50/80">s</span>
+                </div>
+                <span className="text-[11px] uppercase tracking-wide text-rose-50/80">
+                  {countdown.isPast ? 'Date passed' : countdown.isToday ? "Today's the day" : ''}
+                </span>
+              </div>
+            ) : null}
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
               <Badge label={`${favorites.length} favorites`} tone="light" />
               <Badge label={`${quotations.length} quotes`} tone="light" />
