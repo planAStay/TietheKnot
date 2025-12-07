@@ -1,0 +1,101 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'DM sans', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  --font-sans--font-feature-settings: 'cv11';
+
+  /* Brand palette */
+  --color-text: #4b5549;
+  --color-background: #f9faf5;
+  --color-primary: #8a9980;
+  --color-secondary: #b9c4b1;
+  --color-accent: #dac9be;
+
+  /* Base surfaces & neutrals tuned to the new palette */
+  --color-white: var(--color-background);
+  --color-zinc-50: #f9faf5;
+  --color-zinc-100: #f2f4ec;
+  --color-zinc-200: #e8ecdf;
+  --color-zinc-300: #dcded1;
+  --color-zinc-400: #d1d6c7;
+  --color-zinc-500: #b9c4b1;
+  --color-zinc-600: #a0ad9a;
+  --color-zinc-700: #8a9980;
+  --color-zinc-800: #6f7d69;
+  --color-zinc-900: #4b5549;
+  --color-zinc-950: #2f362e;
+
+  /* Map interactive indigo accents to primary shades */
+  --color-indigo-200: #e3e7db;
+  --color-indigo-300: #cdd4c5;
+  --color-indigo-400: #aab7a0;
+  --color-indigo-500: var(--color-primary);
+  --color-indigo-600: #6f7d69;
+  --color-indigo-700: #596454;
+  --color-indigo-900: #2f362e;
+
+  /* Soft accents used by badges and highlights */
+  --color-amber-400: var(--color-accent);
+  --color-amber-500: #cdb9ac;
+  --color-amber-600: #b9a291;
+  --color-emerald-500: var(--color-primary);
+  --color-emerald-600: #6f7d69;
+  --color-emerald-700: #596454;
+}
+
+:root {
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media screen and (min-width: 640px) {
+    padding-inline: 2rem;
+  }
+}
+@utility pl-container {
+  @apply pl-6 sm:pl-[calc((100vw-40rem+2.5rem)/2)] md:pl-[calc((100vw-48rem+4rem)/2)] lg:pl-[calc((100vw-64rem+4rem)/2)] xl:pl-[calc((100vw-80rem+4rem)/2)] 2xl:pl-[calc((100vw-96rem+4rem)/2)];
+}
+@utility pr-container {
+  @apply pr-6 sm:pr-[calc((100vw-40rem+2.5rem)/2)] md:pr-[calc((100vw-48rem+4rem)/2)] lg:pr-[calc((100vw-64rem+4rem)/2)] xl:pr-[calc((100vw-80rem+4rem)/2)] 2xl:pr-[calc((100vw-96rem+4rem)/2)];
+}
+
+@utility overflow-initial {
+  overflow: initial;
+}
+
+/* embla carousel */
+@utility embla {
+  overflow: hidden;
+}
+@utility embla-overflow-unset {
+  overflow: unset;
+}
+@utility embla__container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+}
+@utility embla__slide {
+  flex-shrink: 0;
+  flex-grow: 0;
+  transform: translate3d(0, 0, 0);
+}
+@utility hidden-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@utility swimlane {
+  @apply grid w-full snap-x snap-mandatory scroll-px-6 grid-flow-col justify-start gap-4 overflow-x-scroll;
+}
