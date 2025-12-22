@@ -50,3 +50,4 @@ All images are high-quality, royalty-free photos from Unsplash, optimized for we
 
 Images are automatically assigned to vendors through the `getVendorImage()` function in `src/data-wedding.ts`, which rotates through available images for each category.
 
+
