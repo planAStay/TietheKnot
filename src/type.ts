@@ -46,6 +46,7 @@ export interface TVendor {
   images?: TImage[]
   description: string
   packages?: TPackage[]
+  pricingPdf?: string
   contact?: {
     phone?: string
     email?: string
@@ -80,4 +81,33 @@ export interface TWeddingInfo {
   partnerOne?: string
   partnerTwo?: string
   location?: string
+}
+
+// Booking system types
+export type TBookingSlot = 'morning' | 'evening'
+export type TBookingStatus = 'pending' | 'confirmed' | 'rejected' | 'cancelled'
+
+export interface TBooking {
+  id: string
+  vendorId: string
+  userId?: string
+  date: string // ISO date string
+  slot: TBookingSlot
+  status: TBookingStatus
+  createdAt: string
+  confirmedAt?: string
+  userDetails: {
+    name: string
+    email: string
+    phone: string
+  }
+  message?: string
+}
+
+export interface TDayAvailability {
+  date: string
+  morningBooked: boolean
+  eveningBooked: boolean
+  morningStatus?: TBookingStatus
+  eveningStatus?: TBookingStatus
 }

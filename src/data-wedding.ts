@@ -1,4 +1,4 @@
-import { TCategory, TVendor } from './type'
+import { TCategory, TVendor, TImage } from './type'
 
 const slugify = (value: string): string =>
   value
@@ -293,6 +293,16 @@ const buildVendor = (
   const handleBase = `${category.slug}-${subcategory.slug}`
   const rating = Number((4.2 + (variantIndex % 5) * 0.15).toFixed(1))
 
+  // Generate gallery images (4 additional images for the gallery)
+  const galleryImages: TImage[] = []
+  for (let i = 1; i <= 4; i++) {
+    const imageIndex = (variantIndex + i) % 8
+    galleryImages.push({
+      src: getVendorImage(category.slug, imageIndex),
+      alt: `${subcategory.name} gallery image ${i}`,
+    })
+  }
+
   return {
     id: `${handleBase}-${variantIndex + 1}`,
     name: `${subcategory.name} ${variantIndex % 2 === 0 ? 'Collective' : 'Studio'} ${variantIndex + 1}`,
@@ -307,6 +317,7 @@ const buildVendor = (
       src: getVendorImage(category.slug, variantIndex),
       alt: `${subcategory.name} showcase`,
     },
+    images: galleryImages,
     description: `${subcategory.name} offered by our ${category.name.toLowerCase()} partners.`,
     packages: [
       {
@@ -315,6 +326,8 @@ const buildVendor = (
         description: 'Popular package tailored for most events.',
       },
     ],
+    // Add PDF to some vendors for testing (every 3rd vendor gets PDF, creating mix of packages only, PDF only, and both)
+    pricingPdf: variantIndex % 3 === 0 ? '/pricing-pdfs/sample-pricing.pdf' : undefined,
     contact: {
       phone: '+94 77 000 0000',
       email: `${handleBase}@vendors.tietheknot.test`,
