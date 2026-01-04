@@ -7,6 +7,186 @@
   --font-sans: 'DM sans', sans-serif;
   --font-serif: 'Playfair Display', serif;
   --font-sans--font-feature-settings: 'cv11';
+
+  /* Theme-aware colors - these will be overridden by CSS variables */
+  --color-text: var(--theme-text);
+  --color-background: var(--theme-background);
+  --color-primary: var(--theme-primary);
+  --color-secondary: var(--theme-secondary);
+  --color-accent: var(--theme-accent);
+  
+  /* Supporting neutrals - theme aware */
+  --color-blush: var(--theme-blush);
+  --color-rose-gold: var(--theme-rose-gold);
+  --color-champagne: var(--theme-champagne);
+  --color-sage: var(--theme-sage);
+  --color-dusty-rose: var(--theme-dusty-rose);
+  --color-ivory: var(--theme-ivory);
+  --color-mauve: var(--theme-mauve);
+  --color-terracotta: var(--theme-terracotta);
+
+  /* Surface color for cards/modals */
+  --color-surface: var(--theme-surface);
+  --color-surface-elevated: var(--theme-surface-elevated);
+
+  /* Base surfaces & neutrals with warm charcoal tones */
+  --color-white: var(--theme-white);
+  --color-zinc-50: var(--theme-zinc-50);
+  --color-zinc-100: var(--theme-zinc-100);
+  --color-zinc-200: var(--theme-zinc-200);
+  --color-zinc-300: var(--theme-zinc-300);
+  --color-zinc-400: var(--theme-zinc-400);
+  --color-zinc-500: var(--theme-zinc-500);
+  --color-zinc-600: var(--theme-zinc-600);
+  --color-zinc-700: var(--theme-zinc-700);
+  --color-zinc-800: var(--theme-zinc-800);
+  --color-zinc-900: var(--theme-zinc-900);
+  --color-zinc-950: var(--theme-zinc-950);
+
+  /* Map interactive indigo accents to sage tones */
+  --color-indigo-200: #eff4e9;
+  --color-indigo-300: #d8e2ca;
+  --color-indigo-400: #becfaa;
+  --color-indigo-500: var(--color-secondary);
+  --color-indigo-600: #72825f;
+  --color-indigo-700: #5b684d;
+  --color-indigo-900: #394232;
+
+  /* Gold and warm accents for badges and highlights */
+  --color-amber-400: #e0b896;
+  --color-amber-500: var(--color-secondary);
+  --color-amber-600: #a67e5a;
+  --color-emerald-500: #8c9a77;
+  --color-emerald-600: #72825f;
+  --color-emerald-700: #5b684d;
+  
+  /* Muted taupe and warm tones for wedding elements */
+  --color-rose-50: var(--theme-rose-50);
+  --color-rose-100: var(--theme-rose-100);
+  --color-rose-200: var(--theme-rose-200);
+  --color-rose-300: var(--theme-rose-300);
+  --color-rose-400: var(--theme-rose-400);
+  --color-rose-500: var(--theme-rose-500);
+  --color-rose-600: var(--theme-rose-600);
+  --color-rose-700: var(--theme-rose-700);
+  --color-rose-800: var(--theme-rose-800);
+  --color-rose-900: var(--theme-rose-900);
+}
+
+/* ========================================
+   LIGHT THEME (Default)
+   ======================================== */
+:root {
+  /* Core theme colors */
+  --theme-text: #2c2c2c;
+  --theme-background: #fefcf7;
+  --theme-primary: #f5b5a9;
+  --theme-secondary: #8c9a77;
+  --theme-accent: #cfa17d;
+
+  /* Surface colors for cards, modals, etc */
+  --theme-surface: #ffffff;
+  --theme-surface-elevated: #ffffff;
+
+  /* Supporting neutrals */
+  --theme-blush: #f8e6dd;
+  --theme-rose-gold: #e9c7b3;
+  --theme-champagne: #f1dcca;
+  --theme-sage: #cdd6c1;
+  --theme-dusty-rose: #d59c8b;
+  --theme-ivory: #fdf5ed;
+  --theme-mauve: #b48f84;
+  --theme-terracotta: #9b6c55;
+
+  /* Zinc scale - warm cream tones for light mode */
+  --theme-white: #ffffff;
+  --theme-zinc-50: #fefcf7;
+  --theme-zinc-100: #f6eee3;
+  --theme-zinc-200: #ebddcd;
+  --theme-zinc-300: #ddc8b4;
+  --theme-zinc-400: #c8b099;
+  --theme-zinc-500: #b19782;
+  --theme-zinc-600: #917763;
+  --theme-zinc-700: #75604f;
+  --theme-zinc-800: #5c4a3d;
+  --theme-zinc-900: #43352d;
+  --theme-zinc-950: #2c2c2c;
+
+  /* Rose scale for light mode */
+  --theme-rose-50: #fdf3ed;
+  --theme-rose-100: #f5e2d7;
+  --theme-rose-200: #eacbbd;
+  --theme-rose-300: #dab19f;
+  --theme-rose-400: #c69282;
+  --theme-rose-500: #cfa17d;
+  --theme-rose-600: #a87f63;
+  --theme-rose-700: #85644f;
+  --theme-rose-800: #684e3f;
+  --theme-rose-900: #4c3a30;
+
+  color: var(--theme-text);
+  background-color: var(--theme-background);
+}
+
+/* ========================================
+   DARK THEME
+   ======================================== */
+.dark {
+  /* Core theme colors - text and background swap */
+  --theme-text: #fefcf7;
+  --theme-background: #2c2c2c;
+  --theme-primary: #f5b5a9;
+  --theme-secondary: #8c9a77;
+  --theme-accent: #cfa17d;
+
+  /* Surface colors for cards, modals - slightly elevated from background */
+  --theme-surface: #3a3a3a;
+  --theme-surface-elevated: #454545;
+
+  /* Supporting neutrals - adjusted for dark mode visibility */
+  --theme-blush: #4a3d3a;
+  --theme-rose-gold: #5c4a40;
+  --theme-champagne: #4d4339;
+  --theme-sage: #3d4436;
+  --theme-dusty-rose: #5c4440;
+  --theme-ivory: #3d3a36;
+  --theme-mauve: #6b5650;
+  --theme-terracotta: #7a5c4a;
+
+  /* Zinc scale - inverted for dark mode */
+  --theme-white: #2c2c2c;
+  --theme-zinc-50: #363636;
+  --theme-zinc-100: #404040;
+  --theme-zinc-200: #4a4a4a;
+  --theme-zinc-300: #5a5a5a;
+  --theme-zinc-400: #6a6a6a;
+  --theme-zinc-500: #8a8a8a;
+  --theme-zinc-600: #a0a0a0;
+  --theme-zinc-700: #b8b8b8;
+  --theme-zinc-800: #d0d0d0;
+  --theme-zinc-900: #e8e8e8;
+  --theme-zinc-950: #fefcf7;
+
+  /* Rose scale for dark mode - muted and darker */
+  --theme-rose-50: #3a3530;
+  --theme-rose-100: #4a3f38;
+  --theme-rose-200: #5a4a40;
+  --theme-rose-300: #6a5a4a;
+  --theme-rose-400: #8a7060;
+  --theme-rose-500: #a88570;
+  --theme-rose-600: #c49a80;
+  --theme-rose-700: #d4aa90;
+  --theme-rose-800: #e4bca0;
+  --theme-rose-900: #f0d0b8;
+
+  color: var(--theme-text);
+  background-color: var(--theme-background);
+}
+
+body {
+  background-color: var(--theme-background);
+  color: var(--theme-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @utility container {

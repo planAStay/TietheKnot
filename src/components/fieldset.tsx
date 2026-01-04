@@ -22,7 +22,7 @@ export function Legend({
     <Headless.Legend
       data-slot="legend"
       {...props}
-      className={clsx(className, 'text-sm/6 font-semibold text-zinc-950 data-disabled:opacity-50 dark:text-white')}
+      className={clsx(className, 'text-sm/6 font-semibold text-text data-disabled:opacity-50')}
     />
   )
 }
@@ -53,7 +53,7 @@ export function Label({ className, ...props }: { className?: string } & Omit<Hea
     <Headless.Label
       data-slot="label"
       {...props}
-      className={clsx(className, 'text-sm/6 text-zinc-950 select-none data-disabled:opacity-50 dark:text-white')}
+      className={clsx(className, 'text-sm/6 text-text select-none data-disabled:opacity-50')}
     />
   )
 }
@@ -66,7 +66,7 @@ export function Description({
     <Headless.Description
       data-slot="description"
       {...props}
-      className={clsx(className, 'text-sm/6 text-zinc-500 data-disabled:opacity-50 dark:text-zinc-400')}
+      className={clsx(className, 'text-sm/6 text-text/50 data-disabled:opacity-50')}
     />
   )
 }

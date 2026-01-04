@@ -1,5 +1,8 @@
 import Aside from '@/components/aside'
+import ThemeToggleFloatingConditional from '@/components/theme-toggle-floating-conditional'
 import '@/styles/tailwind.css'
+import { WeddingProvider } from '@/lib/wedding-context'
+import { ThemeProvider, themeScript } from '@/lib/theme-context'
 import clsx from 'clsx'
 import type { Metadata } from 'next'
 import { DM_Sans, Playfair_Display } from 'next/font/google'
@@ -21,21 +24,19 @@ const playfair_display = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Bitpan',
-    default: 'Bitpan',
+    template: '%s - TieTheKnot',
+    default: 'TieTheKnot',
   },
   description:
-    'Bitpan is a modern and elegant template for Next.js, Tailwind CSS, and TypeScript. It is designed to be simple and easy to use, with a focus on performance and accessibility.',
+    'TieTheKnot is a modern wedding planner experience: explore vendors, save favorites, set your date, and request quotes.',
   keywords: [
     'Next.js',
+    'Wedding Planner',
     'Tailwind CSS',
-    'TypeScript',
-    'Bipan',
-    'Headless UI',
-    'Fashion',
-    'Hijab',
-    'Skincare',
-    'E-commerce',
+    'Vendors',
+    'Quotes',
+    'Favorites',
+    'Wedding',
   ],
 }
 
@@ -44,13 +45,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang="en"
       className={clsx(
-        'text-zinc-950 antialiased dark:bg-zinc-900 dark:text-white dark:lg:bg-zinc-950',
+        'antialiased',
         dm_sans.variable,
         playfair_display.variable
       )}
+      suppressHydrationWarning
     >
-      <body>
-        <Aside.Provider>{children}</Aside.Provider>
+      <head>
+        {/* Prevent flash of wrong theme */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="min-h-screen bg-background text-text transition-colors duration-300">
+        <ThemeProvider>
+          <Aside.Provider>
+            <WeddingProvider>{children}</WeddingProvider>
+          </Aside.Provider>
+          <ThemeToggleFloatingConditional />
+        </ThemeProvider>
       </body>
     </html>
   )

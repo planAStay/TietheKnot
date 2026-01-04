@@ -11,7 +11,7 @@ export function InputGroup({ children }: React.ComponentPropsWithoutRef<'span'>)
         'has-[[data-slot=icon]:first-child]:[&_input]:pl-10 has-[[data-slot=icon]:last-child]:[&_input]:pr-10 sm:has-[[data-slot=icon]:first-child]:[&_input]:pl-8 sm:has-[[data-slot=icon]:last-child]:[&_input]:pr-8',
         '*:data-[slot=icon]:pointer-events-none *:data-[slot=icon]:absolute *:data-[slot=icon]:top-3 *:data-[slot=icon]:z-10 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:top-2.5 sm:*:data-[slot=icon]:size-4',
         '[&>[data-slot=icon]:first-child]:left-3 sm:[&>[data-slot=icon]:first-child]:left-2.5 [&>[data-slot=icon]:last-child]:right-3 sm:[&>[data-slot=icon]:last-child]:right-2.5',
-        '*:data-[slot=icon]:text-zinc-500 dark:*:data-[slot=icon]:text-zinc-400'
+        '*:data-[slot=icon]:text-text/50'
       )}
     >
       {children}
@@ -42,9 +42,9 @@ export const Input = forwardRef(function Input(
         // Background color is moved to control and shadow is removed in dark mode so hide `before` pseudo
         'dark:before:hidden',
         // Focus ring
-        'after:pointer-events-none after:absolute after:inset-0 after:rounded-full after:ring-transparent after:ring-inset sm:focus-within:after:ring-2 sm:focus-within:after:ring-zinc-900',
+        'after:pointer-events-none after:absolute after:inset-0 after:rounded-full after:ring-transparent after:ring-inset sm:focus-within:after:ring-2 sm:focus-within:after:ring-primary',
         // Disabled state
-        'has-data-disabled:opacity-50 has-data-disabled:before:bg-zinc-950/5 has-data-disabled:before:shadow-none',
+        'has-data-disabled:opacity-50 has-data-disabled:before:bg-text/5 has-data-disabled:before:shadow-none',
         // Invalid state
         'has-data-invalid:before:shadow-red-500/10',
       ])}
@@ -71,20 +71,18 @@ export const Input = forwardRef(function Input(
             ],
           // Basic layout
           'relative block w-full appearance-none rounded-full px-3.5 py-2',
-          // Typography
-          'text-sm/6 text-zinc-950 placeholder:text-zinc-500 dark:text-white',
-          // Border
-          'border border-zinc-300 data-hover:border-zinc-400 dark:border-white/10 dark:data-hover:border-white/20',
+          // Typography - uses semantic text color
+          'text-sm/6 text-text placeholder:text-text/50',
+          // Border - uses semantic colors
+          'border border-text/20 data-hover:border-text/30',
           // Background color
-          'bg-transparent dark:bg-white/5',
+          'bg-transparent',
           // Hide default focus styles
           'focus:outline-hidden',
           // Invalid state
-          'data-invalid:border-red-500 data-invalid:data-hover:border-red-500 dark:data-invalid:border-red-500 dark:data-invalid:data-hover:border-red-500',
+          'data-invalid:border-red-500 data-invalid:data-hover:border-red-500',
           // Disabled state
-          'data-disabled:border-zinc-950/20 dark:data-disabled:border-white/15 dark:data-disabled:bg-white/[2.5%] dark:data-hover:data-disabled:border-white/15',
-          // System icons
-          'dark:[color-scheme:dark]',
+          'data-disabled:border-text/10 data-disabled:bg-text/[2.5%]',
         ])}
       />
     </span>

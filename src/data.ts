@@ -1,3 +1,37 @@
+const SWATCH_COLORS: Record<string, string> = {
+  'Amber': '#FFBF00',
+  'Beige': '#F5F5DC',
+  'Black': '#000000',
+  'Blush Pink': '#FFC1CC',
+  'Brown': '#8B4513',
+  'Burgundy': '#800020',
+  'Charcoal': '#36454F',
+  'Coral': '#FF7F50',
+  'Cream': '#FFFDD0',
+  'Dark Blue': '#00008B',
+  'Emerald': '#50C878',
+  'Emerald Green': '#50C878',
+  'Floral Blue': '#4682B4',
+  'Floral Grey': '#808080',
+  'Floral Pink': '#FFC1CC',
+  'Geometric Black': '#000000',
+  'Geometric Blue': '#4682B4',
+  'Gold': '#FFD700',
+  'Green': '#008000',
+  'Grey': '#808080',
+  'Light Blue': '#ADD8E6',
+  'Light Green': '#90EE90',
+  'Light Orange': '#FFA500',
+  'Mint Green': '#98FF98',
+  'Navy': '#000080',
+  'Pink': '#FFC1CC',
+  'Red': '#FF0000',
+  'Royal Blue': '#4169E1',
+  'Silver': '#C0C0C0',
+  'Tan': '#D2B48C',
+  'Yellow': '#FFFF00',
+}
+
 export async function getOrder(number: string) {
   return (await getOrders()).find((order) => order.number.toString() === number)
 }
@@ -830,9 +864,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Light Blue', swatch: { color: '#ADD8E6', image: null } },
-            { name: 'Dark Blue', swatch: { color: '#00008B', image: null } },
-            { name: 'Black', swatch: { color: '#000000', image: null } },
+            { name: 'Light Blue', swatch: { color: SWATCH_COLORS['Light Blue'], image: null } },
+            { name: 'Dark Blue', swatch: { color: SWATCH_COLORS['Dark Blue'], image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
           ],
         },
         {
@@ -869,8 +903,8 @@ export async function getProducts() {
           name: 'Color',
           optionValues: [
             { name: 'White', swatch: { color: 'oklch(93% 0.034 272.788)', image: null } },
-            { name: 'Cream', swatch: { color: '#FFFDD0', image: null } },
-            { name: 'Pink', swatch: { color: '#FFC1CC', image: null } },
+            { name: 'Cream', swatch: { color: SWATCH_COLORS['Cream'], image: null } },
+            { name: 'Pink', swatch: { color: SWATCH_COLORS['Pink'], image: null } },
           ],
         },
         {
@@ -906,8 +940,8 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Green', swatch: { color: '#008000', image: null } },
-            { name: 'Yellow', swatch: { color: '#FFFF00', image: null } },
+            { name: 'Green', swatch: { color: SWATCH_COLORS['Green'], image: null } },
+            { name: 'Yellow', swatch: { color: SWATCH_COLORS['Yellow'], image: null } },
             { name: 'White', swatch: { color: 'oklch(95.1% 0.026 236.824)', image: null } },
           ],
         },
@@ -944,9 +978,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Black', swatch: { color: '#000000', image: null } },
-            { name: 'Grey', swatch: { color: '#808080', image: null } },
-            { name: 'Charcoal', swatch: { color: '#36454F', image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
+            { name: 'Grey', swatch: { color: SWATCH_COLORS['Grey'], image: null } },
+            { name: 'Charcoal', swatch: { color: SWATCH_COLORS['Charcoal'], image: null } },
           ],
         },
         {
@@ -982,9 +1016,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Cream', swatch: { color: '#FFFDD0', image: null } },
+            { name: 'Cream', swatch: { color: SWATCH_COLORS['Cream'], image: null } },
             { name: 'White', swatch: { color: 'oklch(95.1% 0.026 236.824)', image: null } },
-            { name: 'Beige', swatch: { color: '#F5F5DC', image: null } },
+            { name: 'Beige', swatch: { color: SWATCH_COLORS['Beige'], image: null } },
           ],
         },
         {
@@ -1020,9 +1054,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Yellow', swatch: { color: '#FFFF00', image: null } },
+            { name: 'Yellow', swatch: { color: SWATCH_COLORS['Yellow'], image: null } },
             { name: 'Clear', swatch: { color: 'oklch(95.1% 0.026 236.824)', image: null } },
-            { name: 'Light Orange', swatch: { color: '#FFA500', image: null } },
+            { name: 'Light Orange', swatch: { color: SWATCH_COLORS['Light Orange'], image: null } },
           ],
         },
         {
@@ -1059,8 +1093,8 @@ export async function getProducts() {
           name: 'Color',
           optionValues: [
             { name: 'Clear', swatch: { color: 'oklch(95.1% 0.026 236.824)', image: null } },
-            { name: 'Light Blue', swatch: { color: '#ADD8E6', image: null } },
-            { name: 'Light Green', swatch: { color: '#90EE90', image: null } },
+            { name: 'Light Blue', swatch: { color: SWATCH_COLORS['Light Blue'], image: null } },
+            { name: 'Light Green', swatch: { color: SWATCH_COLORS['Light Green'], image: null } },
           ],
         },
         {
@@ -1096,9 +1130,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Amber', swatch: { color: '#FFBF00', image: null } },
+            { name: 'Amber', swatch: { color: SWATCH_COLORS['Amber'], image: null } },
             { name: 'Clear', swatch: { color: 'oklch(95.1% 0.026 236.824)', image: null } },
-            { name: 'Yellow', swatch: { color: '#FFFF00', image: null } },
+            { name: 'Yellow', swatch: { color: SWATCH_COLORS['Yellow'], image: null } },
           ],
         },
         {
@@ -1135,7 +1169,7 @@ export async function getProducts() {
           name: 'Color',
           optionValues: [
             { name: 'Clear', swatch: { color: 'oklch(95.1% 0.026 236.824)', image: null } },
-            { name: 'Light Green', swatch: { color: '#90EE90', image: null } },
+            { name: 'Light Green', swatch: { color: SWATCH_COLORS['Light Green'], image: null } },
             { name: 'White', swatch: { color: 'oklch(96.7% 0.001 286.375)', image: null } },
           ],
         },
@@ -1173,8 +1207,8 @@ export async function getProducts() {
           name: 'Color',
           optionValues: [
             { name: 'Clear', swatch: { color: 'oklch(96.7% 0.001 286.375)', image: null } },
-            { name: 'Light Blue', swatch: { color: '#ADD8E6', image: null } },
-            { name: 'Beige', swatch: { color: '#F5F5DC', image: null } },
+            { name: 'Light Blue', swatch: { color: SWATCH_COLORS['Light Blue'], image: null } },
+            { name: 'Beige', swatch: { color: SWATCH_COLORS['Beige'], image: null } },
           ],
         },
         {
@@ -1211,9 +1245,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Black', swatch: { color: '#000000', image: null } },
-            { name: 'Brown', swatch: { color: '#8B4513', image: null } },
-            { name: 'Tan', swatch: { color: '#D2B48C', image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
+            { name: 'Brown', swatch: { color: SWATCH_COLORS['Brown'], image: null } },
+            { name: 'Tan', swatch: { color: SWATCH_COLORS['Tan'], image: null } },
           ],
         },
         {
@@ -1249,9 +1283,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Navy', swatch: { color: '#000080', image: null } },
-            { name: 'Grey', swatch: { color: '#808080', image: null } },
-            { name: 'Black', swatch: { color: '#000000', image: null } },
+            { name: 'Navy', swatch: { color: SWATCH_COLORS['Navy'], image: null } },
+            { name: 'Grey', swatch: { color: SWATCH_COLORS['Grey'], image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
           ],
         },
         {
@@ -1286,9 +1320,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Burgundy', swatch: { color: '#800020', image: null } },
-            { name: 'Black', swatch: { color: '#000000', image: null } },
-            { name: 'Brown', swatch: { color: '#8B4513', image: null } },
+            { name: 'Burgundy', swatch: { color: SWATCH_COLORS['Burgundy'], image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
+            { name: 'Brown', swatch: { color: SWATCH_COLORS['Brown'], image: null } },
           ],
         },
         {
@@ -1343,9 +1377,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Black', swatch: { color: '#000000', image: null } },
-            { name: 'Brown', swatch: { color: '#8B4513', image: null } },
-            { name: 'Navy', swatch: { color: '#000080', image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
+            { name: 'Brown', swatch: { color: SWATCH_COLORS['Brown'], image: null } },
+            { name: 'Navy', swatch: { color: SWATCH_COLORS['Navy'], image: null } },
           ],
         },
         {
@@ -1380,9 +1414,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Black', swatch: { color: '#000000', image: null } },
-            { name: 'Red', swatch: { color: '#FF0000', image: null } },
-            { name: 'Navy', swatch: { color: '#000080', image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
+            { name: 'Red', swatch: { color: SWATCH_COLORS['Red'], image: null } },
+            { name: 'Navy', swatch: { color: SWATCH_COLORS['Navy'], image: null } },
           ],
         },
         {
@@ -1418,9 +1452,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Black', swatch: { color: '#000000', image: null } },
-            { name: 'Burgundy', swatch: { color: '#800020', image: null } },
-            { name: 'Emerald', swatch: { color: '#50C878', image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
+            { name: 'Burgundy', swatch: { color: SWATCH_COLORS['Burgundy'], image: null } },
+            { name: 'Emerald', swatch: { color: SWATCH_COLORS['Emerald'], image: null } },
           ],
         },
         {
@@ -1457,8 +1491,8 @@ export async function getProducts() {
           name: 'Color',
           optionValues: [
             { name: 'White', swatch: { color: 'oklch(96.7% 0.001 286.375)', image: null } },
-            { name: 'Navy', swatch: { color: '#000080', image: null } },
-            { name: 'Black', swatch: { color: '#000000', image: null } },
+            { name: 'Navy', swatch: { color: SWATCH_COLORS['Navy'], image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
           ],
         },
         {
@@ -1494,9 +1528,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Red', swatch: { color: '#FF0000', image: null } },
-            { name: 'Black', swatch: { color: '#000000', image: null } },
-            { name: 'Cream', swatch: { color: '#FFFDD0', image: null } },
+            { name: 'Red', swatch: { color: SWATCH_COLORS['Red'], image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
+            { name: 'Cream', swatch: { color: SWATCH_COLORS['Cream'], image: null } },
           ],
         },
         {
@@ -1532,9 +1566,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Silver', swatch: { color: '#C0C0C0', image: null } },
-            { name: 'Gold', swatch: { color: '#FFD700', image: null } },
-            { name: 'Black', swatch: { color: '#000000', image: null } },
+            { name: 'Silver', swatch: { color: SWATCH_COLORS['Silver'], image: null } },
+            { name: 'Gold', swatch: { color: SWATCH_COLORS['Gold'], image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
           ],
         },
         {
@@ -1576,9 +1610,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Blush Pink', swatch: { color: '#FFC1CC', image: null } },
-            { name: 'Mint Green', swatch: { color: '#98FF98', image: null } },
-            { name: 'Light Blue', swatch: { color: '#ADD8E6', image: null } },
+            { name: 'Blush Pink', swatch: { color: SWATCH_COLORS['Blush Pink'], image: null } },
+            { name: 'Mint Green', swatch: { color: SWATCH_COLORS['Mint Green'], image: null } },
+            { name: 'Light Blue', swatch: { color: SWATCH_COLORS['Light Blue'], image: null } },
           ],
         },
         {
@@ -1620,7 +1654,7 @@ export async function getProducts() {
           optionValues: [
             { name: 'Ivory', swatch: { color: 'oklch(94.8% 0.028 342.258)', image: null } },
             { name: 'White', swatch: { color: 'oklch(87.1% 0.15 154.449)', image: null } },
-            { name: 'Gold', swatch: { color: '#FFD700', image: null } },
+            { name: 'Gold', swatch: { color: SWATCH_COLORS['Gold'], image: null } },
           ],
         },
         {
@@ -1660,9 +1694,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Emerald Green', swatch: { color: '#50C878', image: null } },
-            { name: 'Royal Blue', swatch: { color: '#4169E1', image: null } },
-            { name: 'Red', swatch: { color: '#FF0000', image: null } },
+            { name: 'Emerald Green', swatch: { color: SWATCH_COLORS['Emerald Green'], image: null } },
+            { name: 'Royal Blue', swatch: { color: SWATCH_COLORS['Royal Blue'], image: null } },
+            { name: 'Red', swatch: { color: SWATCH_COLORS['Red'], image: null } },
           ],
         },
         {
@@ -1702,9 +1736,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Floral Blue', swatch: { color: '#4682B4', image: null } },
-            { name: 'Floral Pink', swatch: { color: '#FFC1CC', image: null } },
-            { name: 'Geometric Black', swatch: { color: '#000000', image: null } },
+            { name: 'Floral Blue', swatch: { color: SWATCH_COLORS['Floral Blue'], image: null } },
+            { name: 'Floral Pink', swatch: { color: SWATCH_COLORS['Floral Pink'], image: null } },
+            { name: 'Geometric Black', swatch: { color: SWATCH_COLORS['Geometric Black'], image: null } },
           ],
         },
         {
@@ -1739,9 +1773,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Beige', swatch: { color: '#F5F5DC', image: null } },
+            { name: 'Beige', swatch: { color: SWATCH_COLORS['Beige'], image: null } },
             { name: 'White', swatch: { color: 'oklch(96.7% 0.003 264.542)', image: null } },
-            { name: 'Cream', swatch: { color: '#FFFDD0', image: null } },
+            { name: 'Cream', swatch: { color: SWATCH_COLORS['Cream'], image: null } },
           ],
         },
         {
@@ -1781,9 +1815,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Black', swatch: { color: '#000000', image: null } },
-            { name: 'Navy', swatch: { color: '#000080', image: null } },
-            { name: 'Grey', swatch: { color: '#808080', image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
+            { name: 'Navy', swatch: { color: SWATCH_COLORS['Navy'], image: null } },
+            { name: 'Grey', swatch: { color: SWATCH_COLORS['Grey'], image: null } },
           ],
         },
         {
@@ -1818,9 +1852,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Navy', swatch: { color: '#000080', image: null } },
-            { name: 'Coral', swatch: { color: '#FF7F50', image: null } },
-            { name: 'Black', swatch: { color: '#000000', image: null } },
+            { name: 'Navy', swatch: { color: SWATCH_COLORS['Navy'], image: null } },
+            { name: 'Coral', swatch: { color: SWATCH_COLORS['Coral'], image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
           ],
         },
         {
@@ -1860,8 +1894,8 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Grey', swatch: { color: '#808080', image: null } },
-            { name: 'Black', swatch: { color: '#000000', image: null } },
+            { name: 'Grey', swatch: { color: SWATCH_COLORS['Grey'], image: null } },
+            { name: 'Black', swatch: { color: SWATCH_COLORS['Black'], image: null } },
             { name: 'White', swatch: { color: 'oklch(97% 0 0)', image: null } },
           ],
         },
@@ -1897,9 +1931,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Geometric Blue', swatch: { color: '#4682B4', image: null } },
-            { name: 'Geometric Black', swatch: { color: '#000000', image: null } },
-            { name: 'Floral Grey', swatch: { color: '#808080', image: null } },
+            { name: 'Geometric Blue', swatch: { color: SWATCH_COLORS['Geometric Blue'], image: null } },
+            { name: 'Geometric Black', swatch: { color: SWATCH_COLORS['Geometric Black'], image: null } },
+            { name: 'Floral Grey', swatch: { color: SWATCH_COLORS['Floral Grey'], image: null } },
           ],
         },
         {
@@ -1939,9 +1973,9 @@ export async function getProducts() {
         {
           name: 'Color',
           optionValues: [
-            { name: 'Cream', swatch: { color: '#FFFDD0', image: null } },
+            { name: 'Cream', swatch: { color: SWATCH_COLORS['Cream'], image: null } },
             { name: 'Yellow', swatch: { color: 'oklch(95.2% 0.037 318.852)', image: null } },
-            { name: 'Beige', swatch: { color: '#F5F5DC', image: null } },
+            { name: 'Beige', swatch: { color: SWATCH_COLORS['Beige'], image: null } },
           ],
         },
         {

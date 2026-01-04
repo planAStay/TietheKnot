@@ -1,90 +1,242 @@
 import Breadcrumb from '@/components/breadcrumb'
 import { Divider } from '@/components/divider'
 import { Heading } from '@/components/heading'
-import { Pagination, PaginationList, PaginationNext, PaginationPage, PaginationPrevious } from '@/components/pagination'
-import ProductCard from '@/components/product-card'
-import { Text } from '@/components/text'
-import { getCollectionByHandle } from '@/data'
+import VendorCard from '@/components/vendor-card'
+import { Text, TextLink } from '@/components/text'
+import { getVendorCategories, getVendorsByCategory } from '@/data-wedding'
+import clsx from 'clsx'
+import Link from 'next/link'
 import { Metadata } from 'next'
-import { redirect } from 'next/navigation'
-import CategoryFilters2 from '../category-filters-2'
-import ProductSortDropdown from '../product-sort-dropdown'
-import StarSvg from '../star-svg'
+import { notFound } from 'next/navigation'
 
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
   const { handle } = await params
-  const collection = await getCollectionByHandle(handle)
-  if (!collection) {
+  if (handle === 'all') {
+    return { title: 'All categories', description: 'Browse all wedding vendor categories.' }
+  }
+  const category = getVendorCategories().find((c) => c.slug === handle)
+  if (!category) {
     return {
-      title: 'Collection not found',
-      description: 'The collection you are looking for does not exist.',
+      title: 'Category not found',
+      description: 'The category you are looking for does not exist.',
     }
   }
-  const { title, description } = collection
-  return { title, description }
+  const { name, description } = category
+  return { title: name, description }
 }
 
-export default async function Collection({ params }: { params: Promise<{ handle: string }> }) {
+export default async function Collection({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ handle: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
   const { handle } = await params
-  const collection = await getCollectionByHandle(handle)
-  if (!collection?.id) {
-    return redirect('/collections/all')
+  const query = await searchParams
+  const subcategorySlug = typeof query.subcategory === 'string' ? query.subcategory : undefined
+  const priceFilter = typeof query.price === 'string' ? query.price : undefined
+  const ratingFilter = typeof query.rating === 'string' ? Number(query.rating) : undefined
+  const categories = getVendorCategories()
+  if (handle === 'all') {
+    return (
+      <div className="container">
+        <Breadcrumb breadcrumbs={[{ id: 1, name: 'Home', href: '/' }]} currentPage="Categories" className="py-3.5" />
+        <Divider />
+        <div className="py-12">
+          <Heading bigger level={1} className="text-center">
+            Explore vendors
+          </Heading>
+          <Text className="mt-3 text-center text-zinc-600">Choose a category to start planning.</Text>
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {categories.map((cat) => (
+              <div key={cat.id} className="rounded-lg border border-primary/30 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+                <Text className="text-xs uppercase text-primary">{cat.subcategories.length} subcategories</Text>
+                <Heading level={3} className="text-xl font-semibold text-text">
+                  {cat.name}
+                </Heading>
+                <Text className="mt-2 text-sm text-zinc-600">{cat.description}</Text>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs text-zinc-500">
+                  {cat.subcategories.map((s) => (
+                    <span key={s.id} className="rounded-full bg-blush/50 px-2 py-1 capitalize text-text">
+                      {s.name}
+                    </span>
+                  ))}
+                </div>
+                <TextLink href={`/collections/${cat.slug}`} className="mt-4 inline-block text-sm font-semibold text-accent">
+                  View vendors
+                </TextLink>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
-  const products = collection.products
+  const category = categories.find((c) => c.slug === handle)
+  if (!category) {
+    return notFound()
+  }
+  const selectedSubcategory = category.subcategories.find((s) => s.slug === subcategorySlug)
+  let vendors = getVendorsByCategory(category.id, selectedSubcategory?.id)
+  if (priceFilter) {
+    vendors = vendors.filter((v) => v.priceRange === priceFilter)
+  }
+  if (ratingFilter) {
+    vendors = vendors.filter((v) => (v.rating ?? 0) >= ratingFilter)
+  }
   const breadcrumbs = [{ id: 1, name: 'Home', href: '/' }]
+
+  const priceOptions: string[] = ['$', '$$', '$$$']
+  const ratingOptions: number[] = [4.0, 4.5, 4.8]
+
+  const buildHref = (updates: Record<string, string | undefined>) => {
+    const params = new URLSearchParams()
+    if (subcategorySlug) params.set('subcategory', subcategorySlug)
+    if (priceFilter) params.set('price', priceFilter)
+    if (ratingFilter) params.set('rating', String(ratingFilter))
+    Object.entries(updates).forEach(([key, value]) => {
+      if (!value) {
+        params.delete(key)
+      } else {
+        params.set(key, value)
+      }
+    })
+    const qs = params.toString()
+    return qs ? `/collections/${category.slug}?${qs}` : `/collections/${category.slug}`
+  }
+
+  const clearHref = `/collections/${category.slug}`
+  const hasFilters = Boolean(subcategorySlug || priceFilter || ratingFilter)
 
   return (
     <div className="container">
       <div>
-        <Breadcrumb breadcrumbs={breadcrumbs} currentPage={collection.title} className="py-3.5" />
+        <Breadcrumb breadcrumbs={breadcrumbs} currentPage={category.name} className="py-3.5" />
 
         <Divider />
 
         <main className="">
           <div className="flex flex-col items-center py-14 text-center lg:py-20">
-            <StarSvg />
             <Heading bigger level={1} className="mt-5">
-              <span data-slot="dim">Collection</span>
+              <span data-slot="dim">Vendors in</span>
               <br />
               <span data-slot="italic" className="underline">
-                {collection.title}
+                {category.name}
               </span>
             </Heading>
-            <Text className="mt-5 max-w-xl">{collection.description}</Text>
+            <Text className="mt-3 max-w-xl">{category.description}</Text>
+            {selectedSubcategory && (
+              <div className="mt-4 rounded-full bg-champagne/50 px-3 py-1 text-sm font-semibold text-accent">
+                Showing {selectedSubcategory.name}
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-wrap justify-between gap-4">
-            <div className="flex gap-2.5">
-              <Text className="text-zinc-500">{products.length} products</Text>
-              <Text className="text-zinc-300">/</Text>
-              <ProductSortDropdown />
+          <div className="mx-auto mt-2 w-full max-w-5xl space-y-3 rounded-2xl border border-primary/30 bg-white/80 p-4 shadow-sm backdrop-blur">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <Text className="text-sm font-semibold text-text">Filters</Text>
+              {hasFilters && (
+                <Link
+                  href={clearHref}
+                  className="text-sm font-semibold text-accent hover:text-accent/80"
+                  prefetch={false}
+                >
+                  Clear all
+                </Link>
+              )}
             </div>
 
-            <CategoryFilters2 className="ml-auto" />
+            <div className="space-y-2">
+              <Text className="text-xs uppercase tracking-wide text-zinc-500">Subcategories</Text>
+              <div className="flex flex-wrap gap-2">
+                {category.subcategories.map((sub) => {
+                  const active = sub.slug === subcategorySlug
+                  return (
+                    <Link
+                      prefetch={false}
+                      key={sub.id}
+                      href={buildHref({ subcategory: active ? undefined : sub.slug })}
+                      className={clsx(
+                        'rounded-full border px-3 py-1 text-sm font-semibold transition',
+                        active
+                          ? 'border-accent/60 bg-champagne/50 text-accent shadow-sm'
+                          : 'border-primary/40 bg-white text-zinc-700 hover:border-primary/60 hover:text-primary'
+                      )}
+                    >
+                      {sub.name}
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Text className="text-xs uppercase tracking-wide text-zinc-500">Price</Text>
+                <div className="flex flex-wrap gap-2">
+                  {priceOptions.map((price) => {
+                    const active = price === priceFilter
+                    return (
+                      <Link
+                        prefetch={false}
+                        key={price}
+                        href={buildHref({ price: active ? undefined : price })}
+                        className={clsx(
+                          'rounded-full border px-3 py-1 text-sm font-semibold transition',
+                          active
+                            ? 'border-accent/60 bg-champagne/50 text-accent shadow-sm'
+                            : 'border-primary/40 bg-white text-zinc-700 hover:border-primary/60 hover:text-primary'
+                        )}
+                      >
+                        {price}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Text className="text-xs uppercase tracking-wide text-zinc-500">Rating</Text>
+                <div className="flex flex-wrap gap-2">
+                  {ratingOptions.map((rating) => {
+                    const active = rating === ratingFilter
+                    return (
+                      <Link
+                        prefetch={false}
+                        key={rating}
+                        href={buildHref({ rating: active ? undefined : String(rating) })}
+                        className={clsx(
+                          'rounded-full border px-3 py-1 text-sm font-semibold transition',
+                          active
+                            ? 'border-accent/60 bg-champagne/50 text-accent shadow-sm'
+                            : 'border-primary/40 bg-white text-zinc-700 hover:border-primary/60 hover:text-primary'
+                        )}
+                      >
+                        {rating.toFixed(1)}+
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
           </div>
 
           <Divider className="mt-5" />
 
           <div className="pt-10 pb-16 sm:pt-12 sm:pb-24">
             <section>
-              <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-7 xl:grid-cols-4">
-                {products.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-
-              <Pagination className="mx-auto mt-14 sm:mt-20">
-                <PaginationPrevious href="?page=1" />
-                <PaginationList>
-                  <PaginationPage href="?page=1" current>
-                    1
-                  </PaginationPage>
-                  <PaginationPage href="?page=2">2</PaginationPage>
-                  <PaginationPage href="?page=3">3</PaginationPage>
-                  <PaginationPage href="?page=4">4</PaginationPage>
-                </PaginationList>
-                <PaginationNext href="?page=3" />
-              </Pagination>
+              {vendors.length === 0 ? (
+                <div className="rounded-lg border border-primary/40 bg-white p-6 text-center text-zinc-600">
+                  No vendors found{selectedSubcategory ? ` for ${selectedSubcategory.name}` : ''}.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3 lg:gap-x-7 xl:grid-cols-4">
+                  {vendors.map((vendor) => (
+                    <VendorCard key={vendor.id} vendor={vendor} />
+                  ))}
+                </div>
+              )}
             </section>
           </div>
         </main>

@@ -21,7 +21,7 @@ export function Heading({
       className={clsx(
         className,
         bigger ? 'text-3xl leading-none sm:text-4xl xl:text-5xl/none' : fontSize,
-        'text font-medium *:data-[slot=dim]:text-zinc-300 *:data-[slot=italic]:font-serif *:data-[slot=italic]:font-normal *:data-[slot=italic]:italic *:data-[slot=dim]:dark:text-zinc-500'
+        'text font-medium *:data-[slot=dim]:text-text/30 *:data-[slot=italic]:font-serif *:data-[slot=italic]:font-normal *:data-[slot=italic]:italic'
       )}
     />
   )
@@ -36,7 +36,7 @@ export function Subheading({ className, fontSize = 'text-xl/8', level = 3, ...pr
       className={clsx(
         className,
         fontSize,
-        'font-medium *:data-[slot=dim]:text-zinc-300 *:data-[slot=italic]:font-serif *:data-[slot=italic]:font-normal *:data-[slot=italic]:italic *:data-[slot=dim]:dark:text-zinc-500'
+        'font-medium *:data-[slot=dim]:text-text/30 *:data-[slot=italic]:font-serif *:data-[slot=italic]:font-normal *:data-[slot=italic]:italic'
       )}
     />
   )

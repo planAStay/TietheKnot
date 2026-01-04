@@ -67,7 +67,7 @@ export function PaginationPage({
       className={clsx(
         className,
         'min-w-[2.25rem] rounded-lg before:absolute before:-inset-px before:rounded-lg',
-        current && 'before:bg-zinc-950/5 dark:before:bg-white/10'
+        current && 'before:bg-text/5'
       )}
     >
       <span className="-mx-0.5">{children}</span>
@@ -86,7 +86,7 @@ export function PaginationGap({
       {...props}
       className={clsx(
         className,
-        'w-[2.25rem] text-center text-sm/6 font-semibold text-zinc-950 select-none dark:text-white'
+        'w-[2.25rem] text-center text-sm/6 font-semibold text-text select-none'
       )}
     >
       {children}

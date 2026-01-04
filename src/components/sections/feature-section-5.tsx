@@ -10,7 +10,7 @@ const FeatureSection5 = ({ className }: FeatureSection5Props) => {
   return (
     <div className={className}>
       <div className="grid grid-cols-12">
-        <div className="col-span-12 flex flex-col justify-between bg-[#ECFF9F] sm:col-span-6 xl:col-span-4">
+        <div className="col-span-12 flex flex-col justify-between bg-secondary sm:col-span-6 xl:col-span-4">
           <div className="max-w-md p-6 pb-0 lg:p-10 lg:pb-0">
             <Heading fontSize="text-4xl/none sm:text-5xl/none xl:text-6xl/none 2xl:text-7xl/none">
               Clean, Conscious, Performance

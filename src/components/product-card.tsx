@@ -43,12 +43,12 @@ export default function ProductCard({ product, className, imageRatio = 'aspect-3
 
       {/* Category Label */}
       <div className="absolute top-3 left-3">
-        <div className="rounded-full bg-white px-3.5 py-1.5 text-xs leading-none text-zinc-900 uppercase">{vendor}</div>
+        <div className="rounded-full bg-surface px-3.5 py-1.5 text-xs leading-none text-text uppercase">{vendor}</div>
       </div>
 
       {/* Shopping Bag Icon */}
       <div className="absolute top-3 right-3">
-        <div className="rounded-full bg-white p-1.5 text-zinc-500">
+        <div className="rounded-full bg-surface p-1.5 text-text/50">
           <ShoppingBagIcon className="h-4 w-4" />
         </div>
       </div>
@@ -62,7 +62,7 @@ export default function ProductCard({ product, className, imageRatio = 'aspect-3
           </TextLink>
           <Text className="">${price.toFixed(2)}</Text>
         </div>
-        <Text className="mt-0.5 text-xs text-zinc-500">{color ?? size ?? ''}</Text>
+        <Text className="mt-0.5 text-xs text-text/50">{color ?? size ?? ''}</Text>
       </div>
     </div>
   )
