@@ -207,9 +207,9 @@ export default function GetStartedPage() {
 
             {/* Email hint */}
             <div className="mt-8">
-              <Text className="text-sm text-text/60">
+              <Link href="mailto:tietheknotlk@gmail.com" className="text-sm text-text/60 hover:text-text/80 transition-colors">
                 tietheknotlk@gmail.com
-              </Text>
+              </Link>
             </div>
 
             {/* Social Links */}
