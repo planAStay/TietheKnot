@@ -5,7 +5,7 @@ import { getVendorCategories, getAllVendors } from '@/data-wedding'
 import { useWedding } from '@/lib/wedding-context'
 import { getBudgetSummary, formatCurrency } from '@/lib/budget-manager'
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { 
   CalendarDaysIcon, 
   HeartIcon, 
@@ -60,7 +60,7 @@ export default function DashboardClient() {
     isPast: boolean
   } | null
 
-  const computeCountdown = (dateStr?: string | null): CountdownState => {
+  const computeCountdown = useCallback((dateStr?: string | null): CountdownState => {
     if (!dateStr) return null
     const target = new Date(dateStr)
     const now = new Date()
@@ -74,7 +74,7 @@ export default function DashboardClient() {
     const minutes = Math.floor((totalSeconds % 3600) / 60)
     const seconds = totalSeconds % 60
     return { days, hours, minutes, seconds, isPast: false }
-  }
+  }, [])
 
   const [countdown, setCountdown] = useState<CountdownState>(() => computeCountdown(weddingInfo.weddingDate))
   const [isEditing, setIsEditing] = useState(false)
@@ -86,7 +86,7 @@ export default function DashboardClient() {
       setCountdown(computeCountdown(weddingInfo.weddingDate))
     }, 1000)
     return () => clearInterval(id)
-  }, [weddingInfo.weddingDate])
+  }, [weddingInfo.weddingDate, computeCountdown])
 
   return (
     <div className="min-h-screen bg-background">

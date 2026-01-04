@@ -216,8 +216,7 @@ export default function AvailabilityCalendar({
               {/* Triangle overlays for partial bookings - exactly half the square diagonally */}
               {isPartialMorning && !isPastDay && (
                 <span
-                  className="absolute top-0 left-0 z-0"
-                  className="bg-amber-400"
+                  className="absolute top-0 left-0 z-0 bg-amber-400"
                   style={{
                     width: '100%',
                     height: '100%',
@@ -227,8 +226,7 @@ export default function AvailabilityCalendar({
               )}
               {isPartialEvening && !isPastDay && (
                 <span
-                  className="absolute bottom-0 right-0 z-0"
-                  className="bg-purple-500"
+                  className="absolute bottom-0 right-0 z-0 bg-purple-500"
                   style={{
                     width: '100%',
                     height: '100%',

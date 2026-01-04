@@ -106,7 +106,7 @@ export default function LandingPage() {
             Creating Unforgettable Moments
           </Heading>
           <Text className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-text/75">
-            We believe every wedding should be as unique as your love story. With access to Sri Lanka\'s finest wedding professionals and comprehensive planning tools, we transform the journey from "Yes!" to "I do" into an experience filled with joy, not stress.
+            We believe every wedding should be as unique as your love story. With access to Sri Lanka&apos;s finest wedding professionals and comprehensive planning tools, we transform the journey from &quot;Yes!&quot; to &quot;I do&quot; into an experience filled with joy, not stress.
           </Text>
         </div>
       </section>
@@ -120,7 +120,7 @@ export default function LandingPage() {
               Everything You Need for Your Big Day
                   </Heading>
             <Text className="mx-auto mt-4 max-w-2xl text-lg text-text/75">
-              From the first consultation to the last dance, we\'re with you every step of the way
+              From the first consultation to the last dance, we&apos;re with you every step of the way
             </Text>
                 </div>
 
@@ -234,7 +234,7 @@ export default function LandingPage() {
               Why TieTheKnot?
             </Heading>
             <Text className="text-lg leading-relaxed text-text/80">
-              Planning your wedding should be exciting, not overwhelming. We\'ve built the ultimate platform to make your journey seamless.
+              Planning your wedding should be exciting, not overwhelming. We&apos;ve built the ultimate platform to make your journey seamless.
             </Text>
 
             <div className="space-y-4">
@@ -428,10 +428,10 @@ export default function LandingPage() {
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-semibold uppercase tracking-wider text-secondary">Simple Process</p>
             <Heading level={2} className="mt-3 text-4xl font-bold text-text sm:text-5xl">
-              From YES to "I DO"
+              From YES to &quot;I DO&quot;
               </Heading>
             <Text className="mx-auto mt-4 max-w-2xl text-lg text-text/80">
-              Our streamlined platform makes wedding planning effortless. Here\'s how it works:
+              Our streamlined platform makes wedding planning effortless. Here&apos;s how it works:
               </Text>
           </div>
 
@@ -571,7 +571,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Quote text */}
-                <Text className="mb-6 italic leading-relaxed text-text/80">"{testimonial.quote}"</Text>
+                <Text className="mb-6 italic leading-relaxed text-text/80">&quot;{testimonial.quote}&quot;</Text>
 
                 {/* Author info */}
                 <div className="flex items-center gap-4 border-t border-primary/20 pt-6">
@@ -625,7 +625,7 @@ export default function LandingPage() {
               Everything You Need in One Place
           </Heading>
             <Text className="mx-auto mt-4 max-w-2xl text-lg text-text/75">
-              Our comprehensive toolkit keeps you organized and on track from engagement to "I do"
+              Our comprehensive toolkit keeps you organized and on track from engagement to &quot;I do&quot;
           </Text>
         </div>
 
@@ -754,7 +754,7 @@ export default function LandingPage() {
             
             {/* Main heading */}
             <Heading level={2} className="text-5xl font-bold leading-tight text-text sm:text-6xl lg:text-7xl">
-              Let's Create Your<br />
+              Let&apos;s Create Your<br />
               <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                 Perfect Wedding
               </span>
@@ -762,7 +762,7 @@ export default function LandingPage() {
             
             {/* Subtext */}
             <Text className="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-text/80">
-              Join over 1,200 couples who\'ve created unforgettable celebrations with TieTheKnot. Start planning your perfect day with trusted professionals and powerful planning tools—completely free.
+              Join over 1,200 couples who&apos;ve created unforgettable celebrations with TieTheKnot. Start planning your perfect day with trusted professionals and powerful planning tools—completely free.
             </Text>
 
             {/* CTA buttons */}

@@ -242,7 +242,7 @@ export default function GetStartedPage() {
         {/* Bottom tagline */}
         <div className="absolute bottom-8 left-0 right-0 text-center">
           <Text className="text-xs font-medium uppercase tracking-[0.3em] text-text/60">
-            Sri Lanka's Premier Wedding Platform
+            Sri Lanka&apos;s Premier Wedding Platform
           </Text>
         </div>
       </div>

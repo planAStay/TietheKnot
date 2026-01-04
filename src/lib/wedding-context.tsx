@@ -23,7 +23,7 @@ interface WeddingContextValue {
   favoriteVendors: TVendor[]
   toggleFavorite: (handle: string) => void
   quotations: TQuotation[]
-  addQuotation: (payload: Omit<TQuotation, 'id' | 'status' | 'createdAt' | 'vendorName'>) => void
+  addQuotation: (payload: Omit<TQuotation, 'id' | 'status' | 'createdAt'>) => void
   // Budget
   budgetCategories: TBudgetCategory[]
   budgetExpenses: TBudgetExpense[]
@@ -72,7 +72,7 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
     setFavoriteVendors(getFavoriteVendors())
   }
 
-  const handleAddQuotation = (payload: Omit<TQuotation, 'id' | 'status' | 'createdAt' | 'vendorName'>) => {
+  const handleAddQuotation = (payload: Omit<TQuotation, 'id' | 'status' | 'createdAt'>) => {
     const next = addQuotation(payload)
     setQuotations(next)
   }
@@ -127,7 +127,23 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
       deleteBudgetExpense: handleDeleteBudgetExpense,
       refreshBudget,
     }),
-    [weddingInfo, favorites, favoriteVendors, quotations, budgetCategories, budgetExpenses]
+    [
+      weddingInfo,
+      favorites,
+      favoriteVendors,
+      quotations,
+      budgetCategories,
+      budgetExpenses,
+      handleToggleFavorite,
+      handleAddQuotation,
+      handleAddBudgetCategory,
+      handleUpdateBudgetCategory,
+      handleDeleteBudgetCategory,
+      handleAddBudgetExpense,
+      handleUpdateBudgetExpense,
+      handleDeleteBudgetExpense,
+      refreshBudget,
+    ]
   )
 
   return <WeddingContext.Provider value={value}>{children}</WeddingContext.Provider>
