@@ -165,14 +165,14 @@ export default function GetStartedPage() {
             {/* CTA Buttons */}
             <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
               <Link
-                href="https://www.instagram.com/tietheknot.lk/"
+                href="https://www.figma.com/deck/VqAu4SOUOfqVOJchXZNmnm/TieTheKnot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full border border-accent/50 bg-gradient-to-r from-primary to-rose-50 px-8 py-4 text-sm font-semibold text-text shadow-xl shadow-accent/20 transition-all duration-500 hover:shadow-accent/40 hover:scale-[1.02] sm:px-10 sm:py-5 sm:text-base"
                 aria-label="Check our portfolio on Instagram"
               >
                 <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/35 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                <span className="relative">Portfolio</span>
+                <span className="relative">Profile</span>
                 <svg
                   className="relative h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
                   fill="none"
@@ -185,7 +185,9 @@ export default function GetStartedPage() {
               </Link>
 
               <Link
-                href="/contact"
+                href="https://api.whatsapp.com/send/?phone=94701045483&text&type=phone_number&app_absent=0"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full border border-accent/50 bg-gradient-to-r from-primary to-rose-50 px-8 py-4 text-sm font-semibold text-text shadow-xl shadow-accent/20 transition-all duration-500 hover:shadow-accent/40 hover:scale-[1.02] sm:px-10 sm:py-5 sm:text-base"
               >
                 {/* Button shine effect */}
