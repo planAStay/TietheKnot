@@ -185,7 +185,7 @@ export default function GetStartedPage() {
               </Link>
 
               <Link
-                href="https://api.whatsapp.com/send/?phone=94719468758&text&type=phone_number&app_absent=0"
+                href="https://api.whatsapp.com/send/?phone=94765776617&text&type=phone_number&app_absent=0"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full border border-accent/50 bg-gradient-to-r from-primary to-rose-50 px-8 py-4 text-sm font-semibold text-text shadow-xl shadow-accent/20 transition-all duration-500 hover:shadow-accent/40 hover:scale-[1.02] sm:px-10 sm:py-5 sm:text-base"
