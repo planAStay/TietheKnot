@@ -12,9 +12,22 @@ import {
   updateBudgetExpense as updateBudgetExpenseFn,
   deleteBudgetExpense as deleteBudgetExpenseFn,
 } from '@/lib/budget-manager'
+import {
+  getTimelineMilestones,
+  getChecklistItems,
+  addTimelineMilestone as addTimelineMilestoneFn,
+  updateTimelineMilestone as updateTimelineMilestoneFn,
+  deleteTimelineMilestone as deleteTimelineMilestoneFn,
+  addChecklistItem as addChecklistItemFn,
+  updateChecklistItem as updateChecklistItemFn,
+  deleteChecklistItem as deleteChecklistItemFn,
+  toggleChecklistItem as toggleChecklistItemFn,
+  recalculateAllMilestoneDates,
+  initializeDefaultChecklistItems,
+} from '@/lib/timeline-manager'
 import { readStorage, writeStorage } from '@/lib/local-storage'
-import { TFavorite, TQuotation, TWeddingInfo, TVendor, TBudgetCategory, TBudgetExpense } from '@/type'
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { TFavorite, TQuotation, TWeddingInfo, TVendor, TBudgetCategory, TBudgetExpense, TTimelineMilestone, TChecklistItem } from '@/type'
+import React, { createContext, useContext, useCallback, useEffect, useMemo, useState } from 'react'
 
 interface WeddingContextValue {
   weddingInfo: TWeddingInfo
@@ -34,6 +47,17 @@ interface WeddingContextValue {
   updateBudgetExpense: (expenseId: string, updates: Partial<Omit<TBudgetExpense, 'id'>>) => void
   deleteBudgetExpense: (expenseId: string) => void
   refreshBudget: () => void
+  // Timeline & Checklist
+  timelineMilestones: TTimelineMilestone[]
+  checklistItems: TChecklistItem[]
+  addMilestone: (milestone: Omit<TTimelineMilestone, 'id'>) => void
+  updateMilestone: (milestoneId: string, updates: Partial<Omit<TTimelineMilestone, 'id'>>) => void
+  deleteMilestone: (milestoneId: string) => void
+  addChecklistItem: (item: Omit<TChecklistItem, 'id'>) => void
+  updateChecklistItem: (itemId: string, updates: Partial<Omit<TChecklistItem, 'id'>>) => void
+  deleteChecklistItem: (itemId: string) => void
+  toggleChecklistItem: (itemId: string) => void
+  refreshTimeline: () => void
 }
 
 const WeddingContext = createContext<WeddingContextValue | undefined>(undefined)
@@ -47,24 +71,57 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
   const [quotations, setQuotations] = useState<TQuotation[]>([])
   const [budgetCategories, setBudgetCategories] = useState<TBudgetCategory[]>([])
   const [budgetExpenses, setBudgetExpenses] = useState<TBudgetExpense[]>([])
+  const [timelineMilestones, setTimelineMilestones] = useState<TTimelineMilestone[]>([])
+  const [checklistItems, setChecklistItems] = useState<TChecklistItem[]>([])
 
   const refreshBudget = () => {
     setBudgetCategories(getBudgetCategories())
     setBudgetExpenses(getBudgetExpenses())
   }
 
+  const refreshTimeline = () => {
+    setTimelineMilestones(getTimelineMilestones())
+    setChecklistItems(getChecklistItems())
+  }
+
   useEffect(() => {
-    setWeddingInfoState(readStorage<TWeddingInfo>(WEDDING_KEY, {}))
+    const initialWeddingInfo = readStorage<TWeddingInfo>(WEDDING_KEY, {})
+    setWeddingInfoState(initialWeddingInfo)
     setFavorites(getFavorites())
     setFavoriteVendors(getFavoriteVendors())
     setQuotations(getQuotations())
     refreshBudget()
+
+    // Initialize timeline milestones and checklist items
+    const milestones = getTimelineMilestones()
+    setTimelineMilestones(milestones)
+
+    // Recalculate milestone dates if wedding date exists
+    if (initialWeddingInfo.weddingDate) {
+      recalculateAllMilestoneDates(initialWeddingInfo.weddingDate)
+      const updatedMilestones = getTimelineMilestones()
+      setTimelineMilestones(updatedMilestones)
+
+      // Initialize default checklist items if none exist
+      initializeDefaultChecklistItems(initialWeddingInfo.weddingDate)
+      const items = getChecklistItems()
+      setChecklistItems(items)
+    } else {
+      const items = getChecklistItems()
+      setChecklistItems(items)
+    }
   }, [])
 
-  const setWeddingInfo = (info: TWeddingInfo) => {
+  const setWeddingInfo = useCallback((info: TWeddingInfo) => {
     setWeddingInfoState(info)
     writeStorage(WEDDING_KEY, info)
-  }
+
+    // If wedding date changed, recalculate milestone dates
+    if (info.weddingDate) {
+      recalculateAllMilestoneDates(info.weddingDate)
+      refreshTimeline()
+    }
+  }, [refreshTimeline])
 
   const handleToggleFavorite = (handle: string) => {
     const next = toggleFavorite(handle)
@@ -108,6 +165,52 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
     refreshBudget()
   }
 
+  // Timeline & Checklist handlers
+  const handleAddMilestone = (milestone: Omit<TTimelineMilestone, 'id'>) => {
+    addTimelineMilestoneFn(milestone)
+    refreshTimeline()
+    // Recalculate dates if wedding date exists
+    if (weddingInfo.weddingDate) {
+      recalculateAllMilestoneDates(weddingInfo.weddingDate)
+      refreshTimeline()
+    }
+  }
+
+  const handleUpdateMilestone = (milestoneId: string, updates: Partial<Omit<TTimelineMilestone, 'id'>>) => {
+    updateTimelineMilestoneFn(milestoneId, updates)
+    refreshTimeline()
+    // Recalculate dates if wedding date exists and dates were updated
+    if (weddingInfo.weddingDate && (updates.monthsBefore || updates.customStartDate || updates.customEndDate)) {
+      recalculateAllMilestoneDates(weddingInfo.weddingDate)
+      refreshTimeline()
+    }
+  }
+
+  const handleDeleteMilestone = (milestoneId: string) => {
+    deleteTimelineMilestoneFn(milestoneId)
+    refreshTimeline()
+  }
+
+  const handleAddChecklistItem = (item: Omit<TChecklistItem, 'id'>) => {
+    addChecklistItemFn(item)
+    refreshTimeline()
+  }
+
+  const handleUpdateChecklistItem = (itemId: string, updates: Partial<Omit<TChecklistItem, 'id'>>) => {
+    updateChecklistItemFn(itemId, updates)
+    refreshTimeline()
+  }
+
+  const handleDeleteChecklistItem = (itemId: string) => {
+    deleteChecklistItemFn(itemId)
+    refreshTimeline()
+  }
+
+  const handleToggleChecklistItem = (itemId: string) => {
+    toggleChecklistItemFn(itemId)
+    refreshTimeline()
+  }
+
   const value = useMemo(
     () => ({
       weddingInfo,
@@ -126,6 +229,16 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
       updateBudgetExpense: handleUpdateBudgetExpense,
       deleteBudgetExpense: handleDeleteBudgetExpense,
       refreshBudget,
+      timelineMilestones,
+      checklistItems,
+      addMilestone: handleAddMilestone,
+      updateMilestone: handleUpdateMilestone,
+      deleteMilestone: handleDeleteMilestone,
+      addChecklistItem: handleAddChecklistItem,
+      updateChecklistItem: handleUpdateChecklistItem,
+      deleteChecklistItem: handleDeleteChecklistItem,
+      toggleChecklistItem: handleToggleChecklistItem,
+      refreshTimeline,
     }),
     [
       weddingInfo,
@@ -134,6 +247,8 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
       quotations,
       budgetCategories,
       budgetExpenses,
+      timelineMilestones,
+      checklistItems,
       handleToggleFavorite,
       handleAddQuotation,
       handleAddBudgetCategory,
@@ -143,6 +258,15 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
       handleUpdateBudgetExpense,
       handleDeleteBudgetExpense,
       refreshBudget,
+      handleAddMilestone,
+      handleUpdateMilestone,
+      handleDeleteMilestone,
+      handleAddChecklistItem,
+      handleUpdateChecklistItem,
+      handleDeleteChecklistItem,
+      handleToggleChecklistItem,
+      refreshTimeline,
+      setWeddingInfo,
     ]
   )
 

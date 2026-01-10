@@ -132,3 +132,32 @@ export interface TDayAvailability {
   morningStatus?: TBookingStatus
   eveningStatus?: TBookingStatus
 }
+
+// Timeline and Checklist types
+export type TTaskPriority = 'low' | 'medium' | 'high' | 'urgent'
+
+export interface TTimelineMilestone {
+  id: string
+  title: string
+  description?: string
+  monthsBefore: number // Default relative timing (e.g., 12 means 12 months before)
+  customStartDate?: string // Optional override for start date
+  customEndDate?: string // Optional override for end date
+  startDate?: string // Calculated start date
+  endDate?: string // Calculated end date
+  color?: string // Optional color for visual distinction
+}
+
+export interface TChecklistItem {
+  id: string
+  title: string
+  description?: string
+  isCompleted: boolean
+  dueDate?: string // ISO date string
+  milestoneId: string // Parent milestone
+  category?: string // Optional category (e.g., "Venue", "Photography")
+  priority: TTaskPriority
+  assignedTo?: string // Optional (e.g., "Partner 1", "Partner 2", "Both")
+  notes?: string
+  reminderDate?: string // Optional reminder date (ISO date string)
+}

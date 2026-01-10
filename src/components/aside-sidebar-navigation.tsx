@@ -50,6 +50,12 @@ const AsideSidebarNavigation = ({ className }: Props) => {
               </Disclosure>
 
               <TextLink
+                href="/my-wedding/budget"
+                className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-medium hover:bg-zinc-50"
+              >
+                Budget Planner
+              </TextLink>
+              <TextLink
                 href="/collections/all"
                 className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-medium hover:bg-zinc-50"
               >

@@ -2,15 +2,8 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // Allow access only to the get-started page
-  if (pathname === '/get-started') {
-    return NextResponse.next()
-  }
-
-  // Redirect all other requests to get-started
-  return NextResponse.redirect(new URL('/get-started', request.url))
+  // Allow all requests to pass through
+  return NextResponse.next()
 }
 
 export const config = {
