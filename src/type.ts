@@ -161,3 +161,50 @@ export interface TChecklistItem {
   notes?: string
   reminderDate?: string // Optional reminder date (ISO date string)
 }
+
+// Guest Management types
+export type TGuestSide = 'bride' | 'groom' | 'mutual'
+export type TRsvpStatus = 'draft' | 'invited' | 'attending' | 'declined' | 'no-response'
+export type TPriorityTier = 'tier1' | 'tier2'
+
+export type TRelationshipLabel =
+  | 'Extended Family'
+  | 'Immediate Family'
+  | 'College Friends'
+  | 'Work'
+  | 'High School Friends'
+  | 'Childhood Friends'
+  | 'Out of Town'
+  | 'Vendor'
+  | 'Other'
+
+export interface TGuest {
+  id: string
+  name: string
+  email?: string
+  phone?: string
+  side: TGuestSide
+  rsvpStatus: TRsvpStatus
+  priorityTier: TPriorityTier
+  relationshipLabels: TRelationshipLabel[]
+  householdId?: string
+  guestCount: number // Total number of people (1 for single guest, 2+ for families/groups)
+  invitedAt?: string // ISO date string
+  respondedAt?: string // ISO date string
+  openedInviteAt?: string // ISO date string - when invite link was opened
+  viewedRsvpAt?: string // ISO date string - when RSVP page was viewed
+  thankYouSent: boolean
+  thankYouSentAt?: string // ISO date string
+  lastReminderSentAt?: string // ISO date string
+  notes?: string
+  createdAt: string // ISO date string
+  updatedAt: string // ISO date string
+}
+
+export interface TGuestHousehold {
+  id: string
+  name: string
+  memberIds: string[] // Array of guest IDs
+  createdAt: string // ISO date string
+  updatedAt: string // ISO date string
+}

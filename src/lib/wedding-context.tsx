@@ -25,8 +25,20 @@ import {
   recalculateAllMilestoneDates,
   initializeDefaultChecklistItems,
 } from '@/lib/timeline-manager'
+import {
+  getGuests,
+  getHouseholds,
+  addGuest as addGuestFn,
+  updateGuest as updateGuestFn,
+  deleteGuest as deleteGuestFn,
+  createHousehold as createHouseholdFn,
+  updateHousehold as updateHouseholdFn,
+  deleteHousehold as deleteHouseholdFn,
+  addToHousehold as addToHouseholdFn,
+  removeFromHousehold as removeFromHouseholdFn,
+} from '@/lib/guest-manager'
 import { readStorage, writeStorage } from '@/lib/local-storage'
-import { TFavorite, TQuotation, TWeddingInfo, TVendor, TBudgetCategory, TBudgetExpense, TTimelineMilestone, TChecklistItem } from '@/type'
+import { TFavorite, TQuotation, TWeddingInfo, TVendor, TBudgetCategory, TBudgetExpense, TTimelineMilestone, TChecklistItem, TGuest, TGuestHousehold } from '@/type'
 import React, { createContext, useContext, useCallback, useEffect, useMemo, useState } from 'react'
 
 interface WeddingContextValue {
@@ -58,6 +70,18 @@ interface WeddingContextValue {
   deleteChecklistItem: (itemId: string) => void
   toggleChecklistItem: (itemId: string) => void
   refreshTimeline: () => void
+  // Guests
+  guests: TGuest[]
+  households: TGuestHousehold[]
+  addGuest: (guest: Omit<TGuest, 'id' | 'createdAt' | 'updatedAt'>) => void
+  updateGuest: (guestId: string, updates: Partial<Omit<TGuest, 'id' | 'createdAt'>>) => void
+  deleteGuest: (guestId: string) => void
+  createHousehold: (name: string, memberIds?: string[]) => void
+  updateHousehold: (householdId: string, updates: Partial<Omit<TGuestHousehold, 'id' | 'createdAt'>>) => void
+  deleteHousehold: (householdId: string) => void
+  addToHousehold: (householdId: string, guestId: string) => void
+  removeFromHousehold: (householdId: string, guestId: string) => void
+  refreshGuests: () => void
 }
 
 const WeddingContext = createContext<WeddingContextValue | undefined>(undefined)
@@ -73,6 +97,8 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
   const [budgetExpenses, setBudgetExpenses] = useState<TBudgetExpense[]>([])
   const [timelineMilestones, setTimelineMilestones] = useState<TTimelineMilestone[]>([])
   const [checklistItems, setChecklistItems] = useState<TChecklistItem[]>([])
+  const [guests, setGuests] = useState<TGuest[]>([])
+  const [households, setHouseholds] = useState<TGuestHousehold[]>([])
 
   const refreshBudget = () => {
     setBudgetCategories(getBudgetCategories())
@@ -82,6 +108,11 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
   const refreshTimeline = () => {
     setTimelineMilestones(getTimelineMilestones())
     setChecklistItems(getChecklistItems())
+  }
+
+  const refreshGuests = () => {
+    setGuests(getGuests())
+    setHouseholds(getHouseholds())
   }
 
   useEffect(() => {
@@ -110,6 +141,9 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
       const items = getChecklistItems()
       setChecklistItems(items)
     }
+    
+    // Initialize guests and households
+    refreshGuests()
   }, [])
 
   const setWeddingInfo = useCallback((info: TWeddingInfo) => {
@@ -211,6 +245,47 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
     refreshTimeline()
   }
 
+  // Guest handlers
+  const handleAddGuest = (guest: Omit<TGuest, 'id' | 'createdAt' | 'updatedAt'>) => {
+    addGuestFn(guest)
+    refreshGuests()
+  }
+
+  const handleUpdateGuest = (guestId: string, updates: Partial<Omit<TGuest, 'id' | 'createdAt'>>) => {
+    updateGuestFn(guestId, updates)
+    refreshGuests()
+  }
+
+  const handleDeleteGuest = (guestId: string) => {
+    deleteGuestFn(guestId)
+    refreshGuests()
+  }
+
+  const handleCreateHousehold = (name: string, memberIds?: string[]) => {
+    createHouseholdFn(name, memberIds || [])
+    refreshGuests()
+  }
+
+  const handleUpdateHousehold = (householdId: string, updates: Partial<Omit<TGuestHousehold, 'id' | 'createdAt'>>) => {
+    updateHouseholdFn(householdId, updates)
+    refreshGuests()
+  }
+
+  const handleDeleteHousehold = (householdId: string) => {
+    deleteHouseholdFn(householdId)
+    refreshGuests()
+  }
+
+  const handleAddToHousehold = (householdId: string, guestId: string) => {
+    addToHouseholdFn(householdId, guestId)
+    refreshGuests()
+  }
+
+  const handleRemoveFromHousehold = (householdId: string, guestId: string) => {
+    removeFromHouseholdFn(householdId, guestId)
+    refreshGuests()
+  }
+
   const value = useMemo(
     () => ({
       weddingInfo,
@@ -239,6 +314,17 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
       deleteChecklistItem: handleDeleteChecklistItem,
       toggleChecklistItem: handleToggleChecklistItem,
       refreshTimeline,
+      guests,
+      households,
+      addGuest: handleAddGuest,
+      updateGuest: handleUpdateGuest,
+      deleteGuest: handleDeleteGuest,
+      createHousehold: handleCreateHousehold,
+      updateHousehold: handleUpdateHousehold,
+      deleteHousehold: handleDeleteHousehold,
+      addToHousehold: handleAddToHousehold,
+      removeFromHousehold: handleRemoveFromHousehold,
+      refreshGuests,
     }),
     [
       weddingInfo,
@@ -249,6 +335,8 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
       budgetExpenses,
       timelineMilestones,
       checklistItems,
+      guests,
+      households,
       handleToggleFavorite,
       handleAddQuotation,
       handleAddBudgetCategory,
@@ -266,6 +354,15 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
       handleDeleteChecklistItem,
       handleToggleChecklistItem,
       refreshTimeline,
+      handleAddGuest,
+      handleUpdateGuest,
+      handleDeleteGuest,
+      handleCreateHousehold,
+      handleUpdateHousehold,
+      handleDeleteHousehold,
+      handleAddToHousehold,
+      handleRemoveFromHousehold,
+      refreshGuests,
       setWeddingInfo,
     ]
   )

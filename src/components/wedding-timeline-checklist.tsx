@@ -1,97 +1,90 @@
 'use client'
 
 import { useWedding } from '@/lib/wedding-context'
-import { getMilestoneProgress, getOverallProgress, getOverdueTasks, getUpcomingTasks, calculateMilestoneDates } from '@/lib/timeline-manager'
-import { TTimelineMilestone, TChecklistItem, TTaskPriority } from '@/type'
+import { getMilestoneProgress, getOverallProgress, calculateMilestoneDates } from '@/lib/timeline-manager'
+import { getBudgetSummary, formatCurrency } from '@/lib/budget-manager'
+import { getAllVendors, getVendorCategories } from '@/data-wedding'
+import { TTimelineMilestone, TChecklistItem } from '@/type'
 import clsx from 'clsx'
 import { useState, useMemo, useEffect } from 'react'
 import {
   CheckCircleIcon,
-  ClockIcon,
-  ExclamationTriangleIcon,
   PlusIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
   PencilIcon,
   TrashIcon,
   CalendarIcon,
+  HomeIcon,
+  PaintBrushIcon,
+  UserGroupIcon,
+  BanknotesIcon,
+  CameraIcon,
+  EnvelopeIcon,
+  HeartIcon,
+  ArrowRightIcon,
+  ChartPieIcon,
   SparklesIcon,
-  FunnelIcon,
 } from '@heroicons/react/24/outline'
-import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid'
+import { CheckCircleIcon as CheckCircleIconSolid, HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
 import { Dialog, DialogTitle, DialogBody, DialogActions, DialogDescription } from './dialog'
 import { Button } from './button'
 import { Input } from './input'
 import { Textarea } from './textarea'
+import Image from 'next/image'
+import Link from 'next/link'
 
 interface TaskFormData {
   title: string
   description: string
   dueDate: string
   category: string
-  priority: TTaskPriority
+  priority: 'low' | 'medium' | 'high' | 'urgent'
   assignedTo: string
   notes: string
 }
 
-const priorityConfig = {
-  low: { 
-    color: 'bg-gradient-to-r from-blue-500 to-cyan-500', 
-    text: 'text-blue-600 dark:text-blue-400',
-    bg: 'bg-blue-50 dark:bg-blue-950/30',
-    ring: 'ring-blue-500/20',
+// Map task categories to icons and related vendor categories with smart sub-task suggestions
+const getTaskCategoryConfig = () => ({
+  'Venue': {
+    icon: <HomeIcon className="h-6 w-6" />,
+    vendorCategory: 'venues',
+    getSubTasks: () => ['Research venues in your area', 'Visit top 3 venues', 'Compare packages and pricing', 'Book your venue']
   },
-  medium: { 
-    color: 'bg-gradient-to-r from-amber-500 to-yellow-500', 
-    text: 'text-amber-600 dark:text-amber-400',
-    bg: 'bg-amber-50 dark:bg-amber-950/30',
-    ring: 'ring-amber-500/20',
+  'Budget': {
+    icon: <BanknotesIcon className="h-6 w-6" />,
+    getSubTasks: () => ['Research average costs', 'Decide which vendors you\'ll need', 'Set your goal budget']
   },
-  high: { 
-    color: 'bg-gradient-to-r from-orange-500 to-red-500', 
-    text: 'text-orange-600 dark:text-orange-400',
-    bg: 'bg-orange-50 dark:bg-orange-950/30',
-    ring: 'ring-orange-500/20',
+  'Vibe': {
+    icon: <PaintBrushIcon className="h-6 w-6" />,
+    getSubTasks: () => ['Define your wedding style', 'Choose color palette', 'Select theme inspiration', 'Create mood board']
   },
-  urgent: { 
-    color: 'bg-gradient-to-r from-red-500 to-pink-500', 
-    text: 'text-red-600 dark:text-red-400',
-    bg: 'bg-red-50 dark:bg-red-950/30',
-    ring: 'ring-red-500/20',
+  'Guest List': {
+    icon: <UserGroupIcon className="h-6 w-6" />,
+    getSubTasks: () => ['Create initial guest list', 'Collect addresses', 'Organize by category (family, friends, etc.)', 'Send save-the-dates']
   },
-}
+  'Photography': {
+    icon: <CameraIcon className="h-6 w-6" />,
+    vendorCategory: 'photography-and-videography',
+    getSubTasks: () => ['Research photographers', 'View portfolios', 'Book photographer and videographer', 'Schedule engagement shoot']
+  },
+  'Invitations': {
+    icon: <EnvelopeIcon className="h-6 w-6" />,
+    vendorCategory: 'stationery-and-invitations',
+    getSubTasks: () => ['Design invitations', 'Order samples', 'Finalize and order', 'Mail invitations']
+  },
+})
 
-const milestoneGradients: Record<string, { from: string; via: string; to: string; dot: string }> = {
-  blue: { 
-    from: 'from-blue-500/20 via-blue-400/15', 
-    via: 'via-blue-400/15',
-    to: 'to-indigo-500/10', 
-    dot: 'bg-gradient-to-br from-blue-400 to-blue-600' 
-  },
-  purple: { 
-    from: 'from-purple-500/20 via-purple-400/15', 
-    via: 'via-purple-400/15',
-    to: 'to-pink-500/10', 
-    dot: 'bg-gradient-to-br from-purple-400 to-purple-600' 
-  },
-  pink: { 
-    from: 'from-pink-500/20 via-rose-400/15', 
-    via: 'via-rose-400/15',
-    to: 'to-fuchsia-500/10', 
-    dot: 'bg-gradient-to-br from-pink-400 to-rose-600' 
-  },
-  orange: { 
-    from: 'from-orange-500/20 via-amber-400/15', 
-    via: 'via-amber-400/15',
-    to: 'to-yellow-500/10', 
-    dot: 'bg-gradient-to-br from-orange-400 to-orange-600' 
-  },
-  red: { 
-    from: 'from-red-500/20 via-rose-400/15', 
-    via: 'via-rose-400/15',
-    to: 'to-pink-500/10', 
-    dot: 'bg-gradient-to-br from-red-400 to-red-600' 
-  },
+// Get default sub-tasks based on task category or title
+function getSubTasksForTask(task: TChecklistItem): string[] {
+  const categoryMap = getTaskCategoryConfig()
+  const category = task.category || task.title
+  
+  for (const [key, value] of Object.entries(categoryMap)) {
+    if (category.toLowerCase().includes(key.toLowerCase()) || task.title.toLowerCase().includes(key.toLowerCase())) {
+      return value.getSubTasks()
+    }
+  }
+  // Default sub-tasks
+  return ['Research options', 'Compare vendors', 'Make final decision', 'Follow up']
 }
 
 export default function WeddingTimelineChecklist() {
@@ -103,8 +96,15 @@ export default function WeddingTimelineChecklist() {
     updateChecklistItem,
     deleteChecklistItem,
     toggleChecklistItem,
+    budgetCategories,
+    budgetExpenses,
+    favoriteVendors,
+    favorites,
+    toggleFavorite,
   } = useWedding()
 
+  const [selectedTask, setSelectedTask] = useState<TChecklistItem | null>(null)
+  const [selectedPhase, setSelectedPhase] = useState<number | null>(null) // Track selected phase (1-4)
   const [editingTask, setEditingTask] = useState<TChecklistItem | null>(null)
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false)
   const [selectedMilestoneId, setSelectedMilestoneId] = useState<string | null>(null)
@@ -118,38 +118,16 @@ export default function WeddingTimelineChecklist() {
     notes: '',
   })
 
-  // Expand first milestone by default
-  const [expanded, setExpanded] = useState<Set<string>>(() => {
-    if (timelineMilestones.length > 0) {
-      return new Set([timelineMilestones[0].id])
-    }
-    return new Set<string>()
-  })
+  const allVendors = getAllVendors()
+  const categories = getVendorCategories()
+  const totalBudget = weddingInfo.totalBudget || 0
+  const budgetSummary = getBudgetSummary(budgetCategories, totalBudget)
 
-  // Update expanded state when milestones change (if empty)
-  useEffect(() => {
-    if (timelineMilestones.length > 0 && expanded.size === 0) {
-      setExpanded(new Set([timelineMilestones[0].id]))
-    }
-  }, [timelineMilestones, expanded])
-
-  const toggleMilestone = (milestoneId: string) => {
-    setExpanded((prev) => {
-      const next = new Set(prev)
-      if (next.has(milestoneId)) {
-        next.delete(milestoneId)
-      } else {
-        next.add(milestoneId)
-      }
-      return next
-    })
-  }
-
-  // Calculate milestone dates based on wedding date
+  // Calculate milestone dates and map to 4-phase structure
   const milestonesWithDates = useMemo(() => {
-    if (!weddingInfo.weddingDate) return timelineMilestones
+    if (!weddingInfo.weddingDate) return timelineMilestones.slice(0, 4)
 
-    return timelineMilestones.map((milestone) => {
+    const withDates = timelineMilestones.map((milestone) => {
       const dates = milestone.startDate && milestone.endDate
         ? { startDate: milestone.startDate, endDate: milestone.endDate }
         : calculateMilestoneDates(milestone, weddingInfo.weddingDate!)
@@ -160,20 +138,87 @@ export default function WeddingTimelineChecklist() {
         endDate: dates.endDate,
       }
     })
+
+    // Find milestones that match our 4-phase structure
+    // Phase 1 (0-1 month): monthsBefore: 1 (has 5 tasks)
+    // Phase 2 (1-3 months): monthsBefore: 3 (has 6 tasks) - "3-1 Months Before"
+    // Phase 3 (3-6 months): monthsBefore: 6 (has 6 tasks) - "6-3 Months Before"
+    // Phase 4 (6-12 months): monthsBefore: 12 (has 6 tasks) - "12-6 Months Before"
+    
+    const phase1 = withDates.find(m => (m.monthsBefore || 0) === 1)
+      || withDates.find(m => (m.monthsBefore || 0) >= 0.25 && (m.monthsBefore || 0) < 1)
+      || withDates[3] || withDates[0]
+    
+    const phase2 = withDates.find(m => (m.monthsBefore || 0) === 3)
+      || withDates.find(m => (m.monthsBefore || 0) >= 1 && (m.monthsBefore || 0) < 3 && (m.monthsBefore || 0) !== 1)
+      || withDates[2] || withDates[1] || withDates[0]
+    
+    const phase3 = withDates.find(m => (m.monthsBefore || 0) === 6)
+      || withDates.find(m => (m.monthsBefore || 0) >= 3 && (m.monthsBefore || 0) < 6 && (m.monthsBefore || 0) !== 3)
+      || withDates[1] || withDates[2] || withDates[0]
+    
+    const phase4 = withDates.find(m => (m.monthsBefore || 0) === 12)
+      || withDates.find(m => (m.monthsBefore || 0) >= 6 && (m.monthsBefore || 0) <= 12 && (m.monthsBefore || 0) !== 6)
+      || withDates[0] || withDates[1] || withDates[2] || withDates[3]
+    
+    // Return in display order: [phase1 (0-1mo), phase2 (1-3mo), phase3 (3-6mo), phase4 (6-12mo)]
+    const mapped = [phase1, phase2, phase3, phase4].filter((m): m is typeof phase1 => m !== undefined)
+    return mapped.length === 4 ? mapped : withDates.slice(0, 4)
   }, [timelineMilestones, weddingInfo.weddingDate])
 
-  // Group checklist items by milestone
-  const itemsByMilestone = useMemo(() => {
-    const grouped: Record<string, TChecklistItem[]> = {}
-    milestonesWithDates.forEach((milestone) => {
-      grouped[milestone.id] = checklistItems.filter((item) => item.milestoneId === milestone.id)
+  // Get all tasks sorted by milestone
+  const tasksByPhase = useMemo(() => {
+    const grouped: Record<number, TChecklistItem[]> = {}
+    milestonesWithDates.forEach((milestone, index) => {
+      const phaseNum = index + 1
+      grouped[phaseNum] = checklistItems.filter((item) => item.milestoneId === milestone.id)
     })
     return grouped
   }, [checklistItems, milestonesWithDates])
 
+  // Get filtered tasks based on selected phase
+  const filteredTasks = useMemo(() => {
+    if (selectedPhase === null) {
+      // If no phase selected, default to the first phase with tasks or first phase
+      const firstPhaseWithTasks = Object.keys(tasksByPhase).find(phase => tasksByPhase[Number(phase)].length > 0)
+      const defaultPhase = firstPhaseWithTasks ? Number(firstPhaseWithTasks) : 1
+      return tasksByPhase[defaultPhase] || []
+    }
+    return tasksByPhase[selectedPhase] || []
+  }, [selectedPhase, tasksByPhase])
+
+  // Auto-select first phase on mount or when tasks change
+  useEffect(() => {
+    if (selectedPhase === null && Object.keys(tasksByPhase).length > 0) {
+      const firstPhaseWithTasks = Object.keys(tasksByPhase).find(phase => tasksByPhase[Number(phase)].length > 0)
+      if (firstPhaseWithTasks) {
+        setSelectedPhase(Number(firstPhaseWithTasks))
+      } else {
+        setSelectedPhase(1)
+      }
+    }
+  }, [selectedPhase, tasksByPhase])
+
   const overallProgress = getOverallProgress()
-  const overdueTasks = getOverdueTasks()
-  const upcomingTasks = getUpcomingTasks()
+
+  // Auto-select first task from filtered tasks when phase changes
+  useEffect(() => {
+    if (selectedPhase !== null && filteredTasks.length > 0) {
+      // If current selected task is not in filtered tasks, select first from filtered
+      const currentSelectedTaskId = selectedTask?.id
+      const isTaskInFiltered = currentSelectedTaskId ? filteredTasks.some(item => item.id === currentSelectedTaskId) : false
+      if (!isTaskInFiltered || !selectedTask) {
+        const firstIncomplete = filteredTasks.find(item => !item.isCompleted) || filteredTasks[0]
+        if (firstIncomplete) {
+          setSelectedTask(firstIncomplete)
+        }
+      }
+    } else if (selectedPhase !== null && filteredTasks.length === 0) {
+      // No tasks in selected phase, clear selection
+      setSelectedTask(null)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPhase, filteredTasks.length]) // Only depend on phase and task count changes
 
   const handleOpenTaskForm = (milestoneId: string, task?: TChecklistItem) => {
     setSelectedMilestoneId(milestoneId)
@@ -247,44 +292,90 @@ export default function WeddingTimelineChecklist() {
     handleCloseTaskForm()
   }
 
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return ''
-    const date = new Date(dateStr)
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  // Get relevant vendors for selected task
+  const getRelevantVendors = () => {
+    if (!selectedTask) return []
+    
+    const categoryMap = getTaskCategoryConfig()
+    const category = selectedTask.category || selectedTask.title
+    
+    for (const [key, value] of Object.entries(categoryMap)) {
+      if (category.toLowerCase().includes(key.toLowerCase()) || selectedTask.title.toLowerCase().includes(key.toLowerCase())) {
+        if ('vendorCategory' in value && value.vendorCategory) {
+          return allVendors
+            .filter(v => v.category === value.vendorCategory || v.category.includes(value.vendorCategory))
+            .slice(0, 4)
+        }
+      }
+    }
+    // Return featured vendors as fallback
+    return allVendors.filter(v => v.featured).slice(0, 4)
   }
 
-  const formatDateRange = (startDate?: string, endDate?: string) => {
-    if (!startDate || !endDate) return ''
-    const start = new Date(startDate)
-    const end = new Date(endDate)
-    const startFormatted = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    const endFormatted = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    return `${startFormatted} - ${endFormatted}`
+  // Get icon for task
+  const getTaskIcon = (task: TChecklistItem) => {
+    const categoryMap = getTaskCategoryConfig()
+    const category = task.category || task.title
+    
+    for (const [key, value] of Object.entries(categoryMap)) {
+      if (category.toLowerCase().includes(key.toLowerCase()) || task.title.toLowerCase().includes(key.toLowerCase())) {
+        return value.icon
+      }
+    }
+    return <SparklesIcon className="h-6 w-6" />
   }
 
-  const isTaskOverdue = (item: TChecklistItem) => {
-    if (!item.dueDate || item.isCompleted) return false
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const due = new Date(item.dueDate)
-    due.setHours(0, 0, 0, 0)
-    return due < today
+  // Calculate average cost estimate based on budget
+  const getAverageCostEstimate = () => {
+    if (totalBudget > 0) {
+      return totalBudget
+    }
+    // Default estimate if no budget set
+    return 30000
   }
 
-  const isTaskUpcoming = (item: TChecklistItem) => {
-    if (!item.dueDate || item.isCompleted) return false
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const weekFromNow = new Date(today)
-    weekFromNow.setDate(weekFromNow.getDate() + 7)
-    const due = new Date(item.dueDate)
-    due.setHours(0, 0, 0, 0)
-    return due >= today && due <= weekFromNow
+  // Get phase number for a milestone
+  const getPhaseNumber = (milestoneId: string): number => {
+    const index = milestonesWithDates.findIndex(m => m.id === milestoneId)
+    return index + 1
+  }
+
+  // Format phase time range - simplified to match design
+  const formatPhaseTime = (milestone: TTimelineMilestone & { startDate?: string; endDate?: string }, index: number) => {
+    // Simple mapping based on position - matching the image design
+    const timeLabels = ['0-1 month', '1-3 months', '3-6 months', '6-12 months']
+    if (index < timeLabels.length) {
+      return timeLabels[index]
+    }
+    
+    // Fallback to calculated
+    if (!milestone.startDate || !milestone.endDate) {
+      const months = milestone.monthsBefore || 0
+      if (months >= 12) return '12+ months'
+      if (months >= 6) return '6-12 months'
+      if (months >= 3) return '3-6 months'
+      if (months >= 1) return '1-3 months'
+      return '0-1 month'
+    }
+    
+    const end = new Date(milestone.endDate)
+    const weddingDate = weddingInfo.weddingDate ? new Date(weddingInfo.weddingDate) : null
+    
+    if (weddingDate) {
+      const monthsBefore = Math.round((weddingDate.getTime() - end.getTime()) / (1000 * 60 * 60 * 24 * 30))
+      if (monthsBefore >= 12) return '12+ months'
+      if (monthsBefore >= 6) return '6-12 months'
+      if (monthsBefore >= 3) return '3-6 months'
+      if (monthsBefore >= 1) return '1-3 months'
+      return '0-1 month'
+    }
+    
+    return 'Planning phase'
   }
 
   if (!weddingInfo.weddingDate) {
     return (
-      <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-surface/80 to-surface/40 p-12 text-center backdrop-blur-sm shadow-2xl">
+      <div className="rounded-3xl border-2 border-dashed border-primary/20 bg-gradient-to-br from-surface/80 to-surface/40 p-12 text-center backdrop-blur-sm shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
         <div className="relative">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 backdrop-blur-sm">
@@ -300,197 +391,279 @@ export default function WeddingTimelineChecklist() {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Modern Header with Glassmorphism */}
-      <div className="relative overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-surface/90 to-surface/60 p-8 shadow-xl backdrop-blur-sm">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
-        <div className="relative">
-          <div className="flex flex-wrap items-start justify-between gap-6">
-            <div className="flex-1">
-              <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary/20 to-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary backdrop-blur-sm">
-                <SparklesIcon className="h-3.5 w-3.5" />
-                Wedding Planning
-              </div>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-text sm:text-4xl">
-                Timeline & Checklist
-              </h2>
-              <p className="mt-2 text-base text-text/70">Track your progress and stay organized</p>
-            </div>
-            
-            {/* Progress Circle */}
-            <div className="relative">
-              <div className="relative h-24 w-24">
-                <svg className="h-24 w-24 -rotate-90 transform">
-                  <circle
-                    cx="48"
-                    cy="48"
-                    r="44"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                    className="text-text/10"
-                  />
-                  <circle
-                    cx="48"
-                    cy="48"
-                    r="44"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                    strokeDasharray={`${2 * Math.PI * 44}`}
-                    strokeDashoffset={`${2 * Math.PI * 44 * (1 - overallProgress.percentage / 100)}`}
-                    className="text-primary transition-all duration-1000 ease-out"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-2xl font-bold text-text">{overallProgress.percentage}%</span>
-                  <span className="text-xs text-text/60">Complete</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats Bar */}
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {overdueTasks.length > 0 && (
-              <div className="group relative overflow-hidden rounded-2xl border border-red-500/20 bg-gradient-to-br from-red-500/10 to-red-500/5 p-4 backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-lg">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
-                    <ExclamationTriangleIcon className="h-5 w-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-red-600 dark:text-red-400">{overdueTasks.length}</div>
-                    <div className="text-xs font-medium text-red-600/70 dark:text-red-400/70">Overdue</div>
-                  </div>
-                </div>
-              </div>
+    <div className="grid lg:grid-cols-[420px_1fr] gap-0 min-h-[600px] rounded-3xl border border-primary/10 bg-surface overflow-hidden shadow-2xl">
+      {/* Left Panel: Wedding Plan Overview */}
+      <div className="bg-gradient-to-b from-[#f5f3f0] to-[#faf8f5] dark:from-surface dark:to-surface/95 border-r border-primary/10 p-6 lg:p-8">
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-text mb-1">Your wedding plan</h2>
+          <div className="flex items-center gap-2 text-sm text-text/60">
+            {selectedPhase !== null ? (
+              <>
+                <span className="font-semibold text-text">
+                  {filteredTasks.filter(t => t.isCompleted).length}/{filteredTasks.length}
+                </span>
+                <span>tasks completed</span>
+                <span className="text-text/40">•</span>
+                <span className="text-text/50">Phase {selectedPhase}</span>
+              </>
+            ) : (
+              <>
+                <span className="font-semibold text-text">{overallProgress.completed}/{overallProgress.total}</span>
+                <span>tasks completed</span>
+              </>
             )}
-            {upcomingTasks.length > 0 && (
-              <div className="group relative overflow-hidden rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-blue-500/5 p-4 backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-lg">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
-                    <ClockIcon className="h-5 w-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{upcomingTasks.length}</div>
-                    <div className="text-xs font-medium text-blue-600/70 dark:text-blue-400/70">Upcoming</div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div className="group relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 p-4 backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-lg">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg">
-                  <CheckCircleIcon className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-primary">{overallProgress.completed}</div>
-                  <div className="text-xs font-medium text-text/70">Completed</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
+
+        {/* Horizontal Timeline */}
+        <div className="mb-8">
+          <div className="relative flex items-start justify-between">
+            {/* Background connecting line */}
+            <div className="absolute top-5 left-0 right-0 h-0.5 bg-gradient-to-r from-text/10 via-text/10 to-text/10 z-0" />
+            
+            {milestonesWithDates.slice(0, 4).map((milestone, index) => {
+              const phaseNum = index + 1
+              const phaseTasks = tasksByPhase[phaseNum] || []
+              const phaseProgress = getMilestoneProgress(milestone.id)
+              const isSelected = selectedPhase === phaseNum
+              const taskCount = phaseTasks.length
+              
+              return (
+                <button
+                  key={milestone.id}
+                  onClick={() => {
+                    setSelectedPhase(phaseNum)
+                    // Auto-select first task from this phase
+                    if (phaseTasks.length > 0) {
+                      const firstIncomplete = phaseTasks.find(item => !item.isCompleted) || phaseTasks[0]
+                      setSelectedTask(firstIncomplete)
+                    } else {
+                      setSelectedTask(null)
+                    }
+                  }}
+                  className="flex-1 flex flex-col items-center relative cursor-pointer group z-10"
+                  type="button"
+                >
+                  {/* Phase Number Circle */}
+                  <div
+                    className={clsx(
+                      'relative flex h-10 w-10 items-center justify-center rounded-full border-2 font-bold text-base transition-all duration-300 shadow-sm',
+                      isSelected
+                        ? 'border-blue-600 bg-blue-600 shadow-lg shadow-blue-600/40 scale-110'
+                        : phaseProgress.percentage === 100
+                          ? 'border-green-500 bg-green-500 shadow-lg group-hover:scale-105'
+                          : 'border-text/20 bg-white dark:bg-background hover:border-blue-500/50 hover:scale-105'
+                    )}
+                    style={isSelected ? {} : {}}
+                  >
+                    {phaseProgress.percentage === 100 ? (
+                      <CheckCircleIconSolid className="h-6 w-6 text-white" />
+                    ) : (
+                      <span className={clsx(
+                        'font-bold',
+                        isSelected ? 'text-white' : 'text-text/70'
+                      )}>
+                        {phaseNum}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Phase Label */}
+                  <div className="mt-3 text-center min-h-[40px]">
+                    <div className={clsx(
+                      "text-xs font-medium transition-colors",
+                      isSelected ? "text-blue-600 dark:text-blue-400 font-semibold" : "text-text/70"
+                    )}>
+                      {formatPhaseTime(milestone, index)}
+                    </div>
+                    {taskCount > 0 && (
+                      <div className={clsx(
+                        "text-xs mt-1 transition-colors",
+                        isSelected ? "text-blue-600/80 dark:text-blue-400/80" : "text-text/50"
+                      )}>
+                        {taskCount} {taskCount === 1 ? 'task' : 'tasks'}
+                      </div>
+                    )}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Task List - Filtered by Selected Phase */}
+        <div className="space-y-2 max-h-[calc(100vh-400px)] overflow-y-auto hidden-scrollbar">
+          {filteredTasks.length === 0 ? (
+            <div className="space-y-4">
+              <div className="rounded-2xl border-2 border-dashed border-primary/20 bg-background/30 p-8 text-center">
+                <p className="text-sm text-text/60 mb-4">
+                  {selectedPhase !== null 
+                    ? `No tasks for phase ${selectedPhase} yet`
+                    : 'No tasks yet'}
+                </p>
+                <button
+                  onClick={() => {
+                    if (timelineMilestones.length > 0 && selectedPhase !== null) {
+                      const milestoneIndex = selectedPhase - 1
+                      const milestone = timelineMilestones[milestoneIndex] || timelineMilestones[0]
+                      handleOpenTaskForm(milestone.id)
+                    } else if (timelineMilestones.length > 0) {
+                      handleOpenTaskForm(timelineMilestones[0].id)
+                    }
+                  }}
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-3 text-sm font-semibold text-white hover:from-pink-600 hover:to-rose-600 transition shadow-md hover:shadow-lg"
+                >
+                  <PlusIcon className="h-5 w-5" />
+                  Add Task to This Phase
+                </button>
+              </div>
+              
+              {/* Secondary Add Task Button */}
+              <button
+                onClick={() => {
+                  if (timelineMilestones.length > 0 && selectedPhase !== null) {
+                    const milestoneIndex = selectedPhase - 1
+                    const milestone = timelineMilestones[milestoneIndex] || timelineMilestones[0]
+                    handleOpenTaskForm(milestone.id)
+                  } else if (timelineMilestones.length > 0) {
+                    handleOpenTaskForm(timelineMilestones[0].id)
+                  }
+                }}
+                className="w-full rounded-xl border-2 border-dashed border-primary/30 bg-background/30 px-4 py-3 text-sm font-medium text-text/60 transition hover:border-primary/50 hover:bg-background/50 hover:text-text flex items-center justify-center gap-2"
+              >
+                <PlusIcon className="h-4 w-4" />
+                Add Task{selectedPhase !== null ? ` to Phase ${selectedPhase}` : ''}
+              </button>
+            </div>
+          ) : (
+            filteredTasks.map((task) => {
+              const isSelected = selectedTask?.id === task.id
+              const taskIcon = getTaskIcon(task)
+              
+              return (
+                <button
+                  key={task.id}
+                  onClick={() => {
+                    setSelectedTask(task)
+                    // Switch to the phase that contains this task
+                    const taskPhase = milestonesWithDates.findIndex(m => m.id === task.milestoneId) + 1
+                    if (taskPhase > 0 && taskPhase !== selectedPhase) {
+                      setSelectedPhase(taskPhase)
+                    }
+                  }}
+                  className={clsx(
+                    'group w-full text-left rounded-2xl border-2 p-4 transition-all duration-200 bg-white dark:bg-background/50',
+                    isSelected
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20 shadow-md scale-[1.01]'
+                      : 'border-text/10 hover:border-blue-300 hover:shadow-sm',
+                    task.isCompleted && 'opacity-70'
+                  )}
+                >
+                  <div className="flex items-center gap-4">
+                    {/* Checkbox */}
+                    <div
+                      className={clsx(
+                        'flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg border-2 transition-all cursor-pointer',
+                        task.isCompleted
+                          ? 'border-green-500 bg-green-500 text-white'
+                          : 'border-text/30 bg-white dark:bg-background group-hover:border-green-500'
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleChecklistItem(task.id)
+                      }}
+                    >
+                      {task.isCompleted && <CheckCircleIconSolid className="h-4 w-4" />}
+                    </div>
+                    
+                    {/* Icon */}
+                    <div className={clsx(
+                      'flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-colors',
+                      isSelected 
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' 
+                        : 'bg-white dark:bg-background/80 text-text/70 dark:text-text/60 border border-text/10'
+                    )}>
+                      {taskIcon}
+                    </div>
+                    
+                    {/* Task Title */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className={clsx(
+                        'text-base font-medium leading-snug',
+                        task.isCompleted ? 'line-through text-text/50' : 'text-text'
+                      )}>
+                        {task.title}
+                      </h4>
+                    </div>
+                    
+                    {/* Arrow for selected */}
+                    {isSelected && (
+                      <ArrowRightIcon className="h-6 w-6 flex-shrink-0 text-blue-600 dark:text-blue-400 ml-2" />
+                    )}
+                  </div>
+                </button>
+              )
+            })
+          )}
+        </div>
+
+        {/* Add Task Button - Only show when there are tasks */}
+        {filteredTasks.length > 0 && (
+          <button
+            onClick={() => {
+              if (timelineMilestones.length > 0 && selectedPhase !== null) {
+                const milestoneIndex = selectedPhase - 1
+                const milestone = timelineMilestones[milestoneIndex] || timelineMilestones[0]
+                handleOpenTaskForm(milestone.id)
+              } else if (timelineMilestones.length > 0) {
+                handleOpenTaskForm(timelineMilestones[0].id)
+              }
+            }}
+            className="mt-4 w-full rounded-xl border-2 border-dashed border-primary/30 bg-background/30 px-4 py-3 text-sm font-medium text-text/60 transition hover:border-primary/50 hover:bg-background/50 hover:text-text flex items-center justify-center gap-2"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Add Task{selectedPhase !== null ? ` to Phase ${selectedPhase}` : ''}
+          </button>
+        )}
       </div>
 
-      {/* Modern Timeline */}
-      <div className="relative">
-        {/* Desktop Vertical Timeline with Modern Design */}
-        <div className="hidden lg:block">
-          <div className="relative pl-12">
-            {/* Animated Timeline Line with Gradient */}
-            <div className="absolute left-6 top-0 bottom-0 w-1">
-              <div className="h-full w-full bg-gradient-to-b from-primary/30 via-primary/20 to-primary/10 rounded-full" />
-              <div 
-                className="absolute top-0 w-full bg-gradient-to-b from-primary via-primary/60 to-primary/30 rounded-full transition-all duration-1000 ease-out"
-                style={{ height: `${(overallProgress.percentage / 100) * 100}%` }}
-              />
-            </div>
-
-            {/* Milestones */}
-            <div className="space-y-10">
-              {milestonesWithDates.map((milestone, index) => {
-                const items = itemsByMilestone[milestone.id] || []
-                const progress = getMilestoneProgress(milestone.id)
-                const isExpanded = expanded.has(milestone.id)
-                const colorKey = milestone.color || 'blue'
-                const gradient = milestoneGradients[colorKey] || milestoneGradients.blue
-
-                return (
-                  <div key={milestone.id} className="relative">
-                    {/* Animated Timeline Dot with Glow */}
-                    <div className="absolute -left-[3.75rem] top-8">
-                      <div className={clsx(
-                        'relative h-6 w-6 rounded-full border-4 border-background shadow-2xl transition-all duration-300',
-                        gradient.dot,
-                        isExpanded && 'scale-125 ring-4 ring-primary/30'
-                      )}>
-                        <div className="absolute inset-0 animate-ping rounded-full bg-primary/40 opacity-75" />
-                      </div>
-                    </div>
-
-                    {/* Milestone Card */}
-                    <ModernMilestoneCard
-                      milestone={milestone}
-                      items={items}
-                      progress={progress}
-                      isExpanded={isExpanded}
-                      onToggle={() => toggleMilestone(milestone.id)}
-                      onAddTask={() => handleOpenTaskForm(milestone.id)}
-                      onEditTask={handleOpenTaskForm}
-                      onDeleteTask={deleteChecklistItem}
-                      onToggleTask={toggleChecklistItem}
-                      onUpdateTask={updateChecklistItem}
-                      formatDateRange={formatDateRange}
-                      formatDate={formatDate}
-                      isTaskOverdue={isTaskOverdue}
-                      isTaskUpcoming={isTaskUpcoming}
-                      gradient={gradient}
-                    />
-                  </div>
-                )
-              })}
+      {/* Right Panel: Task Details */}
+      <div className="bg-gradient-to-b from-[#f0f2f5] to-[#f5f7fa] dark:from-background/90 dark:to-background/70 p-6 lg:p-8 overflow-y-auto">
+        {selectedTask ? (
+          <TaskDetailView
+            task={selectedTask}
+            onToggle={() => toggleChecklistItem(selectedTask.id)}
+            onEdit={() => {
+              const milestone = milestonesWithDates.find(m => m.id === selectedTask.milestoneId)
+              if (milestone) {
+                handleOpenTaskForm(milestone.id, selectedTask)
+              }
+            }}
+            onDelete={() => deleteChecklistItem(selectedTask.id)}
+            getSubTasks={getSubTasksForTask}
+            relevantVendors={getRelevantVendors()}
+            averageCost={getAverageCostEstimate()}
+            budgetSummary={budgetSummary}
+            totalBudget={totalBudget}
+            location={weddingInfo.location}
+            favoriteVendors={favoriteVendors}
+            favorites={favorites}
+            onToggleFavorite={toggleFavorite}
+          />
+        ) : (
+          <div className="flex h-full min-h-[400px] items-center justify-center text-center">
+            <div className="max-w-md">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-text/5 to-text/10">
+                <SparklesIcon className="h-10 w-10 text-text/30" />
+              </div>
+              <h3 className="text-2xl font-semibold text-text/80 mb-3">Select a task</h3>
+              <p className="text-sm text-text/60 leading-relaxed max-w-sm mx-auto">
+                Click on a task from the left panel to view details, sub-tasks, and helpful resources.
+              </p>
             </div>
           </div>
-        </div>
-
-        {/* Mobile Horizontal Scroll Timeline */}
-        <div className="lg:hidden">
-          <div className="overflow-x-auto pb-6 hidden-scrollbar">
-            <div className="flex gap-6 min-w-max px-4">
-              {milestonesWithDates.map((milestone) => {
-                const items = itemsByMilestone[milestone.id] || []
-                const progress = getMilestoneProgress(milestone.id)
-                const isExpanded = expanded.has(milestone.id)
-                const colorKey = milestone.color || 'blue'
-                const gradient = milestoneGradients[colorKey] || milestoneGradients.blue
-
-                return (
-                  <div key={milestone.id} className="w-96 flex-shrink-0">
-                    <ModernMilestoneCard
-                      milestone={milestone}
-                      items={items}
-                      progress={progress}
-                      isExpanded={isExpanded}
-                      onToggle={() => toggleMilestone(milestone.id)}
-                      onAddTask={() => handleOpenTaskForm(milestone.id)}
-                      onEditTask={handleOpenTaskForm}
-                      onDeleteTask={deleteChecklistItem}
-                      onToggleTask={toggleChecklistItem}
-                      onUpdateTask={updateChecklistItem}
-                      formatDateRange={formatDateRange}
-                      formatDate={formatDate}
-                      isTaskOverdue={isTaskOverdue}
-                      isTaskUpcoming={isTaskUpcoming}
-                      gradient={gradient}
-                    />
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Task Form Modal */}
@@ -546,7 +719,7 @@ export default function WeddingTimelineChecklist() {
                 </label>
                 <select
                   value={formData.priority}
-                  onChange={(e) => setFormData({ ...formData, priority: e.target.value as TTaskPriority })}
+                  onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
                   className="w-full rounded-xl border border-primary/20 bg-background px-4 py-3 text-sm text-text focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   <option value="low">Low</option>
@@ -616,326 +789,243 @@ export default function WeddingTimelineChecklist() {
   )
 }
 
-interface ModernMilestoneCardProps {
-  milestone: TTimelineMilestone & { startDate?: string; endDate?: string }
-  items: TChecklistItem[]
-  progress: { total: number; completed: number; percentage: number }
-  isExpanded: boolean
-  onToggle: () => void
-  onAddTask: () => void
-  onEditTask: (milestoneId: string, task: TChecklistItem) => void
-  onDeleteTask: (itemId: string) => void
-  onToggleTask: (itemId: string) => void
-  onUpdateTask: (itemId: string, updates: Partial<Omit<TChecklistItem, 'id'>>) => void
-  formatDateRange: (startDate?: string, endDate?: string) => string
-  formatDate: (dateStr: string) => string
-  isTaskOverdue: (item: TChecklistItem) => boolean
-  isTaskUpcoming: (item: TChecklistItem) => boolean
-  gradient: { from: string; via: string; to: string; dot: string }
-}
-
-function ModernMilestoneCard({
-  milestone,
-  items,
-  progress,
-  isExpanded,
-  onToggle,
-  onAddTask,
-  onEditTask,
-  onDeleteTask,
-  onToggleTask,
-  onUpdateTask,
-  formatDateRange,
-  formatDate,
-  isTaskOverdue,
-  isTaskUpcoming,
-  gradient,
-}: ModernMilestoneCardProps) {
-  const dateRange = formatDateRange(milestone.startDate, milestone.endDate)
-  const sortedItems = [...items].sort((a, b) => {
-    if (a.isCompleted !== b.isCompleted) {
-      return a.isCompleted ? 1 : -1
-    }
-    if (a.dueDate && b.dueDate) {
-      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-    }
-    if (a.dueDate) return -1
-    if (b.dueDate) return 1
-    const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 }
-    return priorityOrder[a.priority] - priorityOrder[b.priority]
-  })
-
-  return (
-    <div
-      className={clsx(
-        'group relative overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br backdrop-blur-sm shadow-xl transition-all duration-500',
-        gradient.from,
-        gradient.to,
-        isExpanded ? 'shadow-2xl scale-[1.02]' : 'hover:shadow-2xl hover:scale-[1.01]'
-      )}
-    >
-      {/* Animated Background Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-      
-      {/* Content */}
-      <div className="relative p-8">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-background/60 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-text/70 backdrop-blur-sm">
-              {milestone.title.split(' ')[0]} Phase
-            </div>
-            <h3 className="text-2xl font-bold text-text">{milestone.title}</h3>
-            {milestone.description && (
-              <p className="mt-2 text-sm leading-relaxed text-text/70">{milestone.description}</p>
-            )}
-            {dateRange && (
-              <div className="mt-4 flex items-center gap-2 text-sm font-medium text-text/60">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-background/60 backdrop-blur-sm">
-                  <CalendarIcon className="h-4 w-4" />
-                </div>
-                <span>{dateRange}</span>
-              </div>
-            )}
-          </div>
-          
-          {/* Toggle Button */}
-          <button
-            onClick={onToggle}
-            className={clsx(
-              'flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-background/60 backdrop-blur-sm transition-all duration-300',
-              isExpanded 
-                ? 'rotate-180 bg-primary/20 text-primary' 
-                : 'hover:bg-background/80 text-text/60 hover:text-text'
-            )}
-          >
-            <ChevronDownIcon className="h-6 w-6 transition-transform" />
-          </button>
-        </div>
-
-        {/* Modern Progress Indicator */}
-        <div className="mt-6">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="text-sm font-semibold text-text">
-              {progress.completed} / {progress.total} Tasks
-            </span>
-            <span className="text-lg font-bold text-text">{progress.percentage}%</span>
-          </div>
-          <div className="relative h-3 overflow-hidden rounded-full bg-background/40 backdrop-blur-sm shadow-inner">
-            <div
-              className={clsx(
-                'h-full rounded-full transition-all duration-1000 ease-out shadow-lg',
-                progress.percentage === 100 
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
-                  : 'bg-gradient-to-r from-primary via-primary/90 to-primary/80'
-              )}
-              style={{ width: `${progress.percentage}%` }}
-            >
-              {progress.percentage > 0 && (
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)] animate-shimmer" />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Checklist Items with Smooth Animation */}
-        {isExpanded && (
-          <div className="mt-8 space-y-3 transition-all duration-500 ease-out">
-            {sortedItems.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-primary/30 bg-background/40 p-8 text-center backdrop-blur-sm">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
-                  <FunnelIcon className="h-8 w-8 text-primary/60" />
-                </div>
-                <p className="text-sm font-medium text-text/60">No tasks yet</p>
-                <p className="mt-1 text-xs text-text/40">Click below to add your first task</p>
-              </div>
-            ) : (
-              sortedItems.map((item) => (
-                <ModernChecklistItem
-                  key={item.id}
-                  item={item}
-                  onToggle={() => onToggleTask(item.id)}
-                  onEdit={() => onEditTask(milestone.id, item)}
-                  onDelete={() => onDeleteTask(item.id)}
-                  formatDate={formatDate}
-                  isOverdue={isTaskOverdue(item)}
-                  isUpcoming={isTaskUpcoming(item)}
-                />
-              ))
-            )}
-
-            {/* Add Task Button with Gradient */}
-            <button
-              onClick={onAddTask}
-              className="group relative mt-4 flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl border-2 border-dashed border-primary/30 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 px-6 py-4 text-sm font-semibold text-text transition-all hover:border-primary/50 hover:from-primary/20 hover:to-primary/10 hover:shadow-lg"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-              <PlusIcon className="h-5 w-5 text-primary" />
-              <span className="text-primary">Add New Task</span>
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-interface ModernChecklistItemProps {
-  item: TChecklistItem
+interface TaskDetailViewProps {
+  task: TChecklistItem
   onToggle: () => void
   onEdit: () => void
   onDelete: () => void
-  formatDate: (dateStr: string) => string
-  isOverdue: boolean
-  isUpcoming: boolean
+  getSubTasks: (task: TChecklistItem) => string[]
+  relevantVendors: any[]
+  averageCost: number
+  budgetSummary: ReturnType<typeof getBudgetSummary>
+  totalBudget: number
+  location?: string
+  favoriteVendors: any[]
+  favorites: any[]
+  onToggleFavorite: (vendorHandle: string) => void
 }
 
-function ModernChecklistItem({
-  item,
+function TaskDetailView({
+  task,
   onToggle,
   onEdit,
   onDelete,
-  formatDate,
-  isOverdue,
-  isUpcoming,
-}: ModernChecklistItemProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const priority = priorityConfig[item.priority]
+  getSubTasks,
+  relevantVendors,
+  averageCost,
+  budgetSummary,
+  totalBudget,
+  location,
+  favoriteVendors,
+  favorites,
+  onToggleFavorite,
+}: TaskDetailViewProps) {
+  const subTasks = getSubTasks(task)
+  const [completedSubTasks, setCompletedSubTasks] = useState<Set<string>>(new Set())
+
+  const toggleSubTask = (subTask: string) => {
+    setCompletedSubTasks(prev => {
+      const next = new Set(prev)
+      if (next.has(subTask)) {
+        next.delete(subTask)
+      } else {
+        next.add(subTask)
+      }
+      return next
+    })
+  }
 
   return (
-    <div
-      className={clsx(
-        'group relative overflow-hidden rounded-2xl border bg-gradient-to-br from-background/80 to-background/40 p-5 shadow-md backdrop-blur-sm transition-all duration-300',
-        item.isCompleted 
-          ? 'border-green-500/30 opacity-75' 
-          : isOverdue 
-            ? 'border-red-500/30 bg-red-500/5' 
-            : 'border-primary/10 hover:border-primary/30 hover:shadow-xl hover:scale-[1.01]'
-      )}
-    >
-      {/* Priority Indicator Bar */}
-      {!item.isCompleted && (
-        <div className={clsx('absolute left-0 top-0 bottom-0 w-1.5', priority.color)} />
-      )}
-      
-      {/* Completion Glow */}
-      {item.isCompleted && (
-        <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-green-500/5 to-transparent" />
-      )}
+    <div className="space-y-8">
+      {/* Task Header */}
+      <div>
+        <h2 className="text-3xl font-bold text-text mb-4">{task.title}</h2>
+        
+        {/* Mark Goal as Done */}
+        <label className="flex items-center gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={task.isCompleted}
+            onChange={onToggle}
+            className="sr-only"
+          />
+          <div
+            className={clsx(
+              'flex h-6 w-6 items-center justify-center rounded-lg border-2 transition-all flex-shrink-0',
+              task.isCompleted
+                ? 'border-green-500 bg-green-500 text-white'
+                : 'border-text/30 bg-white dark:bg-background group-hover:border-green-500'
+            )}
+          >
+            {task.isCompleted && <CheckCircleIconSolid className="h-4 w-4" />}
+          </div>
+          <span className={clsx(
+            'text-sm font-medium select-none',
+            task.isCompleted ? 'text-green-700 dark:text-green-400' : 'text-text/70 group-hover:text-text'
+          )}>
+            Mark goal as done
+          </span>
+        </label>
+      </div>
 
-      <div className="relative flex items-start gap-4">
-        {/* Modern Checkbox */}
-        <button
-          onClick={onToggle}
-          className={clsx(
-            'mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-xl border-2 transition-all duration-300 shadow-sm',
-            item.isCompleted
-              ? 'border-green-500 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/50'
-              : 'border-text/30 bg-background hover:border-primary hover:scale-110 hover:shadow-md'
-          )}
-        >
-          {item.isCompleted && <CheckCircleIconSolid className="h-4 w-4" />}
-        </button>
+      {/* Things To Do Section */}
+      <div>
+        <h3 className="text-xs font-bold uppercase tracking-widest text-text/60 mb-5">THINGS TO DO</h3>
+        <ul className="space-y-3">
+          {subTasks.map((subTask, index) => {
+            const isCompleted = completedSubTasks.has(subTask)
+            return (
+              <li key={index} className="list-none">
+                <label className="group flex w-full items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isCompleted}
+                    onChange={() => toggleSubTask(subTask)}
+                    className="sr-only"
+                  />
+                  <div
+                    className={clsx(
+                      'mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border-2 transition-all',
+                      isCompleted
+                        ? 'border-green-500 bg-green-500 text-white'
+                        : 'border-text/30 bg-white dark:bg-background group-hover:border-green-500'
+                    )}
+                  >
+                    {isCompleted && <CheckCircleIconSolid className="h-3.5 w-3.5" />}
+                  </div>
+                  <span className={clsx(
+                    'text-base leading-relaxed select-none',
+                    isCompleted ? 'line-through text-text/50' : 'text-text group-hover:text-text/80'
+                  )}>
+                    {subTask}
+                  </span>
+                </label>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <h4
-                className={clsx(
-                  'text-base font-semibold leading-snug transition-all',
-                  item.isCompleted 
-                    ? 'line-through text-text/40' 
-                    : 'text-text'
-                )}
-              >
-                {item.title}
-              </h4>
-              {item.description && (
-                <p className="mt-1.5 text-sm leading-relaxed text-text/60 line-clamp-2">
-                  {item.description}
+      {/* Cost Estimates Card - Show for budget-related tasks */}
+      {(task.category?.toLowerCase().includes('budget') || task.title.toLowerCase().includes('budget')) && (
+        <div className="group relative overflow-hidden rounded-2xl border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-background/50 p-6 transition-all hover:shadow-lg cursor-pointer">
+          <Link href="/my-wedding/budget" className="block">
+            <div className="flex items-start gap-4">
+              {/* Donut Chart Icon */}
+              <div className="relative flex h-14 w-14 flex-shrink-0 items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-8 border-blue-200 dark:border-blue-800" />
+                <div className="absolute inset-2 rounded-full border-4 border-blue-500" style={{ 
+                  clipPath: 'polygon(0 0, 100% 0, 100% 60%, 0 60%)' 
+                }} />
+                <ChartPieIcon className="relative h-6 w-6 text-blue-600 dark:text-blue-400" />
+              </div>
+              
+              <div className="flex-1">
+                <div className="mb-2 flex items-center justify-between">
+                  <h4 className="text-base font-semibold text-text">See estimates</h4>
+                  <ArrowRightIcon className="h-5 w-5 text-blue-600 dark:text-blue-400 transition group-hover:translate-x-1" />
+                </div>
+                <p className="text-sm text-text/80 leading-relaxed">
+                  Average wedding cost{location ? ` in ${location}` : ''}: <span className="font-bold text-lg text-text">{formatCurrency(averageCost)}</span>
                 </p>
-              )}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-1 opacity-0 transition-all duration-200 group-hover:opacity-100">
-              <button
-                onClick={onEdit}
-                className="rounded-lg p-2 text-text/50 transition-all hover:bg-primary/10 hover:text-primary hover:scale-110"
-              >
-                <PencilIcon className="h-4 w-4" />
-              </button>
-              <button
-                onClick={onDelete}
-                className="rounded-lg p-2 text-text/50 transition-all hover:bg-red-500/10 hover:text-red-600 hover:scale-110"
-              >
-                <TrashIcon className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Metadata Tags */}
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            {item.dueDate && (
-              <span
-                className={clsx(
-                  'inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium shadow-sm backdrop-blur-sm',
-                  isOverdue
-                    ? 'bg-gradient-to-r from-red-500/20 to-red-500/10 text-red-700 dark:text-red-300 border border-red-500/30'
-                    : isUpcoming
-                      ? 'bg-gradient-to-r from-blue-500/20 to-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/30'
-                      : 'bg-text/10 text-text/70 border border-text/20'
+                {totalBudget > 0 && (
+                  <div className="mt-3 flex items-center gap-4 text-xs text-text/60">
+                    <span>Your budget: <span className="font-semibold">{formatCurrency(totalBudget)}</span></span>
+                    <span>•</span>
+                    <span>Spent: <span className="font-semibold">{formatCurrency(budgetSummary.totalSpent)}</span></span>
+                  </div>
                 )}
-              >
-                <CalendarIcon className="h-3.5 w-3.5" />
-                {formatDate(item.dueDate)}
-              </span>
-            )}
+              </div>
+            </div>
+          </Link>
+        </div>
+      )}
 
-            <span
-              className={clsx(
-                'inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold uppercase tracking-wide shadow-sm backdrop-blur-sm border',
-                priority.bg,
-                priority.text,
-                priority.ring
-              )}
-            >
-              <div className={clsx('h-2 w-2 rounded-full', priority.color)} />
-              {item.priority}
-            </span>
-
-            {item.category && (
-              <span className="rounded-xl bg-text/10 border border-text/20 px-3 py-1.5 text-xs font-medium text-text/70 backdrop-blur-sm">
-                {item.category}
-              </span>
-            )}
-
-            {item.assignedTo && (
-              <span className="rounded-xl bg-text/10 border border-text/20 px-3 py-1.5 text-xs font-medium text-text/70 backdrop-blur-sm">
-                👤 {item.assignedTo}
-              </span>
-            )}
-          </div>
-
-          {/* Notes Section */}
-          {item.notes && (
-            <div className="mt-4">
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
-              >
-                {isExpanded ? '▼ Hide notes' : '▶ Show notes'}
-              </button>
-              {isExpanded && (
-                <div className="mt-2 rounded-xl bg-text/5 border border-text/10 p-3 text-xs leading-relaxed text-text/70 backdrop-blur-sm">
-                  {item.notes}
+      {/* Ideas & Advice Section */}
+      {relevantVendors.length > 0 && (
+        <div>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-text/60 mb-5">IDEAS & ADVICE</h3>
+          <div className="relative">
+            <div className="flex gap-4 overflow-x-auto pb-4 hidden-scrollbar snap-x snap-mandatory scroll-px-4">
+              {relevantVendors.map((vendor, index) => {
+                const isFavorite = favorites.some(fav => fav.vendorHandle === vendor.handle)
+                const isLast = index === relevantVendors.length - 1
+                
+                return (
+                  <Link
+                    key={vendor.id}
+                    href={`/products/${vendor.handle}`}
+                    className="group relative flex-shrink-0 w-72 snap-start rounded-2xl border-2 border-text/10 bg-white dark:bg-background/80 overflow-hidden transition-all hover:shadow-xl hover:border-primary/30 hover:scale-[1.02]"
+                  >
+                    {/* Image with Overlay */}
+                    <div className="relative h-48 w-full overflow-hidden">
+                      <Image
+                        src={vendor.heroImage.src}
+                        alt={vendor.heroImage.alt}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes="288px"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                      
+                      {/* Favorite Button */}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          onToggleFavorite(vendor.handle)
+                        }}
+                        className="absolute top-3 right-3 z-10 rounded-full p-2.5 bg-white/90 dark:bg-background/90 backdrop-blur-sm hover:bg-white dark:hover:bg-background transition shadow-md"
+                      >
+                        {isFavorite ? (
+                          <HeartIconSolid className="h-5 w-5 text-red-500" />
+                        ) : (
+                          <HeartIcon className="h-5 w-5 text-text/60 hover:text-red-500 transition" />
+                        )}
+                      </button>
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="p-5 bg-white dark:bg-background/80">
+                      <h4 className="font-bold text-base text-text line-clamp-2 mb-2 group-hover:text-primary transition leading-tight">
+                        {vendor.name}
+                      </h4>
+                      <p className="text-xs text-text/60 uppercase tracking-wide mb-3">{vendor.category}</p>
+                      {vendor.rating && (
+                        <div className="flex items-center gap-1.5 text-sm">
+                          <span className="text-amber-500 font-bold">★</span>
+                          <span className="font-semibold text-text/80">{vendor.rating}</span>
+                          <span className="text-text/40">•</span>
+                          <span className="text-text/60">{vendor.location}</span>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
+              
+              {/* Scroll Indicator (if there are more items) */}
+              {relevantVendors.length > 3 && (
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-l from-background/90 to-transparent">
+                    <ArrowRightIcon className="h-6 w-6 text-text/40" />
+                  </div>
                 </div>
               )}
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Action Buttons - Subtle at bottom */}
+      {task.dueDate && (
+        <div className="pt-6 border-t border-text/10">
+          <div className="flex items-center gap-2 text-sm text-text/60">
+            <CalendarIcon className="h-4 w-4" />
+            <span>Due: {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
