@@ -86,7 +86,7 @@ export default function GuestReminderPanel({ guests, onClose }: Props) {
           {/* Deadline Selector */}
           <div>
             <label className="block text-sm font-medium text-text mb-2">
-              RSVP Deadline (guests invited before this date who haven't responded will be listed)
+              RSVP Deadline (guests invited before this date who haven&apos;t responded will be listed)
             </label>
             <Input
               type="date"
@@ -182,7 +182,7 @@ export default function GuestReminderPanel({ guests, onClose }: Props) {
               <BellIcon className="mx-auto h-12 w-12 text-primary/40" />
               <h3 className="mt-4 text-lg font-semibold text-text">No Reminders Needed</h3>
               <p className="mt-2 text-sm text-text/60">
-                All guests have either responded or haven't been invited yet.
+                All guests have either responded or haven&apos;t been invited yet.
               </p>
             </div>
           )}

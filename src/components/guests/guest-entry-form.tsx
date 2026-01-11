@@ -143,8 +143,8 @@ export default function GuestEntryForm({ guest, households, onSave, onClose }: P
               <div>
                 <label className="block text-sm font-medium text-text mb-1.5">Side</label>
                 <Select value={side} onChange={(e) => setSide(e.target.value as TGuestSide)}>
-                  <option value="bride">Bride's Side</option>
-                  <option value="groom">Groom's Side</option>
+                  <option value="bride">Bride&apos;s Side</option>
+                  <option value="groom">Groom&apos;s Side</option>
                   <option value="mutual">Mutual</option>
                 </Select>
               </div>
@@ -216,7 +216,7 @@ export default function GuestEntryForm({ guest, households, onSave, onClose }: P
                 placeholder="1"
               />
               <p className="mt-1 text-xs text-text/60">
-                This represents the total number of people for this guest entry (e.g., "The Smith Family" = 4 people)
+                This represents the total number of people for this guest entry (e.g., &quot;The Smith Family&quot; = 4 people)
               </p>
             </div>
 
