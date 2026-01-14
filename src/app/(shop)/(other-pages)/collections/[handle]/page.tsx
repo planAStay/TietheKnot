@@ -9,6 +9,32 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+// Server-side API call for vendor profiles
+async function fetchVendorProfiles() {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'
+  const url = `${API_BASE_URL}/vendor-profiles`
+  
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      next: { revalidate: 300 }, // Revalidate every 5 minutes (300 seconds)
+    })
+    
+    if (!response.ok) {
+      console.error('Failed to fetch vendor profiles:', response.statusText)
+      return []
+    }
+    
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching vendor profiles:', error)
+    return []
+  }
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
   const { handle } = await params
   if (handle === 'all') {
@@ -78,7 +104,54 @@ export default async function Collection({
     return notFound()
   }
   const selectedSubcategory = category.subcategories.find((s) => s.slug === subcategorySlug)
-  let vendors = getVendorsByCategory(category.id, selectedSubcategory?.id)
+  
+  // Get mock vendors for structure (keeping original slugs)
+  let vendors = getVendorsByCategory(category.slug, selectedSubcategory?.slug)
+  
+  // Fetch vendor profiles from backend API and merge with mock data
+  const vendorProfiles = await fetchVendorProfiles()
+  // Filter by category name (case-insensitive) and only active profiles
+  const backendProfiles = vendorProfiles.filter(
+    (profile: any) => 
+      profile.isActive && 
+      profile.category.toLowerCase() === category.name.toLowerCase()
+  )
+  
+  // Helper function to generate slug from business name and category
+  const generateSlug = (businessName: string, category: string, id: number) => {
+    // Convert to lowercase and replace spaces/special chars with hyphens
+    const nameSlug = businessName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+    const categorySlug = category
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+    return `${categorySlug}-${nameSlug}-${id}`
+  }
+
+  // Convert backend vendor profiles to TVendor format and add to vendors list
+  const backendVendors = backendProfiles.map((profile: any) => ({
+    id: String(profile.id),
+    handle: generateSlug(profile.businessName, profile.category, profile.id), // Generate slug similar to old format
+    name: profile.businessName,
+    description: profile.description || '',
+    category: profile.category,
+    subcategory: profile.category, // Use category as subcategory for now
+    location: profile.serviceArea || 'Not specified',
+    priceRange: profile.priceRange || '$$', // Use backend price range or default to $$
+    rating: undefined, // No ratings yet in MVP
+    heroImage: {
+      src: profile.imageUrls && profile.imageUrls.length > 0 ? profile.imageUrls[0] : '/placeholder-vendor.jpg',
+      alt: `${profile.businessName} - ${profile.category}`,
+    },
+  }))
+  
+  // Combine mock vendors with backend vendors (backend vendors first)
+  vendors = [...backendVendors, ...vendors]
+  
+  // Apply filters
   if (priceFilter) {
     vendors = vendors.filter((v) => v.priceRange === priceFilter)
   }
@@ -87,7 +160,7 @@ export default async function Collection({
   }
   const breadcrumbs = [{ id: 1, name: 'Home', href: '/' }]
 
-  const priceOptions: string[] = ['$', '$$', '$$$']
+  const priceOptions: string[] = ['$', '$$', '$$$', '$$$$']
   const ratingOptions: number[] = [4.0, 4.5, 4.8]
 
   const buildHref = (updates: Record<string, string | undefined>) => {

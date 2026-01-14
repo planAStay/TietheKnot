@@ -50,6 +50,7 @@ export interface TVendor {
   contact?: {
     phone?: string
     email?: string
+    whatsapp?: string
     website?: string
     instagram?: string
   }
@@ -57,9 +58,70 @@ export interface TVendor {
   featured?: boolean
 }
 
-export interface TFavorite {
-  vendorHandle: string
-  addedAt: string
+export interface TShortlist {
+  id: number
+  vendorProfileId: number
+  vendorProfileName: string
+  vendorProfileCategory: string
+  status: 'FAVOURITED' | 'QUOTED' | 'ACCEPTED' | 'BOOKED'
+  quoteRequestId?: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type QuoteStatus = 'OPEN' | 'QUOTED' | 'ACCEPTED' | 'DECLINED'
+export type AuthorRole = 'CLIENT' | 'VENDOR'
+export type BookingStatus = 'CONFIRMED' | 'CANCELLED'
+export type TimeSlot = 'MORNING' | 'NIGHT' | 'FULL_DAY'
+
+export interface QuoteRequestAnswer {
+  id: number
+  questionText: string
+  answerText: string
+  createdAt: string
+}
+
+export interface Quote {
+  id: number
+  amount: number
+  notes?: string
+  updatedAt: string
+}
+
+export interface QuoteMessage {
+  id: number
+  authorRole: AuthorRole
+  message: string
+  createdAt: string
+}
+
+export interface QuoteRequest {
+  id: number
+  vendorProfileId: number
+  vendorProfileName: string
+  vendorProfileCategory: string
+  clientId: number
+  clientName: string
+  clientEmail: string
+  email: string
+  phone: string
+  weddingDate: string
+  guestCount: number
+  location: string
+  timeSlot: TimeSlot
+  status: QuoteStatus
+  createdAt: string
+  updatedAt: string
+  answers: QuoteRequestAnswer[]
+  quote?: Quote
+  messages: QuoteMessage[]
+  booking?: Booking
+}
+
+export interface Booking {
+  id: number
+  status: BookingStatus
+  createdAt: string
 }
 
 export interface TQuotation {

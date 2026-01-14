@@ -54,25 +54,39 @@ export default function VendorHeroCarousel({ images, className }: VendorHeroCaro
       <div className="relative aspect-[4/3] sm:aspect-[16/9] md:aspect-[16/9] lg:aspect-[16/9] w-full max-h-[400px] sm:max-h-[450px] md:max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] overflow-hidden rounded-lg sm:rounded-xl shadow-lg">
         {/* Images */}
         <div className="relative h-full w-full">
-          {allImages.map((image, index) => (
-            <div
-              key={index}
-              className={clsx(
-                'absolute inset-0 transition-opacity duration-500 ease-in-out',
-                index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-              )}
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                priority={index === 0}
-                quality={90}
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px"
-              />
-            </div>
-          ))}
+          {allImages.map((image, index) => {
+            const isExternal = image.src.startsWith('http://') || image.src.startsWith('https://')
+            return (
+              <div
+                key={index}
+                className={clsx(
+                  'absolute inset-0 transition-opacity duration-500 ease-in-out',
+                  index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                )}
+              >
+                {isExternal ? (
+                  // Use regular img tag for external URLs to avoid Next.js optimization
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="w-full h-full object-cover"
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                  />
+                ) : (
+                  // Use Next.js Image for local images
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    priority={index === 0}
+                    quality={90}
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px"
+                  />
+                )}
+              </div>
+            )
+          })}
         </div>
 
         {/* Navigation Arrows */}

@@ -58,8 +58,8 @@ const Header = ({ className, hasBottomBorder = true, variant = 'default' }: Head
             <TextLink href="/collections/all" className="text-[15px] font-semibold text-text">
               Categories
             </TextLink>
-            <TextLink href="/favorites" className="text-[15px] font-semibold text-primary">
-              Favorites
+            <TextLink href="/shortlist" className="text-[15px] font-semibold text-primary">
+              Shortlist
             </TextLink>
             <TextLink href="/quotations" className="text-[15px] font-semibold text-accent">
               Quotations

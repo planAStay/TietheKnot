@@ -98,9 +98,9 @@ export default function WeddingTimelineChecklist() {
     toggleChecklistItem,
     budgetCategories,
     budgetExpenses,
-    favoriteVendors,
-    favorites,
-    toggleFavorite,
+    shortlistedVendors,
+    shortlist,
+    toggleShortlist,
   } = useWedding()
 
   const [selectedTask, setSelectedTask] = useState<TChecklistItem | null>(null)
@@ -647,9 +647,9 @@ export default function WeddingTimelineChecklist() {
             budgetSummary={budgetSummary}
             totalBudget={totalBudget}
             location={weddingInfo.location}
-            favoriteVendors={favoriteVendors}
-            favorites={favorites}
-            onToggleFavorite={toggleFavorite}
+            shortlistedVendors={shortlistedVendors}
+            shortlist={shortlist}
+            onToggleShortlist={toggleShortlist}
           />
         ) : (
           <div className="flex h-full min-h-[400px] items-center justify-center text-center">
@@ -800,9 +800,9 @@ interface TaskDetailViewProps {
   budgetSummary: ReturnType<typeof getBudgetSummary>
   totalBudget: number
   location?: string
-  favoriteVendors: any[]
-  favorites: any[]
-  onToggleFavorite: (vendorHandle: string) => void
+  shortlistedVendors: any[]
+  shortlist: any[]
+  onToggleShortlist: (vendorProfileId: number) => Promise<void>
 }
 
 function TaskDetailView({
@@ -816,9 +816,9 @@ function TaskDetailView({
   budgetSummary,
   totalBudget,
   location,
-  favoriteVendors,
-  favorites,
-  onToggleFavorite,
+  shortlistedVendors,
+  shortlist,
+  onToggleShortlist,
 }: TaskDetailViewProps) {
   const subTasks = getSubTasks(task)
   const [completedSubTasks, setCompletedSubTasks] = useState<Set<string>>(new Set())
@@ -948,7 +948,7 @@ function TaskDetailView({
           <div className="relative">
             <div className="flex gap-4 overflow-x-auto pb-4 hidden-scrollbar snap-x snap-mandatory scroll-px-4">
               {relevantVendors.map((vendor, index) => {
-                const isFavorite = favorites.some(fav => fav.vendorHandle === vendor.handle)
+                const isShortlisted = shortlist.some(item => item.vendorHandle === vendor.handle)
                 const isLast = index === relevantVendors.length - 1
                 
                 return (
@@ -973,11 +973,11 @@ function TaskDetailView({
                         onClick={(e) => {
                           e.preventDefault()
                           e.stopPropagation()
-                          onToggleFavorite(vendor.handle)
+                          onToggleShortlist(vendor.handle)
                         }}
                         className="absolute top-3 right-3 z-10 rounded-full p-2.5 bg-white/90 dark:bg-background/90 backdrop-blur-sm hover:bg-white dark:hover:bg-background transition shadow-md"
                       >
-                        {isFavorite ? (
+                        {isShortlisted ? (
                           <HeartIconSolid className="h-5 w-5 text-red-500" />
                         ) : (
                           <HeartIcon className="h-5 w-5 text-text/60 hover:text-red-500 transition" />

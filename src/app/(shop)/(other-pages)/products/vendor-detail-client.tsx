@@ -1,37 +1,61 @@
 'use client'
 
-import QuotationFormModal from '@/components/quotation-form-modal'
-import BookingModal from '@/components/booking-modal'
+import QuoteRequestModal from '@/components/quote-request-modal'
 import AvailabilityCalendar from '@/components/availability-calendar'
 import { Heading } from '@/components/heading'
 import { useWedding } from '@/lib/wedding-context'
 import { TVendor } from '@/type'
 import clsx from 'clsx'
 import { useState, useEffect } from 'react'
-import { getConfirmedBookingsForCalendar, initializeBookingsForVendor } from '@/lib/booking-manager'
+import { getVendorAvailability } from '@/lib/api/vendor-availability'
 
 export default function VendorDetailClient({ vendor }: { vendor: TVendor }) {
-  const [quotationOpen, setQuotationOpen] = useState(false)
-  const [bookingOpen, setBookingOpen] = useState(false)
+  const [quoteRequestOpen, setQuoteRequestOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
-  const [confirmedBookings, setConfirmedBookings] = useState(() => getConfirmedBookingsForCalendar(vendor.id))
-  const { toggleFavorite, favorites } = useWedding()
-  const isFav = favorites.some((f) => f.vendorHandle === vendor.handle)
+  const [confirmedBookings, setConfirmedBookings] = useState<Array<{ date: string; slot: 'morning' | 'evening'; status: string }>>([])
+  const [isLoadingAvailability, setIsLoadingAvailability] = useState(true)
+  const { toggleShortlist, shortlist } = useWedding()
+  const vendorProfileId = Number(vendor.id)
+  const shortlistItem = shortlist.find(item => item.vendorProfileId === vendorProfileId)
+  const isShortlisted = !!shortlistItem
 
-  // Initialize mock bookings for this vendor on first load
+  // Fetch availability from backend
   useEffect(() => {
-    initializeBookingsForVendor(vendor.id)
-    setConfirmedBookings(getConfirmedBookingsForCalendar(vendor.id))
-  }, [vendor.id])
+    const loadAvailability = async () => {
+      setIsLoadingAvailability(true)
+      try {
+        const availability = await getVendorAvailability(vendorProfileId)
+        console.log('Loaded availability:', availability)
+        // Convert to the format expected by the calendar component
+        const bookings = availability.map(item => ({
+          date: item.date, // Should be in YYYY-MM-DD format
+          slot: item.slot,
+          status: item.status,
+        }))
+        console.log('Mapped bookings for calendar:', bookings)
+        setConfirmedBookings(bookings)
+      } catch (error) {
+        console.error('Error loading vendor availability:', error)
+        // On error, set empty array so calendar still renders
+        setConfirmedBookings([])
+      } finally {
+        setIsLoadingAvailability(false)
+      }
+    }
+
+    if (vendorProfileId) {
+      loadAvailability()
+    }
+  }, [vendorProfileId])
 
   const handleDateClick = (date: string) => {
     setSelectedDate(date)
-    setBookingOpen(true)
+    setQuoteRequestOpen(true)
   }
 
-  const handleBookingSuccess = () => {
-    // Refresh bookings after successful booking
-    setConfirmedBookings(getConfirmedBookingsForCalendar(vendor.id))
+  const handleQuoteRequestSuccess = () => {
+    // Refresh shortlist after successful quote request
+    // The shortlist will be automatically updated by the backend
   }
 
   return (
@@ -46,16 +70,36 @@ export default function VendorDetailClient({ vendor }: { vendor: TVendor }) {
             </Heading>
             <p className="text-xs sm:text-sm text-zinc-500 mt-0.5">{vendor.location}</p>
           </div>
-          <button
-            type="button"
-            onClick={() => toggleFavorite(vendor.handle)}
-            className={clsx(
-              'rounded-full px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold shadow-sm transition flex-shrink-0 touch-manipulation',
-              isFav ? 'bg-rose-600 text-white hover:bg-rose-700' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 active:bg-zinc-300'
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {shortlistItem && shortlistItem.status !== 'FAVOURITED' && (
+              <span className={clsx(
+                'rounded-full px-2 py-0.5 text-xs font-medium',
+                shortlistItem.status === 'QUOTED' && 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                shortlistItem.status === 'ACCEPTED' && 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+                shortlistItem.status === 'BOOKED' && 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+              )}>
+                {shortlistItem.status === 'QUOTED' && 'Quote Sent'}
+                {shortlistItem.status === 'ACCEPTED' && 'Quote Accepted'}
+                {shortlistItem.status === 'BOOKED' && 'Booked'}
+              </span>
             )}
-          >
-            {isFav ? 'Saved' : 'Save'}
-          </button>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await toggleShortlist(vendorProfileId)
+                } catch (error) {
+                  console.error('Error toggling shortlist:', error)
+                }
+              }}
+              className={clsx(
+                'rounded-full px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold shadow-sm transition flex-shrink-0 touch-manipulation',
+                isShortlisted ? 'bg-rose-600 text-white hover:bg-rose-700' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 active:bg-zinc-300'
+              )}
+            >
+              {isShortlisted ? 'Saved' : 'Save'}
+            </button>
+          </div>
         </div>
 
         <div className="rounded-lg bg-rose-50 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-rose-800">
@@ -86,23 +130,29 @@ export default function VendorDetailClient({ vendor }: { vendor: TVendor }) {
           </div>
         )}
 
-        <div className="flex flex-wrap gap-2 sm:gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                <button
+                  onClick={() => setQuoteRequestOpen(true)}
+                  className="flex-1 sm:flex-none rounded-md bg-rose-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm transition hover:bg-rose-700 active:bg-rose-800 touch-manipulation"
+                >
+                  Request quote
+                </button>
           <button
-            onClick={() => setQuotationOpen(true)}
-            className="flex-1 sm:flex-none rounded-md bg-rose-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm transition hover:bg-rose-700 active:bg-rose-800 touch-manipulation"
-          >
-            Request quote
-          </button>
-          <button
-            onClick={() => toggleFavorite(vendor.handle)}
+            onClick={async () => {
+              try {
+                await toggleShortlist(vendorProfileId)
+              } catch (error) {
+                console.error('Error toggling shortlist:', error)
+              }
+            }}
             className={clsx(
               'flex-1 sm:flex-none rounded-md px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold shadow-sm transition touch-manipulation',
-              isFav
+              isShortlisted
                 ? 'bg-rose-100 text-rose-700 hover:bg-rose-200 active:bg-rose-300'
                 : 'bg-zinc-100 text-zinc-800 hover:bg-zinc-200 active:bg-zinc-300'
             )}
           >
-            {isFav ? 'Remove favorite' : 'Add to favorites'}
+            {isShortlisted ? 'Remove from shortlist' : 'Add to shortlist'}
           </button>
         </div>
 
@@ -125,6 +175,19 @@ export default function VendorDetailClient({ vendor }: { vendor: TVendor }) {
                 <span className="text-zinc-500">Phone:</span>
                 <a href={`tel:${vendor.contact.phone}`} className="text-rose-600 hover:underline">
                   {vendor.contact.phone}
+                </a>
+              </div>
+            ) : null}
+            {vendor.contact?.whatsapp ? (
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="text-zinc-500">WhatsApp:</span>
+                <a 
+                  href={`https://wa.me/${vendor.contact.whatsapp.replace(/[^0-9]/g, '')}`} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rose-600 hover:underline"
+                >
+                  {vendor.contact.whatsapp}
                 </a>
               </div>
             ) : null}
@@ -176,14 +239,13 @@ export default function VendorDetailClient({ vendor }: { vendor: TVendor }) {
         </div>
       </div>
 
-      <QuotationFormModal vendor={vendor} open={quotationOpen} onClose={() => setQuotationOpen(false)} />
-      <BookingModal
-        vendor={vendor}
-        selectedDate={selectedDate}
-        open={bookingOpen}
-        onClose={() => setBookingOpen(false)}
-        onSuccess={handleBookingSuccess}
-      />
+            <QuoteRequestModal
+              vendor={vendor}
+              selectedDate={selectedDate}
+              open={quoteRequestOpen}
+              onClose={() => setQuoteRequestOpen(false)}
+              onSuccess={handleQuoteRequestSuccess}
+            />
     </>
   )
 }

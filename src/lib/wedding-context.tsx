@@ -1,6 +1,6 @@
 'use client'
 
-import { getFavoriteVendors, getFavorites, toggleFavorite } from '@/lib/favorites-manager'
+import { getShortlistedVendors, getShortlist, toggleShortlist } from '@/lib/shortlist-manager'
 import { addQuotation, getQuotations } from '@/lib/quotations-manager'
 import {
   getBudgetCategories,
@@ -38,15 +38,15 @@ import {
   removeFromHousehold as removeFromHouseholdFn,
 } from '@/lib/guest-manager'
 import { readStorage, writeStorage } from '@/lib/local-storage'
-import { TFavorite, TQuotation, TWeddingInfo, TVendor, TBudgetCategory, TBudgetExpense, TTimelineMilestone, TChecklistItem, TGuest, TGuestHousehold } from '@/type'
+import { TShortlist, TQuotation, TWeddingInfo, TVendor, TBudgetCategory, TBudgetExpense, TTimelineMilestone, TChecklistItem, TGuest, TGuestHousehold } from '@/type'
 import React, { createContext, useContext, useCallback, useEffect, useMemo, useState } from 'react'
 
 interface WeddingContextValue {
   weddingInfo: TWeddingInfo
   setWeddingInfo: (info: TWeddingInfo) => void
-  favorites: TFavorite[]
-  favoriteVendors: TVendor[]
-  toggleFavorite: (handle: string) => void
+  shortlist: TShortlist[]
+  shortlistedVendors: TVendor[]
+  toggleShortlist: (vendorProfileId: number) => Promise<void>
   quotations: TQuotation[]
   addQuotation: (payload: Omit<TQuotation, 'id' | 'status' | 'createdAt'>) => void
   // Budget
@@ -90,8 +90,8 @@ const WEDDING_KEY = 'ttk_wedding_info'
 
 export function WeddingProvider({ children }: { children: React.ReactNode }) {
   const [weddingInfo, setWeddingInfoState] = useState<TWeddingInfo>({})
-  const [favorites, setFavorites] = useState<TFavorite[]>([])
-  const [favoriteVendors, setFavoriteVendors] = useState<TVendor[]>([])
+  const [shortlist, setShortlist] = useState<TShortlist[]>([])
+  const [shortlistedVendors, setShortlistedVendors] = useState<TVendor[]>([])
   const [quotations, setQuotations] = useState<TQuotation[]>([])
   const [budgetCategories, setBudgetCategories] = useState<TBudgetCategory[]>([])
   const [budgetExpenses, setBudgetExpenses] = useState<TBudgetExpense[]>([])
@@ -118,8 +118,20 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const initialWeddingInfo = readStorage<TWeddingInfo>(WEDDING_KEY, {})
     setWeddingInfoState(initialWeddingInfo)
-    setFavorites(getFavorites())
-    setFavoriteVendors(getFavoriteVendors())
+    
+    // Load shortlist asynchronously
+    const loadShortlist = async () => {
+      try {
+        const shortlistData = await getShortlist()
+        setShortlist(shortlistData)
+        const vendors = await getShortlistedVendors()
+        setShortlistedVendors(vendors)
+      } catch (error) {
+        console.error('Error loading shortlist:', error)
+      }
+    }
+    loadShortlist()
+    
     setQuotations(getQuotations())
     refreshBudget()
 
@@ -157,10 +169,16 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
     }
   }, [refreshTimeline])
 
-  const handleToggleFavorite = (handle: string) => {
-    const next = toggleFavorite(handle)
-    setFavorites(next)
-    setFavoriteVendors(getFavoriteVendors())
+  const handleToggleShortlist = async (vendorProfileId: number) => {
+    try {
+      const next = await toggleShortlist(vendorProfileId)
+      setShortlist(next)
+      const vendors = await getShortlistedVendors()
+      setShortlistedVendors(vendors)
+    } catch (error) {
+      console.error('Error toggling shortlist:', error)
+      throw error // Re-throw so components can handle it
+    }
   }
 
   const handleAddQuotation = (payload: Omit<TQuotation, 'id' | 'status' | 'createdAt'>) => {
@@ -290,9 +308,9 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
     () => ({
       weddingInfo,
       setWeddingInfo,
-      favorites,
-      favoriteVendors,
-      toggleFavorite: handleToggleFavorite,
+      shortlist,
+      shortlistedVendors,
+      toggleShortlist: handleToggleShortlist,
       quotations,
       addQuotation: handleAddQuotation,
       budgetCategories,
@@ -328,8 +346,8 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
     }),
     [
       weddingInfo,
-      favorites,
-      favoriteVendors,
+      shortlist,
+      shortlistedVendors,
       quotations,
       budgetCategories,
       budgetExpenses,
@@ -337,7 +355,7 @@ export function WeddingProvider({ children }: { children: React.ReactNode }) {
       checklistItems,
       guests,
       households,
-      handleToggleFavorite,
+      handleToggleShortlist,
       handleAddQuotation,
       handleAddBudgetCategory,
       handleUpdateBudgetCategory,

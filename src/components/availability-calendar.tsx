@@ -1,12 +1,11 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { TBooking } from '@/type'
 import clsx from 'clsx'
 
 interface AvailabilityCalendarProps {
   vendorId: string
-  confirmedBookings: TBooking[]
+  confirmedBookings: Array<{ date: string; slot: 'morning' | 'evening'; status?: string }>
   onDateClick: (date: string) => void
 }
 
@@ -31,6 +30,10 @@ export default function AvailabilityCalendar({
   confirmedBookings,
   onDateClick,
 }: AvailabilityCalendarProps) {
+  // Debug: Log bookings on mount/update
+  useEffect(() => {
+    console.log('AvailabilityCalendar - confirmedBookings:', confirmedBookings)
+  }, [confirmedBookings])
   // Use useState with lazy initializer to avoid hydration mismatch
   const [today, setToday] = useState<Date | null>(null)
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
@@ -72,11 +75,32 @@ export default function AvailabilityCalendar({
 
   // Get booking status for a date
   const getDateStatus = (date: Date) => {
-    const dateString = date.toISOString().split('T')[0]
-    const dayBookings = confirmedBookings.filter((b) => b.date === dateString)
+    // Format date as YYYY-MM-DD to match backend format
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const dateString = `${year}-${month}-${day}`
+    
+    const dayBookings = confirmedBookings.filter((b) => {
+      // Normalize both dates for comparison
+      const bookingDate = String(b.date).trim()
+      return bookingDate === dateString
+    })
 
     const morningBooked = dayBookings.some((b) => b.slot === 'morning')
     const eveningBooked = dayBookings.some((b) => b.slot === 'evening')
+
+    // Debug logging for specific date
+    if (dateString === '2026-01-31') {
+      console.log('Checking date 2026-01-31:', {
+        dateString,
+        confirmedBookings: confirmedBookings.length,
+        dayBookings: dayBookings.length,
+        dayBookingsData: dayBookings,
+        morningBooked,
+        eveningBooked,
+      })
+    }
 
     return { morningBooked, eveningBooked, fullyBooked: morningBooked && eveningBooked }
   }
@@ -97,7 +121,11 @@ export default function AvailabilityCalendar({
     const { fullyBooked } = getDateStatus(date)
     if (fullyBooked) return
 
-    const dateString = date.toISOString().split('T')[0]
+    // Format date as YYYY-MM-DD using local date components to avoid timezone issues
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const dateString = `${year}-${month}-${day}`
     onDateClick(dateString)
   }
 

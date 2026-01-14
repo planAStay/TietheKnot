@@ -4,6 +4,9 @@ import VendorCard from '@/components/vendor-card'
 import WeddingTimelineChecklist from '@/components/wedding-timeline-checklist'
 import { getVendorCategories, getAllVendors } from '@/data-wedding'
 import { useWedding } from '@/lib/wedding-context'
+import { useAuth } from '@/lib/auth-context'
+import { getMyQuoteRequests } from '@/lib/api/quote-request'
+import { QuoteRequest } from '@/type'
 import { getBudgetSummary, formatCurrency } from '@/lib/budget-manager'
 import clsx from 'clsx'
 import { useCallback, useEffect, useState } from 'react'
@@ -25,14 +28,16 @@ export default function DashboardClient() {
   const categories = getVendorCategories().slice(0, 6)
   const featured = getAllVendors().filter((v) => v.featured).slice(0, 4)
   const { 
-    favorites, 
-    favoriteVendors, 
+    shortlist, 
+    shortlistedVendors, 
     quotations, 
     weddingInfo, 
     setWeddingInfo,
     budgetCategories,
     budgetExpenses,
   } = useWedding()
+  const { isAuthenticated } = useAuth()
+  const [quoteRequests, setQuoteRequests] = useState<QuoteRequest[]>([])
 
   const coupleNames = [weddingInfo.partnerOne, weddingInfo.partnerTwo].filter(Boolean).join(' & ')
   
@@ -74,6 +79,21 @@ export default function DashboardClient() {
     }, 1000)
     return () => clearInterval(id)
   }, [weddingInfo.weddingDate, computeCountdown])
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadQuoteRequests()
+    }
+  }, [isAuthenticated])
+
+  const loadQuoteRequests = async () => {
+    try {
+      const quotes = await getMyQuoteRequests()
+      setQuoteRequests(quotes)
+    } catch (err) {
+      console.error('Error loading quote requests:', err)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -206,15 +226,15 @@ export default function DashboardClient() {
           />
           <QuickStatCard
             icon={<HeartIcon className="h-5 w-5 text-accent" />}
-            value={favoriteVendors.length.toString()}
+            value={shortlistedVendors.length.toString()}
             label="saved vendors"
-            href="/favorites"
+            href="/shortlist"
           />
           <QuickStatCard
             icon={<DocumentTextIcon className="h-5 w-5 text-secondary" />}
-            value={quotations.length.toString()}
+            value={quoteRequests.length.toString()}
             label="quotations"
-            href="/quotations"
+            href="/quotes"
           />
         </div>
       </section>
