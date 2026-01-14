@@ -252,7 +252,7 @@ export default function LandingPage() {
                 {
                   icon: '♥',
                   title: 'Stress-Free Planning',
-                  desc: 'Our intuitive tools keep everything organized, from favorites to quotes to timelines.',
+                  desc: 'Our intuitive tools keep everything organized, from shortlist to quotes to timelines.',
                 },
                 {
                   icon: '⚡',
@@ -455,7 +455,7 @@ export default function LandingPage() {
                     </svg>
                   ),
                 title: 'Plan & Organize',
-                desc: 'Save your favorites and manage everything in one place. Compare options, track your budget, and stay organized throughout your journey.',
+                desc: 'Save your shortlist and manage everything in one place. Compare options, track your budget, and stay organized throughout your journey.',
                 },
                 {
                 step: '03',
@@ -647,7 +647,7 @@ export default function LandingPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               ),
-                title: 'Favorites Collection',
+                title: 'Shortlist Collection',
                 desc: 'Save vendors you love with a simple heart tap. Build your dream team across all categories.',
               gradient: 'from-rose-50 to-primary/40',
             },

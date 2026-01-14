@@ -231,3 +231,18 @@ body {
 @utility swimlane {
   @apply grid w-full snap-x snap-mandatory scroll-px-6 grid-flow-col justify-start gap-4 overflow-x-scroll;
 }
+
+/* Animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@utility animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+

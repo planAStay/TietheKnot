@@ -50,6 +50,7 @@ export interface TVendor {
   contact?: {
     phone?: string
     email?: string
+    whatsapp?: string
     website?: string
     instagram?: string
   }
@@ -57,9 +58,70 @@ export interface TVendor {
   featured?: boolean
 }
 
-export interface TFavorite {
-  vendorHandle: string
-  addedAt: string
+export interface TShortlist {
+  id: number
+  vendorProfileId: number
+  vendorProfileName: string
+  vendorProfileCategory: string
+  status: 'FAVOURITED' | 'QUOTED' | 'ACCEPTED' | 'BOOKED'
+  quoteRequestId?: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type QuoteStatus = 'OPEN' | 'QUOTED' | 'ACCEPTED' | 'DECLINED'
+export type AuthorRole = 'CLIENT' | 'VENDOR'
+export type BookingStatus = 'CONFIRMED' | 'CANCELLED'
+export type TimeSlot = 'MORNING' | 'NIGHT' | 'FULL_DAY'
+
+export interface QuoteRequestAnswer {
+  id: number
+  questionText: string
+  answerText: string
+  createdAt: string
+}
+
+export interface Quote {
+  id: number
+  amount: number
+  notes?: string
+  updatedAt: string
+}
+
+export interface QuoteMessage {
+  id: number
+  authorRole: AuthorRole
+  message: string
+  createdAt: string
+}
+
+export interface QuoteRequest {
+  id: number
+  vendorProfileId: number
+  vendorProfileName: string
+  vendorProfileCategory: string
+  clientId: number
+  clientName: string
+  clientEmail: string
+  email: string
+  phone: string
+  weddingDate: string
+  guestCount: number
+  location: string
+  timeSlot: TimeSlot
+  status: QuoteStatus
+  createdAt: string
+  updatedAt: string
+  answers: QuoteRequestAnswer[]
+  quote?: Quote
+  messages: QuoteMessage[]
+  booking?: Booking
+}
+
+export interface Booking {
+  id: number
+  status: BookingStatus
+  createdAt: string
 }
 
 export interface TQuotation {
@@ -131,4 +193,80 @@ export interface TDayAvailability {
   eveningBooked: boolean
   morningStatus?: TBookingStatus
   eveningStatus?: TBookingStatus
+}
+
+// Timeline and Checklist types
+export type TTaskPriority = 'low' | 'medium' | 'high' | 'urgent'
+
+export interface TTimelineMilestone {
+  id: string
+  title: string
+  description?: string
+  monthsBefore: number // Default relative timing (e.g., 12 means 12 months before)
+  customStartDate?: string // Optional override for start date
+  customEndDate?: string // Optional override for end date
+  startDate?: string // Calculated start date
+  endDate?: string // Calculated end date
+  color?: string // Optional color for visual distinction
+}
+
+export interface TChecklistItem {
+  id: string
+  title: string
+  description?: string
+  isCompleted: boolean
+  dueDate?: string // ISO date string
+  milestoneId: string // Parent milestone
+  category?: string // Optional category (e.g., "Venue", "Photography")
+  priority: TTaskPriority
+  assignedTo?: string // Optional (e.g., "Partner 1", "Partner 2", "Both")
+  notes?: string
+  reminderDate?: string // Optional reminder date (ISO date string)
+}
+
+// Guest Management types
+export type TGuestSide = 'bride' | 'groom' | 'mutual'
+export type TRsvpStatus = 'draft' | 'invited' | 'attending' | 'declined' | 'no-response'
+export type TPriorityTier = 'tier1' | 'tier2'
+
+export type TRelationshipLabel =
+  | 'Extended Family'
+  | 'Immediate Family'
+  | 'College Friends'
+  | 'Work'
+  | 'High School Friends'
+  | 'Childhood Friends'
+  | 'Out of Town'
+  | 'Vendor'
+  | 'Other'
+
+export interface TGuest {
+  id: string
+  name: string
+  email?: string
+  phone?: string
+  side: TGuestSide
+  rsvpStatus: TRsvpStatus
+  priorityTier: TPriorityTier
+  relationshipLabels: TRelationshipLabel[]
+  householdId?: string
+  guestCount: number // Total number of people (1 for single guest, 2+ for families/groups)
+  invitedAt?: string // ISO date string
+  respondedAt?: string // ISO date string
+  openedInviteAt?: string // ISO date string - when invite link was opened
+  viewedRsvpAt?: string // ISO date string - when RSVP page was viewed
+  thankYouSent: boolean
+  thankYouSentAt?: string // ISO date string
+  lastReminderSentAt?: string // ISO date string
+  notes?: string
+  createdAt: string // ISO date string
+  updatedAt: string // ISO date string
+}
+
+export interface TGuestHousehold {
+  id: string
+  name: string
+  memberIds: string[] // Array of guest IDs
+  createdAt: string // ISO date string
+  updatedAt: string // ISO date string
 }
