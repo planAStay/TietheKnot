@@ -16,7 +16,7 @@ const HeroSection2 = ({ className }: HeroSection2Props) => {
         <div className="flex-3/5 self-end py-16 pr-6 pl-container xl:pb-20">
           <div className="max-w-2xl">
             <StarSvg width={48} height={48} />
-            <Heading fontSize="text-5xl/none md:text-6xl/none lg:text-7xl/none font-semibold" className="mt-8">
+            <Heading className="mt-8 text-5xl/none md:text-6xl/none lg:text-7xl/none font-semibold">
               <span data-slot="italic">True</span> to Oneself kind to <span data-slot="italic">Nature.</span>
             </Heading>
             <Text className="mt-8 max-w-sm">

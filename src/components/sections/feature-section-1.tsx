@@ -45,9 +45,9 @@ const FeatureSection1 = ({
       <div className="flex flex-2/3 flex-col gap-16">
         <div className="relative">
           <Heading
-            fontSize="text-5xl font-semibold"
+            level={1}
+            className="text-5xl font-semibold max-w-[400px]"
             dangerouslySetInnerHTML={{ __html: heading }}
-            className="max-w-[400px]"
           ></Heading>
           <VectorArrowDown2 className="absolute start-60 top-1/2 hidden h-[150px] md:block 2xl:start-72 2xl:top-2/3 2xl:h-auto" />
         </div>

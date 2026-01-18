@@ -1,7 +1,7 @@
 import { Logo } from '@/app/logo'
 import WeddingDatePill from '@/components/header/wedding-date-pill'
 import CategoriesToggle from '@/components/header/categories-toggle'
-import ThemeToggle from '@/components/theme-toggle'
+import { ThemeToggle } from '@/components/theme-toggle'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { TextLink } from '../text'

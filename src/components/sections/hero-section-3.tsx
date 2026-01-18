@@ -18,7 +18,7 @@ const HeroSection3 = ({ className }: HeroSection3Props) => {
       <div className="relative container flex flex-1 pt-20 pb-36">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center justify-center gap-y-7 self-center text-center text-white">
           <StarSvg width={48} height={48} color="white" />
-          <Heading fontSize="text-5xl/none md:text-6xl/none lg:text-7xl/none 2xl:text-8xl/none font-semibold">
+          <Heading className="text-5xl/none md:text-6xl/none lg:text-7xl/none 2xl:text-8xl/none font-semibold">
             <span data-slot="italic">Where</span> Luxury <br /> finds its <span data-slot="italic">Meaning.</span>
           </Heading>
           <Text className="max-w-sm">

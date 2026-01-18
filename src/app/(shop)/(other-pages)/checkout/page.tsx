@@ -29,7 +29,7 @@ export default async function Page() {
           <div>
             {/* Contact */}
             <div>
-              <Heading fontSize="text-2xl font-medium text-zinc-950" level={3}>
+              <Heading level={3} className="text-2xl font-medium text-zinc-950">
                 <span data-slot="italic">Contact</span> information
               </Heading>
 
@@ -42,7 +42,7 @@ export default async function Page() {
 
             {/* Shipping */}
             <div className="mt-10 border-t border-zinc-200 pt-10">
-              <Heading fontSize="text-2xl font-medium text-zinc-950" level={3}>
+              <Heading level={3} className="text-2xl font-medium text-zinc-950">
                 <span data-slot="italic">Shipping</span> information
               </Heading>
               <div className="mt-10 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
@@ -105,7 +105,7 @@ export default async function Page() {
             {/* Delivery */}
             <div className="mt-10 border-t border-zinc-200 pt-10">
               <Fieldset>
-                <Heading fontSize="text-2xl font-medium text-zinc-950" level={3}>
+                <Heading level={3} className="text-2xl font-medium text-zinc-950">
                   <span data-slot="italic">Delivery</span> method
                 </Heading>
 
@@ -115,7 +115,7 @@ export default async function Page() {
 
             {/* Payment */}
             <div className="mt-10 border-t border-zinc-200 pt-10">
-              <Heading fontSize="text-2xl font-medium text-zinc-950" level={3}>
+              <Heading level={3} className="text-2xl font-medium text-zinc-950">
                 <span data-slot="italic">Payment</span> method
               </Heading>
 
@@ -165,7 +165,7 @@ export default async function Page() {
 
           {/* Order summary */}
           <div className="mt-10 lg:mt-0">
-            <Heading fontSize="text-2xl font-medium text-zinc-950" level={3}>
+            <Heading level={3} className="text-2xl font-medium text-zinc-950">
               <span data-slot="italic">Order</span> summary
             </Heading>
 

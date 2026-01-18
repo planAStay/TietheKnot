@@ -16,33 +16,27 @@ export default function GetStartedPage() {
   }, [setTheme])
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-text">
-      {/* Modern Mesh Gradient Background */}
+      {/* Clean Background with subtle accents */}
       <div className="absolute inset-0">
-        {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-primary to-rose-50" />
+        {/* Base background */}
+        <div className="absolute inset-0 bg-background" />
         
-        {/* Aurora-like animated gradients */}
+        {/* Subtle decorative circles */}
         <div 
-          className="absolute -left-1/4 -top-1/4 h-[800px] w-[800px] rounded-full opacity-30"
+          className="absolute -left-1/4 -top-1/4 h-[800px] w-[800px] rounded-full bg-primary/5"
           style={{
-            background:
-              'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 55%, transparent) 0%, color-mix(in srgb, var(--color-accent) 30%, transparent) 40%, transparent 70%)',
             animation: 'float 20s ease-in-out infinite',
           }}
         />
         <div 
-          className="absolute -right-1/4 top-1/4 h-[600px] w-[600px] rounded-full opacity-35"
+          className="absolute -right-1/4 top-1/4 h-[600px] w-[600px] rounded-full bg-accent/5"
           style={{
-            background:
-              'radial-gradient(circle, color-mix(in srgb, var(--color-accent) 45%, transparent) 0%, color-mix(in srgb, var(--color-primary) 25%, transparent) 50%, transparent 70%)',
             animation: 'float 25s ease-in-out infinite reverse',
           }}
         />
         <div 
-          className="absolute -bottom-1/4 left-1/3 h-[700px] w-[700px] rounded-full opacity-25"
+          className="absolute -bottom-1/4 left-1/3 h-[700px] w-[700px] rounded-full bg-secondary/5"
           style={{
-            background:
-              'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 45%, transparent) 0%, color-mix(in srgb, var(--color-rose-400) 30%, transparent) 45%, transparent 70%)',
             animation: 'float 22s ease-in-out infinite',
             animationDelay: '-5s',
           }}
@@ -101,29 +95,19 @@ export default function GetStartedPage() {
           className="absolute right-[40%] bottom-[12%] h-2 w-2 rounded-full bg-secondary shadow-[0_0_18px_8px_color-mix(in_srgb,var(--color-secondary)_35%,transparent)]"
           style={{ animation: 'pulse 4.6s ease-in-out infinite', animationDelay: '-0.4s' }}
         />
-        
-        {/* Subtle light beams */}
-        <div 
-          className="absolute left-0 top-0 h-full w-1/2 opacity-15"
-          style={{
-            background: 'linear-gradient(135deg, color-mix(in srgb, var(--color-background) 20%, transparent) 0%, transparent 50%)',
-          }}
-        />
       </div>
 
       {/* Main Content */}
       <div className="relative flex min-h-screen flex-col items-center justify-center px-6">
-        {/* Glassmorphism Card */}
-        <div className="relative max-w-3xl rounded-3xl border border-accent/30 bg-white/85 p-12 text-center text-text shadow-2xl shadow-black/20 backdrop-blur-2xl sm:p-16 md:p-20">
-          {/* Card glow effect */}
-          <div className="absolute -inset-px rounded-3xl bg-gradient-to-b from-primary/25 via-transparent to-transparent opacity-60" />
+        {/* Clean Card */}
+        <div className="relative max-w-3xl rounded-3xl border border-zinc-200 bg-white p-12 text-center text-text shadow-lg sm:p-16 md:p-20">
           
           <div className="relative">
             {/* Badge */}
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/50 bg-primary/40 px-4 py-2 backdrop-blur-sm text-text">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary bg-primary/10 px-4 py-2 text-text">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-secondary opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-secondary" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
               </span>
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-text">
                 Coming This Year
@@ -150,11 +134,11 @@ export default function GetStartedPage() {
 
             {/* Decorative divider */}
             <div className="mx-auto mb-8 flex items-center justify-center gap-4">
-              <div className="h-px w-16 bg-gradient-to-r from-transparent to-accent/50" />
+              <div className="h-px w-16 bg-accent" />
               <svg className="h-5 w-5 text-accent" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
               </svg>
-              <div className="h-px w-16 bg-gradient-to-l from-transparent to-accent/50" />
+              <div className="h-px w-16 bg-accent" />
         </div>
 
             {/* Description */}
@@ -168,10 +152,9 @@ export default function GetStartedPage() {
                 href="https://www.figma.com/deck/VqAu4SOUOfqVOJchXZNmnm/TieTheKnot"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full border border-accent/50 bg-gradient-to-r from-primary to-rose-50 px-8 py-4 text-sm font-semibold text-text shadow-xl shadow-accent/20 transition-all duration-500 hover:shadow-accent/40 hover:scale-[1.02] sm:px-10 sm:py-5 sm:text-base"
+                className="group relative inline-flex items-center justify-center gap-3 rounded-full border border-primary bg-primary px-8 py-4 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:scale-[1.02] sm:px-10 sm:py-5 sm:text-base"
                 aria-label="Check our portfolio on Instagram"
               >
-                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/35 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
                 <span className="relative">Profile</span>
                 <svg
                   className="relative h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
@@ -188,11 +171,8 @@ export default function GetStartedPage() {
                 href="https://api.whatsapp.com/send/?phone=94765776617&text&type=phone_number&app_absent=0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full border border-accent/50 bg-gradient-to-r from-primary to-rose-50 px-8 py-4 text-sm font-semibold text-text shadow-xl shadow-accent/20 transition-all duration-500 hover:shadow-accent/40 hover:scale-[1.02] sm:px-10 sm:py-5 sm:text-base"
+                className="group relative inline-flex items-center justify-center gap-3 rounded-full border border-text bg-text px-8 py-4 text-sm font-semibold text-background shadow-md transition-all duration-300 hover:bg-text/90 hover:shadow-lg hover:scale-[1.02] sm:px-10 sm:py-5 sm:text-base"
               >
-                {/* Button shine effect */}
-                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/35 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                
                 <span className="relative">Get in Touch</span>
                 <svg 
                   className="relative h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" 
@@ -227,7 +207,7 @@ export default function GetStartedPage() {
                   href={social.href}
             target="_blank"
             rel="noopener noreferrer"
-                  className="group flex h-11 w-11 items-center justify-center rounded-full border border-accent/50 bg-white/80 text-text/70 shadow-md shadow-accent/10 backdrop-blur-sm transition-all duration-300 hover:border-secondary/60 hover:bg-primary/70 hover:text-text"
+                  className="group flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white text-text/70 shadow-md transition-all duration-300 hover:border-primary hover:bg-primary/10 hover:text-primary"
                   aria-label={social.name}
                 >
                   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
