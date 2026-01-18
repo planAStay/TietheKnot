@@ -190,9 +190,9 @@ export default function VendorQuestionsPage() {
     <div className="grid w-full max-w-4xl grid-cols-1 gap-8">
       <div>
         <Link href="/">
-          <Logo className="text-zinc-950 dark:text-white" />
+          <Logo className="text-text" />
         </Link>
-        <Text className="mt-5 text-zinc-600">
+        <Text className="mt-5 text-text/70">
           Add common questions that couples will answer when requesting a quote from you. You can add up to {maxQuestions} questions.
         </Text>
       </div>
@@ -204,7 +204,7 @@ export default function VendorQuestionsPage() {
       )}
 
       {/* Add/Edit Question Form */}
-      <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="rounded-lg border border-text/20 bg-surface p-6">
         <h2 className="text-lg font-semibold mb-4">
           {editingQuestion !== null ? 'Edit Question' : 'Add New Question'}
         </h2>
@@ -268,26 +268,26 @@ export default function VendorQuestionsPage() {
       <div className="space-y-4">
         <h2 className="text-lg font-semibold">Your Questions ({questions.length}/{maxQuestions})</h2>
         {questions.length === 0 ? (
-          <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-6 text-center dark:border-zinc-800 dark:bg-zinc-900">
-            <Text className="text-zinc-600">No questions added yet. Add your first question above.</Text>
+          <div className="rounded-lg border border-text/20 bg-zinc-100 dark:bg-zinc-800 p-6 text-center">
+            <Text className="text-text/70">No questions added yet. Add your first question above.</Text>
           </div>
         ) : (
           <div className="space-y-3">
             {questions.map((question, index) => (
               <div
                 key={question.id}
-                className="flex items-start justify-between rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+                className="flex items-start justify-between rounded-lg border border-text/20 bg-surface p-4"
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-sm font-medium text-zinc-500">#{index + 1}</span>
+                    <span className="text-sm font-medium text-text/50">#{index + 1}</span>
                     {question.required && (
                       <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                         Required
                       </span>
                     )}
                   </div>
-                  <Text className="text-zinc-900 dark:text-zinc-100">{question.questionText}</Text>
+                  <Text className="text-text">{question.questionText}</Text>
                 </div>
                 <div className="flex gap-2 ml-4">
                   <Button

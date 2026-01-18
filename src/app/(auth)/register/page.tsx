@@ -53,7 +53,7 @@ export default function Register() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-6 sm:gap-8">
+    <form onSubmit={handleSubmit} className="grid w-full grid-cols-1 gap-8">
       <div className="text-center">
         <p className="text-lg text-text/70 mb-2">Welcome!</p>
         <h1 className="text-3xl font-semibold text-text">
