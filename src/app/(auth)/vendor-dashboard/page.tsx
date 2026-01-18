@@ -119,7 +119,14 @@ export default function VendorDashboard() {
   }
 
   if (authLoading || isLoading) {
-    return <div>Loading...</div>
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <Text className="text-text/70">Loading dashboard...</Text>
+        </div>
+      </div>
+    )
   }
 
   if (!isAuthenticated || !user?.roles?.includes('VENDOR')) {
@@ -129,37 +136,37 @@ export default function VendorDashboard() {
   // Show "Add Vendor Profile" UI if no profile exists
   if (!profile) {
     return (
-      <div className="min-h-screen bg-background py-8">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="min-h-full bg-background">
+        <div className="py-6 px-4 sm:py-8 sm:px-6 lg:px-8 xl:px-12">
+          <div className="mx-auto max-w-7xl">
           {/* Header */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-1">
-              <Heading level={1} className="text-2xl font-semibold text-text">Vendor Dashboard</Heading>
-              <Link href="/account">
-                <Button outline className="text-xs px-2 py-1 h-7">Account Settings</Button>
-              </Link>
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <Heading level={1} className="text-2xl sm:text-3xl font-bold text-text mb-1">
+                Vendor Dashboard
+              </Heading>
+              <Text className="text-sm text-text/70">Manage your vendor profile and listings</Text>
             </div>
-            <Text className="text-sm text-text/70">Manage your vendor profile and listings</Text>
+            <Link href="/account">
+              <Button outline>Account Settings</Button>
+            </Link>
           </div>
 
           {/* No Profile Card */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-8 shadow-sm text-center dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="max-w-md mx-auto">
-              <div className="mb-4">
-                <PhotoIcon className="h-16 w-16 mx-auto text-zinc-300" />
-              </div>
-              <Heading level={2} className="text-xl font-semibold text-text mb-2">
+          <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 p-8 text-center shadow-sm">
+            <div className="mx-auto max-w-md">
+              <PhotoIcon className="mx-auto mb-4 h-16 w-16 text-zinc-300" />
+              <Heading level={2} className="mb-2 text-xl font-semibold text-text">
                 No Vendor Profile
               </Heading>
-              <Text className="text-sm text-text/70 mb-6">
+              <Text className="mb-6 text-sm text-text/70">
                 Create your vendor profile to start listing your services on TieTheKnot and connect with couples looking for your services.
               </Text>
               <Link href="/vendor-profile">
-                <Button className="bg-primary text-white hover:bg-primary/90">
-                  Add Vendor Profile
-                </Button>
+                <Button>Create Vendor Profile</Button>
               </Link>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -202,265 +209,247 @@ export default function VendorDashboard() {
   const statusConfig = getApprovalStatusConfig()
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+    <div className="min-h-full bg-background">
+      <div className="py-6 px-4 sm:py-8 sm:px-6 lg:px-8 xl:px-12">
+        <div className="mx-auto max-w-7xl">
         {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-1">
-            <Heading level={1} className="text-2xl font-semibold text-text">Vendor Dashboard</Heading>
-            <Link href="/account">
-              <Button outline className="text-xs px-2 py-1 h-7">Account Settings</Button>
-            </Link>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <Heading level={1} className="text-2xl sm:text-3xl font-bold text-text mb-1">
+              Vendor Dashboard
+            </Heading>
+            <Text className="text-sm text-text/70">Manage your vendor profile and listings</Text>
           </div>
-          <Text className="text-sm text-text/70">Manage your vendor profile and listings</Text>
+          <Link href="/account">
+            <Button outline>Account Settings</Button>
+          </Link>
         </div>
 
-        {/* Approval Status - Full Width */}
-        <div className={`rounded-xl border ${statusConfig.border} ${statusConfig.bg} p-4 mb-4`}>
+        {/* Approval Status */}
+        <div className={`mb-8 rounded-lg border ${statusConfig.border} ${statusConfig.bg} p-5 dark:border-zinc-700`}>
           <div className="flex items-center gap-3">
             <div className={statusConfig.iconColor}>{statusConfig.icon}</div>
-            <div className="flex-1">
+            <div>
               <h3 className="font-semibold text-text">{statusConfig.title}</h3>
               <p className="text-sm text-text/70">{statusConfig.message}</p>
               {profile.approvalStatus === 'REJECTED' && profile.adminNotes && (
-                <div className="mt-2 p-2 bg-white rounded border border-red-200">
-                  <p className="text-xs font-medium text-text mb-1">Admin Feedback:</p>
-                  <p className="text-xs text-text/70">{profile.adminNotes}</p>
+                <div className="mt-2 rounded border border-red-200 bg-white dark:bg-zinc-800 dark:border-red-900 p-2 text-xs">
+                  <p className="font-medium text-text mb-1">Admin Feedback:</p>
+                  <p className="text-text/70">{profile.adminNotes}</p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Grid Layout - Desktop: 2 columns, Mobile: 1 column */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Left Column */}
-          <div className="space-y-4">
-            {/* Profile Card */}
-            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1 min-w-0">
-                  <Heading level={2} className="text-lg font-semibold text-text mb-1 break-words">
-                    {profile.businessName}
-                  </Heading>
-                  <Text className="text-secondary text-xs uppercase mb-2">{profile.category}</Text>
-                  
-                  <div className="space-y-1.5 mb-3">
-                    {profile.baseLocation && (
-                      <div className="flex items-center gap-1.5 text-xs text-text/70">
-                        <MapPinIcon className="h-3.5 w-3.5 text-secondary" />
-                        <span>{profile.baseLocation}</span>
-                      </div>
-                    )}
-                    
-                    {profile.phone && (
-                      <div className="flex items-center gap-1.5 text-xs text-text/70">
-                        <PhoneIcon className="h-3.5 w-3.5 text-text/50" />
-                        <span>{profile.phone}</span>
-                      </div>
-                    )}
+        {/* 4 Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        {/* 1. Vendor Profile Details */}
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <Heading level={2} className="text-lg font-semibold text-text">Profile Details</Heading>
+            <div className="flex gap-2">
+              <Link href="/vendor-profile">
+                <Button outline className="!px-3 !py-2">
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Button
+                outline
+                className="!px-3 !py-2 text-red-600 border-red-300 hover:bg-red-50 dark:border-red-700 dark:hover:bg-red-950/20"
+                onClick={handleDeleteProfile}
+                disabled={isDeleting}
+              >
+                <TrashIcon className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <div>
+              <h3 className="text-xl font-bold text-text mb-1">{profile.businessName}</h3>
+              <p className="text-xs uppercase text-secondary font-semibold">{profile.category}</p>
+            </div>
+
+            {profile.baseLocation && (
+              <div className="flex items-center gap-2 text-sm text-text/70">
+                <MapPinIcon className="h-4 w-4 text-secondary" />
+                <span>{profile.baseLocation}</span>
+              </div>
+            )}
+
+            {profile.phone && (
+              <div className="flex items-center gap-2 text-sm text-text/70">
+                <PhoneIcon className="h-4 w-4 text-text/60" />
+                <span>{profile.phone}</span>
+              </div>
+            )}
+
+            {profile.priceRange && (
+              <div className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+                {profile.priceRange}
+              </div>
+            )}
+
+            {profile.serviceAreas && profile.serviceAreas.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {profile.serviceAreas.map((area, idx) => (
+                  <span key={idx} className="rounded-full bg-secondary/10 px-2 py-1 text-xs font-medium text-secondary">
+                    {area}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {profile.description && (
+              <div className="border-t border-zinc-200 pt-3">
+                <p className="text-sm text-text/80 line-clamp-2">{profile.description}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 2. Prices/Packages */}
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CurrencyDollarIcon className="h-5 w-5 text-accent" />
+              <Heading level={2} className="text-lg font-semibold text-text">Packages</Heading>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-text/70">{packages.length}/5</span>
+              <Link href="/vendor-profile">
+                <Button outline className="!px-3 !py-2 !text-sm">Manage</Button>
+              </Link>
+            </div>
+          </div>
+
+          {packages.length === 0 ? (
+            <div className="py-8 text-center">
+              <CurrencyDollarIcon className="mx-auto mb-2 h-8 w-8 text-zinc-300" />
+              <p className="mb-3 text-sm text-text/70">No packages added</p>
+              <Link href="/vendor-profile">
+                <Button className="!px-4 !py-2">Add Packages</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {packages.map((pkg) => (
+                <div key={pkg.id} className="rounded border border-zinc-200 bg-zinc-50 p-3 dark:bg-zinc-800">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h3 className="font-semibold text-text">{pkg.name}</h3>
+                    <p className="font-bold text-accent">
+                      ${pkg.priceFrom}{pkg.priceTo ? ` - $${pkg.priceTo}` : '+'}
+                    </p>
                   </div>
-
-                  {profile.priceRange && (
-                    <div className="inline-flex items-center px-2.5 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-medium mb-2">
-                      {profile.priceRange}
-                    </div>
+                  {pkg.description && (
+                    <p className="mb-2 text-xs text-text/70 line-clamp-1">{pkg.description}</p>
                   )}
-
-                  {profile.serviceAreas && profile.serviceAreas.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {profile.serviceAreas.map((area, idx) => (
-                        <span key={idx} className="px-2 py-0.5 bg-secondary/10 text-secondary text-xs rounded-full">
-                          {area}
-                        </span>
+                  {pkg.features && pkg.features.length > 0 && (
+                    <ul className="space-y-1">
+                      {pkg.features.slice(0, 2).map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-1.5 text-xs text-text/70">
+                          <CheckCircleIcon className="h-3 w-3 text-secondary flex-shrink-0 mt-0.5" />
+                          <span>{feature}</span>
+                        </li>
                       ))}
-                    </div>
+                      {pkg.features.length > 2 && (
+                        <li className="text-xs text-text/50">+{pkg.features.length - 2} more</li>
+                      )}
+                    </ul>
                   )}
                 </div>
-                <div className="flex gap-2">
-                <Link href="/vendor-profile">
-                  <Button outline className="text-xs px-2 py-1 h-7 flex items-center gap-1">
-                    <PencilIcon className="h-3 w-3" />
-                    Edit
-                  </Button>
-                </Link>
-                  <Button
-                    outline
-                    className="text-xs px-2 py-1 h-7 flex items-center gap-1 text-red-600 border-red-200 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/20"
-                    onClick={handleDeleteProfile}
-                    disabled={isDeleting}
-                  >
-                    <TrashIcon className="h-3 w-3" />
-                    {isDeleting ? 'Deleting...' : 'Delete'}
-                  </Button>
-                </div>
-              </div>
-
-              {profile.description && (
-                <p className="text-text/80 text-xs line-clamp-2 border-t border-zinc-100 pt-3">
-                  {profile.description}
-                </p>
-              )}
+              ))}
             </div>
+          )}
+        </div>
 
-            {/* Questions Card */}
-            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <QuestionMarkCircleIcon className="h-3.5 w-3.5 text-primary" />
-                  <Heading level={2} className="text-lg font-semibold text-text">
-                    Questions
-                  </Heading>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-text/70">{questions.length}/5</span>
-                  <Link href="/vendor-questions">
-                    <Button outline className="text-xs px-2 py-1 h-7">
-                      Manage
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-
-              {questions.length === 0 ? (
-                <div className="text-center py-6 bg-background rounded-lg">
-                  <QuestionMarkCircleIcon className="h-8 w-8 mx-auto mb-2 text-zinc-300" />
-                  <p className="text-xs text-text/70 mb-2">No questions added</p>
-                  <Link href="/vendor-questions">
-                    <Button className="bg-primary text-white hover:bg-primary/90 text-xs px-2.5 py-1 h-7">
-                      Add Questions
-                    </Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-1.5">
-                  {questions.map((q, index) => (
-                    <div key={q.id} className="flex items-start gap-2 p-2.5 bg-background rounded-lg">
-                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 text-primary text-xs font-semibold flex items-center justify-center mt-0.5">
-                        {index + 1}
-                      </span>
-                      <span className="text-xs text-text/80 flex-1">{q.questionText}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+        {/* 3. Questions */}
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <QuestionMarkCircleIcon className="h-5 w-5 text-primary" />
+              <Heading level={2} className="text-lg font-semibold text-text">Questions</Heading>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-text/70">{questions.length}/5</span>
+              <Link href="/vendor-questions">
+                <Button outline className="!px-3 !py-2 !text-sm">Manage</Button>
+              </Link>
             </div>
           </div>
 
-          {/* Right Column */}
-          <div className="space-y-4">
-            {/* Packages Card */}
-            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <CurrencyDollarIcon className="h-3.5 w-3.5 text-accent" />
-                  <Heading level={2} className="text-lg font-semibold text-text">
-                    Packages
-                  </Heading>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-text/70">{packages.length}/5</span>
-                  <Link href="/vendor-profile">
-                    <Button outline className="text-xs px-2 py-1 h-7">
-                      Manage
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-
-              {packages.length === 0 ? (
-                <div className="text-center py-6 bg-background rounded-lg">
-                  <CurrencyDollarIcon className="h-8 w-8 mx-auto mb-2 text-zinc-300" />
-                  <p className="text-xs text-text/70 mb-2">No packages added</p>
-                  <Link href="/vendor-profile">
-                    <Button className="bg-primary text-white hover:bg-primary/90 text-xs px-2.5 py-1 h-7">
-                      Add Packages
-                    </Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {packages.map((pkg) => (
-                    <div key={pkg.id} className="p-3 border border-zinc-200 rounded-lg bg-background hover:shadow-sm transition-shadow">
-                      <h3 className="font-semibold text-text text-xs mb-1">{pkg.name}</h3>
-                      <p className="text-sm font-bold text-secondary mb-1.5">
-                        ${pkg.priceFrom} - ${pkg.priceTo}
-                      </p>
-                      {pkg.description && (
-                        <p className="text-xs text-text/70 mb-1.5 line-clamp-2">{pkg.description}</p>
-                      )}
-                      {pkg.features && pkg.features.length > 0 && (
-                        <ul className="text-xs text-text/70 space-y-0.5">
-                          {pkg.features.slice(0, 2).map((feature, idx) => (
-                            <li key={idx} className="flex items-start gap-1.5">
-                              <CheckCircleIcon className="h-3 w-3 text-secondary flex-shrink-0 mt-0.5" />
-                              <span>{feature}</span>
-                            </li>
-                          ))}
-                          {pkg.features.length > 2 && (
-                            <li className="text-text/50 text-xs">+{pkg.features.length - 2} more</li>
-                          )}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
+          {questions.length === 0 ? (
+            <div className="py-8 text-center">
+              <QuestionMarkCircleIcon className="mx-auto mb-2 h-8 w-8 text-zinc-300" />
+              <p className="mb-3 text-sm text-text/70">No questions added</p>
+              <Link href="/vendor-questions">
+                <Button className="!px-4 !py-2">Add Questions</Button>
+              </Link>
             </div>
-
-            {/* Gallery Card */}
-            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <PhotoIcon className="h-3.5 w-3.5 text-secondary" />
-                  <Heading level={2} className="text-lg font-semibold text-text">
-                    Gallery
-                  </Heading>
+          ) : (
+            <div className="space-y-2">
+              {questions.map((q, index) => (
+                <div key={q.id} className="flex items-start gap-2 rounded bg-zinc-50 p-2 dark:bg-zinc-800">
+                  <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
+                    {index + 1}
+                  </span>
+                  <span className="flex-1 text-sm text-text/80">{q.questionText}</span>
                 </div>
-                {profile.imageUrls && profile.imageUrls.length > 0 && (
-                  <span className="text-xs text-text/70">{profile.imageUrls.length} images</span>
-                )}
-              </div>
-
-              {!profile.imageUrls || profile.imageUrls.length === 0 ? (
-                <div className="text-center py-6 bg-background rounded-lg">
-                  <PhotoIcon className="h-8 w-8 mx-auto mb-2 text-zinc-300" />
-                  <p className="text-xs text-text/70 mb-2">No images added</p>
-                  <Link href="/vendor-profile">
-                    <Button className="bg-primary text-white hover:bg-primary/90 text-xs px-2.5 py-1 h-7">
-                      Add Images
-                    </Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="grid grid-cols-3 gap-2">
-                  {profile.imageUrls.slice(0, 6).map((url, index) => (
-                    <div key={index} className="aspect-square relative rounded-lg overflow-hidden bg-zinc-100 group">
-                      <Image 
-                        src={url} 
-                        alt={`${profile.businessName} - ${index + 1}`}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        sizes="(max-width: 768px) 33vw, 200px"
-                      />
-                    </div>
-                  ))}
-                  {profile.imageUrls.length > 6 && (
-                    <div className="aspect-square relative rounded-lg overflow-hidden bg-zinc-100 flex items-center justify-center">
-                      <span className="text-xs font-medium text-text/70">+{profile.imageUrls.length - 6}</span>
-                    </div>
-                  )}
-                </div>
-              )}
+              ))}
             </div>
+          )}
+        </div>
+
+        {/* 4. Gallery */}
+        <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <PhotoIcon className="h-5 w-5 text-secondary" />
+              <Heading level={2} className="text-lg font-semibold text-text">Gallery</Heading>
+            </div>
+            {profile.imageUrls && profile.imageUrls.length > 0 && (
+              <span className="text-xs text-text/70">{profile.imageUrls.length} images</span>
+            )}
           </div>
+
+          {!profile.imageUrls || profile.imageUrls.length === 0 ? (
+            <div className="py-8 text-center">
+              <PhotoIcon className="mx-auto mb-2 h-8 w-8 text-zinc-300" />
+              <p className="mb-3 text-sm text-text/70">No images added</p>
+              <Link href="/vendor-profile">
+                <Button className="!px-4 !py-2">Add Images</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-2">
+              {profile.imageUrls.slice(0, 6).map((url, index) => (
+                <div key={index} className="relative aspect-square overflow-hidden rounded-lg bg-zinc-100">
+                  <Image
+                    src={url}
+                    alt={`${profile.businessName} - ${index + 1}`}
+                    fill
+                    className="object-cover"
+                    sizes="150px"
+                  />
+                </div>
+              ))}
+              {profile.imageUrls.length > 6 && (
+                <div className="flex aspect-square items-center justify-center rounded-lg bg-zinc-100">
+                  <span className="text-xs font-medium text-text/70">+{profile.imageUrls.length - 6}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
         </div>
 
         {error && (
-          <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4">
-            <p className="text-sm text-red-700">{error}</p>
+          <div className="mt-6 rounded-lg border border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-800 p-4">
+            <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   )
