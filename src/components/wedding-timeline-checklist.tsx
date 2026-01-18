@@ -394,9 +394,9 @@ export default function WeddingTimelineChecklist() {
   }
 
   return (
-    <div className="grid lg:grid-cols-[420px_1fr] gap-0 min-h-[600px] rounded-3xl border border-primary/10 bg-surface overflow-hidden shadow-2xl">
+    <div className="grid lg:grid-cols-[420px_1fr] gap-6">
       {/* Left Panel: Wedding Plan Overview */}
-      <div className="bg-gradient-to-b from-[#f5f3f0] to-[#faf8f5] dark:from-surface dark:to-surface/95 border-r border-primary/10 p-6 lg:p-8">
+      <div className="rounded-3xl border border-primary/10 bg-gradient-to-b from-[#f5f3f0] to-[#faf8f5] dark:from-surface dark:to-surface/95 shadow-2xl overflow-hidden p-6 lg:p-8 h-fit">
         {/* Header */}
         <div className="mb-6">
           <h2 className="text-xl font-bold text-text mb-1">Your wedding plan</h2>
@@ -496,49 +496,15 @@ export default function WeddingTimelineChecklist() {
         </div>
 
         {/* Task List - Filtered by Selected Phase */}
-        <div className="max-h-[calc(100vh-400px)] overflow-y-auto hidden-scrollbar px-1">
+        <div className="max-h-[400px] overflow-y-auto hidden-scrollbar px-1">
           <div className="space-y-3 py-1">
             {filteredTasks.length === 0 ? (
-              <div className="space-y-4">
-                <div className="rounded-2xl border-2 border-dashed border-primary/20 bg-background/30 p-8 text-center">
-                  <p className="text-sm text-text/60 mb-4">
-                    {selectedPhase !== null 
-                      ? `No tasks for phase ${selectedPhase} yet`
-                      : 'No tasks yet'}
-                  </p>
-                  <button
-                    onClick={() => {
-                      if (timelineMilestones.length > 0 && selectedPhase !== null) {
-                        const milestoneIndex = selectedPhase - 1
-                        const milestone = timelineMilestones[milestoneIndex] || timelineMilestones[0]
-                        handleOpenTaskForm(milestone.id)
-                      } else if (timelineMilestones.length > 0) {
-                        handleOpenTaskForm(timelineMilestones[0].id)
-                      }
-                    }}
-                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-3 text-sm font-semibold text-white hover:from-pink-600 hover:to-rose-600 transition shadow-md hover:shadow-lg"
-                  >
-                    <PlusIcon className="h-5 w-5" />
-                    Add Task to This Phase
-                  </button>
-                </div>
-                
-                {/* Secondary Add Task Button */}
-                <button
-                  onClick={() => {
-                    if (timelineMilestones.length > 0 && selectedPhase !== null) {
-                      const milestoneIndex = selectedPhase - 1
-                      const milestone = timelineMilestones[milestoneIndex] || timelineMilestones[0]
-                      handleOpenTaskForm(milestone.id)
-                    } else if (timelineMilestones.length > 0) {
-                      handleOpenTaskForm(timelineMilestones[0].id)
-                    }
-                  }}
-                  className="w-full rounded-xl border-2 border-dashed border-primary/30 bg-background/30 px-4 py-3 text-sm font-medium text-text/60 transition hover:border-primary/50 hover:bg-background/50 hover:text-text flex items-center justify-center gap-2"
-                >
-                  <PlusIcon className="h-4 w-4" />
-                  Add Task{selectedPhase !== null ? ` to Phase ${selectedPhase}` : ''}
-                </button>
+              <div className="rounded-2xl border-2 border-dashed border-primary/20 bg-background/30 p-8 text-center">
+                <p className="text-sm text-text/60">
+                  {selectedPhase !== null 
+                    ? `No tasks for phase ${selectedPhase} yet`
+                    : 'No tasks yet'}
+                </p>
               </div>
             ) : (
               filteredTasks.map((task) => {
@@ -612,29 +578,10 @@ export default function WeddingTimelineChecklist() {
             )}
           </div>
         </div>
-
-        {/* Add Task Button - Only show when there are tasks */}
-        {filteredTasks.length > 0 && (
-          <button
-            onClick={() => {
-              if (timelineMilestones.length > 0 && selectedPhase !== null) {
-                const milestoneIndex = selectedPhase - 1
-                const milestone = timelineMilestones[milestoneIndex] || timelineMilestones[0]
-                handleOpenTaskForm(milestone.id)
-              } else if (timelineMilestones.length > 0) {
-                handleOpenTaskForm(timelineMilestones[0].id)
-              }
-            }}
-            className="mt-4 w-full rounded-xl border-2 border-dashed border-primary/30 bg-background/30 px-4 py-3 text-sm font-medium text-text/60 transition hover:border-primary/50 hover:bg-background/50 hover:text-text flex items-center justify-center gap-2"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Add Task{selectedPhase !== null ? ` to Phase ${selectedPhase}` : ''}
-          </button>
-        )}
       </div>
 
       {/* Right Panel: Task Details */}
-      <div className="bg-gradient-to-b from-[#f0f2f5] to-[#f5f7fa] dark:from-background/90 dark:to-background/70 p-6 lg:p-8 overflow-y-auto">
+      <div className="rounded-3xl border border-primary/10 bg-gradient-to-b from-[#f0f2f5] to-[#f5f7fa] dark:from-background/90 dark:to-background/70 shadow-2xl overflow-hidden p-6 lg:p-8 overflow-y-auto">
         {selectedTask ? (
           <TaskDetailView
             task={selectedTask}
@@ -958,39 +905,41 @@ function TaskDetailView({
         </ul>
       </div>
 
-      {/* Book Vendor Card */}
-      <button
-        onClick={handleOpenBookingPopup}
-        className="group w-full rounded-2xl border-2 border-primary/20 bg-white dark:bg-background/80 p-5 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left"
-      >
-        <div className="flex items-center gap-4">
-          {/* Icon Section */}
-          <div className="relative flex-shrink-0">
-            {/* Building/Storefront Icon */}
-            <div className="relative h-14 w-14 flex items-center justify-center">
-              {/* Yellow building base */}
-              <div className="absolute inset-0 bg-accent/30 rounded-lg" />
-              {/* Building icon */}
-              <BuildingStorefrontIcon className="relative h-8 w-8 text-accent" />
-              {/* Pink starburst with checkmark overlay */}
-              <div className="absolute -right-1 -top-1 h-6 w-6 bg-primary rounded-full flex items-center justify-center shadow-lg">
-                <CheckCircleIconSolid className="h-4 w-4 text-white" />
+      {/* Book Vendor Card - Hidden for "Start your budget" task */}
+      {!task.title.toLowerCase().includes('start your budget') && (
+        <button
+          onClick={handleOpenBookingPopup}
+          className="group w-full rounded-2xl border-2 border-primary/20 bg-white dark:bg-background/80 p-5 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left"
+        >
+          <div className="flex items-center gap-4">
+            {/* Icon Section */}
+            <div className="relative flex-shrink-0">
+              {/* Building/Storefront Icon */}
+              <div className="relative h-14 w-14 flex items-center justify-center">
+                {/* Yellow building base */}
+                <div className="absolute inset-0 bg-accent/30 rounded-lg" />
+                {/* Building icon */}
+                <BuildingStorefrontIcon className="relative h-8 w-8 text-accent" />
+                {/* Pink starburst with checkmark overlay */}
+                <div className="absolute -right-1 -top-1 h-6 w-6 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                  <CheckCircleIconSolid className="h-4 w-4 text-white" />
+                </div>
               </div>
             </div>
-          </div>
-          
-          {/* Text Section */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="font-bold text-base text-text">Book vendor</span>
-              <ArrowRightIcon className="h-5 w-5 text-text/60 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+            
+            {/* Text Section */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-bold text-base text-text">Book vendor</span>
+                <ArrowRightIcon className="h-5 w-5 text-text/60 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              </div>
+              <p className="text-sm text-text/70 leading-relaxed">
+                Track and organize your booking progress.
+              </p>
             </div>
-            <p className="text-sm text-text/70 leading-relaxed">
-              Track and organize your booking progress.
-            </p>
           </div>
-        </div>
-      </button>
+        </button>
+      )}
 
       {/* Cost Estimates Card - Show for budget-related tasks */}
       {(task.category?.toLowerCase().includes('budget') || task.title.toLowerCase().includes('budget')) && (
@@ -1029,14 +978,14 @@ function TaskDetailView({
 
       {/* Ideas & Advice Section */}
       {relevantVendors.length > 0 && (
-        <div className="rounded-2xl bg-gradient-to-br from-white/80 via-white/60 to-primary/5 dark:from-background/60 dark:via-background/60 dark:to-primary/10 p-6 border border-primary/10 shadow-sm">
+        <div className="rounded-2xl bg-gradient-to-br from-white/80 via-white/60 to-primary/5 dark:from-background/60 dark:via-background/60 dark:to-primary/10 p-6 border border-primary/10 shadow-sm relative z-0">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xs font-bold uppercase tracking-widest text-text/60 flex items-center gap-2">
               <SparklesIcon className="h-4 w-4 text-primary/60" />
               IDEAS & ADVICE
             </h3>
           </div>
-          <div className="relative">
+          <div className="relative z-0">
             <div className="flex gap-5 overflow-x-auto pb-4 hidden-scrollbar snap-x snap-mandatory scroll-px-4">
               {relevantVendors.map((vendor, index) => {
                 const isShortlisted = shortlist.some(item => item.vendorHandle === vendor.handle)
@@ -1044,7 +993,7 @@ function TaskDetailView({
                 return (
                   <div
                     key={vendor.id}
-                    className="group relative flex-shrink-0 w-80 snap-start rounded-2xl border-2 border-text/10 bg-white dark:bg-background/90 overflow-hidden transition-all hover:shadow-2xl hover:border-primary/40 hover:scale-[1.03] shadow-lg"
+                    className="group relative flex-shrink-0 w-80 snap-start rounded-2xl border-2 border-text/10 bg-white dark:bg-background/90 overflow-hidden transition-all hover:shadow-2xl hover:border-primary/40 hover:scale-[1.03] shadow-lg z-0"
                   >
                     {/* Image with Overlay */}
                     <div className="relative h-56 w-full overflow-hidden">
@@ -1149,7 +1098,7 @@ function TaskDetailView({
         {/* Close Button */}
         <button
           onClick={handleCloseBookingPopup}
-          className="absolute -top-2 -right-2 z-10 rounded-full p-2 bg-white dark:bg-background border-2 border-text/20 hover:border-text/40 transition shadow-lg hover:scale-110"
+          className="absolute -top-2 -right-2 z-50 rounded-full p-2 bg-white dark:bg-background border-2 border-text/20 hover:border-text/40 transition shadow-lg hover:scale-110"
         >
           <XMarkIcon className="h-5 w-5 text-text/60" />
         </button>
@@ -1192,7 +1141,7 @@ function TaskDetailView({
               </div>
               
               {/* Vendor Results */}
-              <div className="max-h-[400px] overflow-y-auto space-y-3 pr-2">
+              <div className="max-h-[400px] overflow-y-auto space-y-3 pr-2 relative isolate">
                 {filteredVendors.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-text/60">No vendors found. Try a different search term.</p>
@@ -1206,15 +1155,18 @@ function TaskDetailView({
                       <button
                         key={vendor.id}
                         onClick={() => handleSelectVendor(vendor)}
+                        type="button"
                         className={clsx(
-                          'w-full text-left rounded-xl border-2 p-4 transition-all',
+                          'w-full text-left rounded-xl border-2 p-4 transition-all relative isolate',
+                          'overflow-hidden',
                           isSelected
-                            ? 'border-primary bg-primary/5 shadow-md scale-[1.02]'
+                            ? 'border-primary bg-primary/5 shadow-md'
                             : 'border-text/10 bg-white dark:bg-background/80 hover:border-primary/30 hover:shadow-sm'
                         )}
+                        style={{ position: 'relative', zIndex: 1 }}
                       >
-                        <div className="flex items-start gap-4">
-                          <div className="relative h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden">
+                        <div className="flex items-start gap-4 relative z-10">
+                          <div className="relative h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden bg-text/5">
                             <Image
                               src={vendor.heroImage.src}
                               alt={vendor.heroImage.alt}
@@ -1242,7 +1194,7 @@ function TaskDetailView({
                                 )}
                               </div>
                               {isShortlisted && (
-                                <HeartIconSolid className="h-5 w-5 text-red-500 flex-shrink-0" />
+                                <HeartIconSolid className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
                               )}
                             </div>
                           </div>

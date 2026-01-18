@@ -5,242 +5,155 @@ const TIMELINE_MILESTONES_KEY = 'ttk_timeline_milestones'
 const CHECKLIST_ITEMS_KEY = 'ttk_checklist_items'
 
 // Default wedding planning milestones (relative to wedding date)
+// Exactly 4 phases matching the UI: 0-1 month, 1-3 months, 3-6 months, 6-12 months
 export const DEFAULT_MILESTONES: Omit<TTimelineMilestone, 'id'>[] = [
   {
-    title: '12-6 Months Before',
+    title: '6-12 Months Before',
     description: 'Early planning and major decisions',
     monthsBefore: 12,
     color: 'blue',
   },
   {
-    title: '6-3 Months Before',
-    description: 'Dress fittings, catering, and invitations',
+    title: '3-6 Months Before',
+    description: 'Mid-planning tasks and vendor bookings',
     monthsBefore: 6,
     color: 'purple',
   },
   {
-    title: '3-1 Months Before',
-    description: 'Final confirmations and rehearsals',
+    title: '1-3 Months Before',
+    description: 'Final confirmations and preparations',
     monthsBefore: 3,
     color: 'pink',
   },
   {
-    title: '1 Month Before',
-    description: 'Final payments and day-of preparations',
+    title: '0-1 Month Before',
+    description: 'Final details and day-of preparations',
     monthsBefore: 1,
     color: 'orange',
   },
-  {
-    title: 'Final Week',
-    description: 'Last-minute details and relaxation',
-    monthsBefore: 0.25, // 1 week = 0.25 months
-    color: 'red',
-  },
 ]
 
-// Default checklist items organized by milestone (based on monthsBefore)
+// Default checklist items - exactly 16 tasks organized into 4 phases
+// Phase 1 (0-1 month): Tasks 1-4
+// Phase 2 (1-3 months): Tasks 5-8
+// Phase 3 (3-6 months): Tasks 9-12
+// Phase 4 (6-12 months): Tasks 13-16
 export const DEFAULT_CHECKLIST_ITEMS: Omit<TChecklistItem, 'id' | 'milestoneId'>[] = [
-  // 12-6 Months Before
+  // Phase 1 (0-1 month) - Tasks 1-4
   {
-    title: 'Set wedding budget',
-    description: 'Determine overall budget and allocate to categories',
-    isCompleted: false,
-    category: 'Budget',
-    priority: 'high',
-    notes: 'Review with partner and family if needed',
-  },
-  {
-    title: 'Book wedding venue',
-    description: 'Research and book ceremony and reception venues',
+    title: 'Find and save venues',
+    description: 'Research and save your favorite wedding venues',
     isCompleted: false,
     category: 'Venue',
     priority: 'urgent',
   },
   {
-    title: 'Hire photographer',
-    description: 'Book photographer and videographer',
-    isCompleted: false,
-    category: 'Photography',
-    priority: 'high',
-  },
-  {
-    title: 'Create guest list',
-    description: 'Compile initial guest list and collect addresses',
-    isCompleted: false,
-    category: 'Guest Management',
-    priority: 'medium',
-  },
-  {
-    title: 'Book caterer',
-    description: 'Research and book catering services',
-    isCompleted: false,
-    category: 'Catering',
-    priority: 'high',
-  },
-  {
-    title: 'Book florist',
-    description: 'Choose and book florist for bouquets and decorations',
-    isCompleted: false,
-    category: 'Décor',
-    priority: 'medium',
-  },
-  // 6-3 Months Before
-  {
-    title: 'Order wedding dress',
-    description: 'Finalize dress selection and place order',
-    isCompleted: false,
-    category: 'Attire',
-    priority: 'high',
-  },
-  {
-    title: 'Book hair and makeup artist',
-    description: 'Schedule trial and book day-of services',
-    isCompleted: false,
-    category: 'Beauty',
-    priority: 'medium',
-  },
-  {
-    title: 'Order invitations',
-    description: 'Design, order, and prepare invitations for mailing',
-    isCompleted: false,
-    category: 'Stationery',
-    priority: 'medium',
-  },
-  {
-    title: 'Book entertainment',
-    description: 'Book DJ, band, or other entertainment',
-    isCompleted: false,
-    category: 'Entertainment',
-    priority: 'medium',
-  },
-  {
-    title: 'Plan honeymoon',
-    description: 'Research and book honeymoon destination',
-    isCompleted: false,
-    category: 'Travel',
-    priority: 'low',
-  },
-  {
-    title: 'Reserve hotel rooms',
-    description: 'Block hotel rooms for out-of-town guests',
-    isCompleted: false,
-    category: 'Accommodation',
-    priority: 'low',
-  },
-  // 3-1 Months Before
-  {
-    title: 'Send invitations',
-    description: 'Mail invitations and set RSVP deadline',
-    isCompleted: false,
-    category: 'Guest Management',
-    priority: 'high',
-  },
-  {
-    title: 'Final dress fitting',
-    description: 'Attend final dress fitting and pick up',
-    isCompleted: false,
-    category: 'Attire',
-    priority: 'high',
-  },
-  {
-    title: 'Create seating chart',
-    description: 'Plan seating arrangements for reception',
-    isCompleted: false,
-    category: 'Guest Management',
-    priority: 'medium',
-  },
-  {
-    title: 'Schedule rehearsal',
-    description: 'Coordinate rehearsal date and time',
-    isCompleted: false,
-    category: 'Ceremony',
-    priority: 'medium',
-  },
-  {
-    title: 'Finalize vendor details',
-    description: 'Confirm times, locations, and requirements with all vendors',
-    isCompleted: false,
-    category: 'Coordination',
-    priority: 'high',
-  },
-  {
-    title: 'Order wedding favors',
-    description: 'Select and order guest favors',
-    isCompleted: false,
-    category: 'Gifts',
-    priority: 'low',
-  },
-  // 1 Month Before
-  {
-    title: 'Confirm final guest count',
-    description: 'Finalize RSVP count and inform vendors',
-    isCompleted: false,
-    category: 'Guest Management',
-    priority: 'urgent',
-  },
-  {
-    title: 'Make final payments',
-    description: 'Complete final payments to vendors',
+    title: 'Start your budget',
+    description: 'Set your wedding budget and track expenses',
     isCompleted: false,
     category: 'Budget',
     priority: 'high',
   },
   {
-    title: 'Create day-of timeline',
-    description: 'Draft detailed timeline for wedding day',
+    title: 'Start your guest list',
+    description: 'Create your initial guest list',
     isCompleted: false,
-    category: 'Coordination',
+    category: 'Guest Management',
     priority: 'high',
   },
   {
-    title: 'Write vows',
-    description: 'Write or finalize ceremony vows',
+    title: 'Connect with Photographers',
+    description: 'Browse and connect with photographers',
     isCompleted: false,
-    category: 'Ceremony',
+    category: 'Photography',
+    priority: 'high',
+  },
+  // Phase 2 (1-3 months) - Tasks 5-8
+  {
+    title: 'Browse bands and DJs',
+    description: 'Explore entertainment options for your wedding',
+    isCompleted: false,
+    category: 'Entertainment',
     priority: 'medium',
   },
   {
-    title: 'Break in wedding shoes',
-    description: 'Wear wedding shoes around the house',
+    title: 'Contact caterers',
+    description: 'Reach out to catering services',
+    isCompleted: false,
+    category: 'Catering',
+    priority: 'high',
+  },
+  {
+    title: 'Order Invitations',
+    description: 'Design and order your wedding invitations',
+    isCompleted: false,
+    category: 'Stationery',
+    priority: 'medium',
+  },
+  {
+    title: 'Shortlist florists',
+    description: 'Find and shortlist florists for your wedding',
+    isCompleted: false,
+    category: 'Décor',
+    priority: 'medium',
+  },
+  // Phase 3 (3-6 months) - Tasks 9-12
+  {
+    title: 'Set up beauty trials',
+    description: 'Schedule hair and makeup trials',
+    isCompleted: false,
+    category: 'Beauty',
+    priority: 'medium',
+  },
+  {
+    title: 'Meet with wedding planners',
+    description: 'Connect with wedding planners and coordinators',
+    isCompleted: false,
+    category: 'Planning',
+    priority: 'medium',
+  },
+  {
+    title: 'Find attire',
+    description: 'Shop for wedding attire',
     isCompleted: false,
     category: 'Attire',
+    priority: 'high',
+  },
+  {
+    title: 'Find rings',
+    description: 'Select wedding rings',
+    isCompleted: false,
+    category: 'Accessories',
+    priority: 'medium',
+  },
+  // Phase 4 (6-12 months) - Tasks 13-16
+  {
+    title: 'Sample cakes',
+    description: 'Taste and select your wedding cake',
+    isCompleted: false,
+    category: 'Catering',
+    priority: 'medium',
+  },
+  {
+    title: 'Explore more vendors',
+    description: 'Discover additional vendors for your wedding',
+    isCompleted: false,
+    category: 'Vendors',
     priority: 'low',
   },
-  // Final Week
   {
-    title: 'Final vendor confirmations',
-    description: 'Call all vendors to confirm arrival times',
+    title: 'Collect RSVPs',
+    description: 'Track and collect RSVPs from guests',
     isCompleted: false,
-    category: 'Coordination',
+    category: 'Guest Management',
+    priority: 'high',
+  },
+  {
+    title: 'Get married!',
+    description: 'Your special day has arrived',
+    isCompleted: false,
+    category: 'Wedding',
     priority: 'urgent',
-  },
-  {
-    title: 'Pack for honeymoon',
-    description: 'Prepare luggage and documents for honeymoon',
-    isCompleted: false,
-    category: 'Travel',
-    priority: 'medium',
-  },
-  {
-    title: 'Prepare wedding day emergency kit',
-    description: 'Assemble kit with safety pins, tissues, etc.',
-    isCompleted: false,
-    category: 'Coordination',
-    priority: 'low',
-  },
-  {
-    title: 'Delegate day-of tasks',
-    description: 'Assign tasks to wedding party and helpers',
-    isCompleted: false,
-    category: 'Coordination',
-    priority: 'medium',
-  },
-  {
-    title: 'Get plenty of rest',
-    description: 'Prioritize sleep and self-care',
-    isCompleted: false,
-    category: 'Wellness',
-    priority: 'medium',
   },
 ]
 
@@ -416,36 +329,57 @@ export function deleteChecklistItem(itemId: string): TChecklistItem[] {
 }
 
 // Initialize default checklist items for milestones
+// This will replace all existing items with the default 16 tasks
 export function initializeDefaultChecklistItems(weddingDate?: string | null): void {
   const existingItems = getChecklistItems()
-  if (existingItems.length > 0) {
-    // Don't reinitialize if items already exist
+  const expectedTitles = DEFAULT_CHECKLIST_ITEMS.map(item => item.title)
+  const existingTitles = existingItems.map(item => item.title)
+  
+  // Check if existing items match the new default list
+  const titlesMatch = expectedTitles.length === existingTitles.length &&
+    expectedTitles.every(title => existingTitles.includes(title))
+  
+  // Only reinitialize if items don't exist or don't match the new defaults
+  if (existingItems.length > 0 && titlesMatch) {
     return
   }
 
   const milestones = getTimelineMilestones()
   const newItems: TChecklistItem[] = []
 
-  // Assign default items to milestones based on monthsBefore
+  // Sort milestones by monthsBefore descending to match phase order
+  // Phase 1 (0-1 month): monthsBefore = 1
+  // Phase 2 (1-3 months): monthsBefore = 3
+  // Phase 3 (3-6 months): monthsBefore = 6
+  // Phase 4 (6-12 months): monthsBefore = 12
+  const sortedMilestones = [...milestones].sort((a, b) => (b.monthsBefore || 0) - (a.monthsBefore || 0))
+  
+  // Get milestones in the correct order for phases
+  const phase1Milestone = sortedMilestones.find((m) => m.monthsBefore === 1) || sortedMilestones[3] || sortedMilestones[0]
+  const phase2Milestone = sortedMilestones.find((m) => m.monthsBefore === 3) || sortedMilestones[2] || sortedMilestones[0]
+  const phase3Milestone = sortedMilestones.find((m) => m.monthsBefore === 6) || sortedMilestones[1] || sortedMilestones[0]
+  const phase4Milestone = sortedMilestones.find((m) => m.monthsBefore === 12) || sortedMilestones[0]
+
+  // Assign default items to milestones based on their position
+  // Phase 1 (0-1 month): Tasks 0-3 (index 0-3)
+  // Phase 2 (1-3 months): Tasks 4-7 (index 4-7)
+  // Phase 3 (3-6 months): Tasks 8-11 (index 8-11)
+  // Phase 4 (6-12 months): Tasks 12-15 (index 12-15)
   DEFAULT_CHECKLIST_ITEMS.forEach((item, index) => {
     let targetMilestone: TTimelineMilestone | undefined
 
-    // Match items to milestones based on their position in the DEFAULT_CHECKLIST_ITEMS array
-    if (index < 6) {
-      // First 6 items -> 12-6 months
-      targetMilestone = milestones.find((m) => m.monthsBefore >= 6 && m.monthsBefore <= 12)
+    if (index < 4) {
+      // Phase 1: First 4 tasks (0-1 month)
+      targetMilestone = phase1Milestone
+    } else if (index < 8) {
+      // Phase 2: Next 4 tasks (1-3 months)
+      targetMilestone = phase2Milestone
     } else if (index < 12) {
-      // Items 6-11 -> 6-3 months
-      targetMilestone = milestones.find((m) => m.monthsBefore >= 3 && m.monthsBefore < 6)
-    } else if (index < 18) {
-      // Items 12-17 -> 3-1 months
-      targetMilestone = milestones.find((m) => m.monthsBefore >= 1 && m.monthsBefore < 3)
-    } else if (index < 23) {
-      // Items 18-22 -> 1 month
-      targetMilestone = milestones.find((m) => m.monthsBefore >= 0.25 && m.monthsBefore < 1)
+      // Phase 3: Next 4 tasks (3-6 months)
+      targetMilestone = phase3Milestone
     } else {
-      // Items 23+ -> Final week
-      targetMilestone = milestones.find((m) => m.monthsBefore < 0.25)
+      // Phase 4: Last 4 tasks (6-12 months)
+      targetMilestone = phase4Milestone
     }
 
     if (targetMilestone) {
