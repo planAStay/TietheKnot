@@ -150,6 +150,29 @@ export default function DashboardClient() {
           )}
         </div>
 
+        {/* Beautiful Countdown Timer */}
+        {countdown && !countdown.isPast && (
+          <div className="mb-10 flex justify-center">
+            <div className="inline-flex items-center gap-3 sm:gap-4">
+              <CountdownBox value={countdown.days} label="Days" />
+              <div className="text-2xl sm:text-3xl font-light text-text/30">:</div>
+              <CountdownBox value={countdown.hours} label="Hours" />
+              <div className="text-2xl sm:text-3xl font-light text-text/30">:</div>
+              <CountdownBox value={countdown.minutes} label="Minutes" />
+              <div className="text-2xl sm:text-3xl font-light text-text/30">:</div>
+              <CountdownBox value={countdown.seconds} label="Seconds" />
+            </div>
+          </div>
+        )}
+        {countdown && countdown.isPast && (
+          <div className="mb-10 text-center">
+            <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 px-6 py-3 border border-primary/30">
+              <SparklesIcon className="h-5 w-5 text-primary" />
+              <span className="text-lg font-semibold text-text">Congratulations! Your special day has arrived! 🎉</span>
+            </div>
+          </div>
+        )}
+
         {/* Edit Modal/Inline Form */}
         {isEditing && (
           <div className="mx-auto max-w-md mb-10 rounded-2xl border border-primary/20 bg-surface p-6 shadow-lg">
@@ -457,6 +480,30 @@ function QuickStatCard({
       </div>
       <ArrowRightIcon className="h-4 w-4 text-text/30 transition group-hover:translate-x-1 group-hover:text-primary" />
     </Link>
+  )
+}
+
+function CountdownBox({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="group relative">
+      <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-surface to-surface/80 p-4 sm:p-5 shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-md">
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        
+        {/* Content */}
+        <div className="relative text-center">
+          <div className="text-3xl sm:text-4xl lg:text-5xl font-bold tabular-nums text-text transition-transform duration-300 group-hover:scale-105">
+            {String(value).padStart(2, '0')}
+          </div>
+          <div className="mt-1 text-xs sm:text-sm font-medium uppercase tracking-wider text-text/50">
+            {label}
+          </div>
+        </div>
+        
+        {/* Decorative corner accent */}
+        <div className="absolute -right-1 -top-1 h-8 w-8 rounded-bl-full bg-gradient-to-br from-primary/20 to-transparent opacity-50" />
+      </div>
+    </div>
   )
 }
 
