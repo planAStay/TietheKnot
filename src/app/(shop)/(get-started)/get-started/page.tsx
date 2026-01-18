@@ -152,7 +152,7 @@ export default function GetStartedPage() {
                 href="https://www.figma.com/deck/VqAu4SOUOfqVOJchXZNmnm/TieTheKnot"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center gap-3 rounded-full border border-primary bg-primary px-8 py-4 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:scale-[1.02] sm:px-10 sm:py-5 sm:text-base"
+                className="group relative inline-flex items-center justify-center gap-3 rounded-full border border-primary bg-primary px-8 py-4 text-sm font-semibold text-black dark:text-white shadow-md transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:scale-[1.02] sm:px-10 sm:py-5 sm:text-base"
                 aria-label="Check our portfolio on Instagram"
               >
                 <span className="relative">Profile</span>

@@ -20,10 +20,24 @@ export default function VendorGrid({ vendors }: VendorGridProps) {
     return vendors.filter((vendor) => vendor.category === selectedCategory)
   }, [vendors, selectedCategory])
 
+  // Handle empty state when no vendors exist
+  if (vendors.length === 0) {
+    return (
+      <div className="py-8">
+        <div className="text-center py-16">
+          <p className="text-lg text-text/70">
+            No vendors available at the moment. Please check back later.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="py-8">
       {/* Category Carousel */}
       <CategoryCarousel 
+        vendors={vendors}
         activeCategory={selectedCategory}
         onCategoryChange={setSelectedCategory}
       />
