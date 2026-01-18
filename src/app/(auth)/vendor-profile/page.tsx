@@ -307,7 +307,8 @@ export default function VendorProfilePage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid w-full max-w-2xl grid-cols-1 gap-8">
+    <div className="w-full flex justify-center">
+      <form onSubmit={handleSubmit} className="grid w-full max-w-2xl grid-cols-1 gap-8">
       <h1 className="sr-only">{isEditMode ? 'Edit' : 'Create'} Vendor Profile</h1>
 
       <div>
@@ -941,7 +942,8 @@ export default function VendorProfilePage() {
           Cancel
         </Button>
       </div>
-    </form>
+      </form>
+    </div>
   )
 }
 
