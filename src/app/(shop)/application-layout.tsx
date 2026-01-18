@@ -12,7 +12,7 @@ const ApplicationLayout: React.FC<ComponentProps> = ({ children, header, footer 
   return (
     <div className="flex flex-col min-h-screen">
       {/* HEADER */}
-      {header ? header : <SimpleHeader />}
+      {header !== undefined ? header : <SimpleHeader />}
 
       {/* MAIN CONTENT */}
       <main className="flex-1">
@@ -20,7 +20,7 @@ const ApplicationLayout: React.FC<ComponentProps> = ({ children, header, footer 
       </main>
 
       {/* FOOTER */}
-      {footer ? footer : <SimpleFooter />}
+      {footer !== undefined ? footer : <SimpleFooter />}
     </div>
   )
 }

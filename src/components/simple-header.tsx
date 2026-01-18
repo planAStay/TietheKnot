@@ -53,16 +53,19 @@ export default function SimpleHeader() {
             <ThemeToggle />
             {!isAuthenticated ? (
               <>
-                <Link href="/login">
-                  <Button plain className="text-sm text-header-text hover:bg-header-bg/5">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button color="accent" className="text-sm">
-                    Get Started
-                  </Button>
-                </Link>
+                <a
+                  href="/login"
+                  className="relative isolate inline-flex shrink-0 items-center justify-center gap-x-2 rounded-full border border-header-text/40 px-5 py-3.5 sm:px-6 sm:py-4 text-sm/none font-medium uppercase text-header-text transition-colors hover:bg-header-text hover:text-header-bg"
+                >
+                  Login
+                </a>
+                <Button 
+                  href="/register"
+                  color="accent" 
+                  className="text-sm [&:hover]:after:-inset-px [&:hover]:after:rounded-lg [&:hover]:after:bg-accent/90"
+                >
+                  Get Started
+                </Button>
               </>
             ) : (
               <div className="relative">
@@ -137,16 +140,21 @@ export default function SimpleHeader() {
               </Link>
               {!isAuthenticated ? (
                 <>
-                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button plain className="w-full text-header-text hover:bg-header-bg/5">
-                      Login
-                    </Button>
+                  <Link
+                    href="/login"
+                    className="inline-flex w-full items-center justify-center gap-x-2 rounded-full border border-header-text/40 px-5 py-3.5 text-sm/none font-medium uppercase text-header-text transition-colors hover:bg-header-text hover:text-header-bg"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Login
                   </Link>
-                  <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                    <Button color="accent" className="w-full">
-                      Get Started
-                    </Button>
-                  </Link>
+                  <Button 
+                    href="/register"
+                    color="accent" 
+                    className="w-full [&:hover]:after:-inset-px [&:hover]:after:rounded-lg [&:hover]:after:bg-accent/90"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Get Started
+                  </Button>
                 </>
               ) : (
                 <>
