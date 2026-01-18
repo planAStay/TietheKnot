@@ -8,6 +8,10 @@ import { Select } from '@/components/select'
 import { Textarea } from '@/components/textarea'
 import { Text, TextLink } from '@/components/text'
 import { useAuth } from '@/lib/auth-context'
+import ImageUploadDeferred, { type ImageFile } from '@/components/image-upload-deferred'
+import PdfUploadDeferred from '@/components/pdf-upload-deferred'
+import { uploadImageToS3, uploadPdfToS3, deleteFromS3 } from '@/lib/s3-upload'
+import { useConfirmDestructive } from '@/components/confirm-dialog'
 import { 
   createVendorProfile, 
   getMyVendorProfile, 
@@ -23,25 +27,15 @@ import {
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-
-const VENDOR_CATEGORIES = [
-  'Photography',
-  'Videography',
-  'Catering',
-  'Floral & Decor',
-  'Music & Entertainment',
-  'Venue',
-  'Wedding Planner',
-  'Makeup & Hair',
-  'Transportation',
-  'Other',
-]
+import { VENDOR_CATEGORIES } from '@/lib/constants/vendor-categories'
+import { PROVINCES } from '@/lib/constants/provinces'
 
 const PRICE_RANGES = ['$', '$$', '$$$', '$$$$']
 
 export default function VendorProfilePage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth()
   const router = useRouter()
+  const confirmDestructive = useConfirmDestructive()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -51,15 +45,21 @@ export default function VendorProfilePage() {
     businessName: '',
     category: '',
     description: '',
-    serviceArea: '',
+    serviceAreas: [],
+    baseLocation: '',
     phone: '',
-    whatsapp: '',
+    instagramUrl: '',
+    facebookUrl: '',
     priceRange: '',
     pricingPdfUrl: '',
     imageUrls: [],
   })
 
-  const [imageUrlInput, setImageUrlInput] = useState('')
+  // Separate state for pending uploads (files not yet uploaded to S3)
+  const [pendingImages, setPendingImages] = useState<ImageFile[]>([])
+  const [pendingPdf, setPendingPdf] = useState<File | null>(null)
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([])
+  const [uploadProgress, setUploadProgress] = useState<string>('')
   const [packages, setPackages] = useState<VendorPackageResponse[]>([])
   const [isLoadingPackages, setIsLoadingPackages] = useState(false)
   const [editingPackage, setEditingPackage] = useState<VendorPackageResponse | null>(null)
@@ -104,13 +104,16 @@ export default function VendorProfilePage() {
           businessName: profile.businessName,
           category: profile.category,
           description: profile.description || '',
-          serviceArea: profile.serviceArea || '',
+          serviceAreas: profile.serviceAreas || [],
+          baseLocation: profile.baseLocation || '',
           phone: profile.phone || '',
-          whatsapp: profile.whatsapp || '',
+          instagramUrl: profile.instagramUrl || '',
+          facebookUrl: profile.facebookUrl || '',
           priceRange: profile.priceRange || '',
           pricingPdfUrl: profile.pricingPdfUrl || '',
           imageUrls: profile.imageUrls || [],
         })
+        setExistingImageUrls(profile.imageUrls || [])
         setIsEditMode(true)
         // Load packages if profile exists
         await loadPackages()
@@ -149,53 +152,141 @@ export default function VendorProfilePage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleAddImageUrl = () => {
-    if (imageUrlInput.trim() && formData.imageUrls && formData.imageUrls.length < 5) {
-      setFormData((prev) => ({
-        ...prev,
-        imageUrls: [...(prev.imageUrls || []), imageUrlInput.trim()],
-      }))
-      setImageUrlInput('')
+  const handleRemoveExistingImage = async (url: string) => {
+    // In edit mode, show confirmation dialog
+    if (isEditMode) {
+      const confirmed = await confirmDestructive(
+        'Are you sure you want to delete this image? This will remove it from AWS S3 and cannot be undone.'
+      )
+      if (!confirmed) {
+        return // User cancelled
+      }
+    }
+
+    // Remove from UI immediately
+    setExistingImageUrls(prev => prev.filter(u => u !== url))
+    
+    // Delete from S3 (only in edit mode, since new images aren't in S3 yet)
+    if (isEditMode) {
+      try {
+        await deleteFromS3(url)
+        console.log('Image deleted from S3:', url)
+      } catch (err) {
+        console.error('Error deleting image from S3:', err)
+        // If deletion fails, add it back to the list
+        setExistingImageUrls(prev => [...prev, url])
+        alert('Failed to delete image from S3. Please try again.')
+      }
     }
   }
 
-  const handleRemoveImageUrl = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      imageUrls: prev.imageUrls?.filter((_, i) => i !== index) || [],
-    }))
+  const handleRemoveExistingPdf = async () => {
+    if (formData.pricingPdfUrl) {
+      const pdfUrl = formData.pricingPdfUrl
+      
+      // In edit mode, show confirmation dialog
+      if (isEditMode) {
+        const confirmed = await confirmDestructive(
+          'Are you sure you want to delete this PDF? This will remove it from AWS S3 and cannot be undone.'
+        )
+        if (!confirmed) {
+          return // User cancelled
+        }
+      }
+      
+      // Remove from UI immediately
+      setFormData(prev => ({ ...prev, pricingPdfUrl: '' }))
+      
+      // Delete from S3 (only in edit mode, since new PDFs aren't in S3 yet)
+      if (isEditMode) {
+        try {
+          await deleteFromS3(pdfUrl)
+          console.log('PDF deleted from S3:', pdfUrl)
+        } catch (err) {
+          console.error('Error deleting PDF from S3:', err)
+          // If deletion fails, restore it
+          setFormData(prev => ({ ...prev, pricingPdfUrl: pdfUrl }))
+          alert('Failed to delete PDF from S3. Please try again.')
+        }
+      }
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setIsLoading(true)
+    setUploadProgress('')
 
     try {
-      // Validate image URLs count
-      if (formData.imageUrls && formData.imageUrls.length > 5) {
+      // Validate total images
+      const totalImages = existingImageUrls.length + pendingImages.length
+      if (totalImages > 5) {
         throw new Error('Maximum 5 images allowed')
       }
 
-      // Debug: Log what we're sending
-      console.log('Submitting vendor profile with imageUrls:', formData.imageUrls)
+      let completedUploads = 0
+
+      // Step 1: Upload pending images to S3
+      const uploadedImageUrls: string[] = []
+      for (let i = 0; i < pendingImages.length; i++) {
+        setUploadProgress(`Uploading images... (${i + 1}/${pendingImages.length})`)
+        try {
+          const imageUrl = await uploadImageToS3(pendingImages[i].file)
+          uploadedImageUrls.push(imageUrl) // Store original URL (compressed if needed)
+          completedUploads++
+        } catch (err) {
+          console.error('Error uploading image:', err)
+          throw new Error(`Failed to upload image ${i + 1}`)
+        }
+      }
+
+      // Step 3: Upload pending PDF to S3
+      let pdfUrl = formData.pricingPdfUrl
+      if (pendingPdf) {
+        setUploadProgress('Uploading PDF...')
+        try {
+          pdfUrl = await uploadPdfToS3(pendingPdf)
+          completedUploads++
+        } catch (err) {
+          console.error('Error uploading PDF:', err)
+          throw new Error('Failed to upload PDF')
+        }
+      }
+
+      // Step 4: Combine all image URLs
+      const allImageUrls = [...existingImageUrls, ...uploadedImageUrls]
+
+      // Step 5: Create/update profile with S3 URLs
+      setUploadProgress('Saving profile...')
+      const profileData = {
+        ...formData,
+        imageUrls: allImageUrls,
+        pricingPdfUrl: pdfUrl,
+      }
+
+      console.log('Submitting vendor profile with imageUrls:', profileData.imageUrls)
 
       if (isEditMode) {
-        const response = await updateVendorProfile(formData)
+        const response = await updateVendorProfile(profileData)
         console.log('Update response:', response)
+        // After successful update, redirect to dashboard
+        setUploadProgress('Profile updated successfully! Redirecting...')
+        await new Promise(resolve => setTimeout(resolve, 500))
+        window.location.href = '/vendor-dashboard'
       } else {
-        const response = await createVendorProfile(formData)
+        const response = await createVendorProfile(profileData)
         console.log('Create response:', response)
+        // After successful create, redirect to questions
+        setUploadProgress('Success! Redirecting...')
+        await new Promise(resolve => setTimeout(resolve, 500))
+        window.location.href = '/vendor-questions'
       }
-      
-      // After successful create/update, wait a moment for DB to commit, then redirect
-      // Use window.location for a hard redirect to ensure the page fully reloads
-      await new Promise(resolve => setTimeout(resolve, 500))
-      window.location.href = '/vendor-questions'
     } catch (err) {
       console.error('Error saving vendor profile:', err)
       setError(err instanceof Error ? err.message : 'Failed to save vendor profile. Please try again.')
       setIsLoading(false)
+      setUploadProgress('')
     }
   }
 
@@ -293,94 +384,108 @@ export default function VendorProfilePage() {
       </Field>
 
       <Field>
-        <Label>Service Area</Label>
+        <Label>Base Location</Label>
         <Input
           type="text"
-          name="serviceArea"
-          value={formData.serviceArea}
+          name="baseLocation"
+          value={formData.baseLocation}
           onChange={handleChange}
           placeholder="e.g., Colombo, Kandy, Galle"
         />
       </Field>
 
+      <Field>
+        <Label>Service Areas (Provinces) *</Label>
+        <div className="space-y-2 mt-2">
+          {PROVINCES.map((province) => (
+            <label key={province} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.serviceAreas?.includes(province) ?? false}
+                onChange={(e) => {
+                  const currentAreas = formData.serviceAreas || []
+                  if (e.target.checked) {
+                    setFormData({
+                      ...formData,
+                      serviceAreas: [...currentAreas, province],
+                    })
+                  } else {
+                    setFormData({
+                      ...formData,
+                      serviceAreas: currentAreas.filter((p) => p !== province),
+                    })
+                  }
+                }}
+                className="rounded border-zinc-300 text-primary focus:ring-primary"
+              />
+              <span className="text-sm text-zinc-700">{province}</span>
+            </label>
+          ))}
+        </div>
+        {(formData.serviceAreas?.length ?? 0) === 0 && (
+          <p className="text-sm text-red-600 mt-1">Please select at least one province</p>
+        )}
+      </Field>
+
+      <Field>
+        <Label>Business Contact Number</Label>
+        <Input
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="0771234567"
+        />
+      </Field>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Field>
-          <Label>Phone</Label>
+          <Label>Instagram URL</Label>
           <Input
-            type="tel"
-            name="phone"
-            value={formData.phone}
+            type="url"
+            name="instagramUrl"
+            value={formData.instagramUrl}
             onChange={handleChange}
-            placeholder="0771234567"
+            placeholder="https://instagram.com/yourhandle"
           />
         </Field>
 
         <Field>
-          <Label>WhatsApp</Label>
+          <Label>Facebook URL</Label>
           <Input
-            type="tel"
-            name="whatsapp"
-            value={formData.whatsapp}
+            type="url"
+            name="facebookUrl"
+            value={formData.facebookUrl}
             onChange={handleChange}
-            placeholder="0771234567"
+            placeholder="https://facebook.com/yourpage"
           />
         </Field>
       </div>
 
-      <Field>
-        <Label>Pricing PDF URL</Label>
-        <Input
-          type="url"
-          name="pricingPdfUrl"
-          value={formData.pricingPdfUrl}
-          onChange={handleChange}
-          placeholder="https://example.com/pricing.pdf"
+      {/* Portfolio Images */}
+      <div>
+        <ImageUploadDeferred
+          files={pendingImages}
+          onChange={setPendingImages}
+          existingUrls={existingImageUrls}
+          onRemoveExisting={handleRemoveExistingImage}
+          maxImages={5}
+          label="Portfolio Images"
+          helperText="Upload up to 5 images showcasing your work. JPEG, PNG, or WebP. Max 10MB each."
         />
-        <Text className="mt-1 text-xs text-zinc-500">
-          Optional: Link to your pricing PDF document
-        </Text>
-      </Field>
+      </div>
 
-      <Field>
-        <Label>Image URLs (Maximum 5)</Label>
-        <div className="space-y-2">
-          <div className="flex gap-2">
-            <Input
-              type="url"
-              value={imageUrlInput}
-              onChange={(e) => setImageUrlInput(e.target.value)}
-              placeholder="https://example.com/image.jpg"
-              disabled={formData.imageUrls ? formData.imageUrls.length >= 5 : false}
-            />
-            <Button
-              type="button"
-              onClick={handleAddImageUrl}
-              disabled={!imageUrlInput.trim() || (formData.imageUrls ? formData.imageUrls.length >= 5 : false)}
-            >
-              Add
-            </Button>
-          </div>
-          {formData.imageUrls && formData.imageUrls.length > 0 && (
-            <div className="space-y-1">
-              {formData.imageUrls.map((url, index) => (
-                <div key={index} className="flex items-center gap-2 rounded-md bg-zinc-100 p-2 dark:bg-zinc-800">
-                  <span className="flex-1 truncate text-sm">{url}</span>
-                  <Button
-                    type="button"
-                    onClick={() => handleRemoveImageUrl(index)}
-                    className="text-red-600 hover:text-red-700 dark:text-red-400"
-                  >
-                    Remove
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-          <Text className="text-xs text-zinc-500">
-            {formData.imageUrls ? formData.imageUrls.length : 0} / 5 images
-          </Text>
-        </div>
-      </Field>
+      {/* Pricing PDF */}
+      <div>
+        <PdfUploadDeferred
+          file={pendingPdf}
+          onChange={setPendingPdf}
+          existingUrl={formData.pricingPdfUrl || null}
+          onRemoveExisting={handleRemoveExistingPdf}
+          label="Pricing PDF (Optional)"
+          helperText="Upload your pricing document. PDF only. Max 20MB."
+        />
+      </div>
 
       {/* Package Management Section */}
       {isEditMode && (
@@ -817,9 +922,15 @@ export default function VendorProfilePage() {
         </div>
       )}
 
+      {uploadProgress && (
+        <div className="rounded-md bg-blue-50 p-4 dark:bg-blue-900/20">
+          <Text className="text-sm text-blue-800 dark:text-blue-200">{uploadProgress}</Text>
+        </div>
+      )}
+
       <div className="flex gap-4">
         <Button type="submit" className="flex-1" disabled={isLoading}>
-          {isLoading ? 'Saving...' : isEditMode ? 'Update Profile' : 'Create Profile'}
+          {isLoading ? uploadProgress || 'Saving...' : isEditMode ? 'Update Profile' : 'Create Profile'}
         </Button>
         <Button
           type="button"

@@ -19,7 +19,7 @@ export default async function Page() {
     <div className="container">
       <div className="mx-auto max-w-3xl py-16 sm:py-24">
         <div className="max-w-xl">
-          <Heading level={1} id="your-orders-heading" bigger>
+          <Heading level={1} id="your-orders-heading" className="text-3xl leading-none sm:text-4xl xl:text-5xl/none">
             Your <span data-slot="italic">Orders</span>
           </Heading>
           <Text className="mt-2 text-zinc-500">

@@ -51,7 +51,7 @@ export default async function Page({ params }: { params: Promise<{ handle: strin
             </time>
             <span>{timeToRead}</span>
           </div>
-          <Heading bigger level={1} className="mt-5 font-medium">
+          <Heading level={1} className="mt-5 font-medium text-3xl leading-none sm:text-4xl xl:text-5xl/none">
             {title}
           </Heading>
 

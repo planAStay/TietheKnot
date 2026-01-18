@@ -40,6 +40,13 @@ export const API_ENDPOINTS = {
     me: `${API_BASE_URL}/quote-requests/me`,
     vendor: `${API_BASE_URL}/quote-requests/vendor`,
   },
+  files: {
+    presignedUrlImage: `${API_BASE_URL}/files/presigned-url/image`,
+    presignedUrlPdf: `${API_BASE_URL}/files/presigned-url/pdf`,
+    confirmImageUpload: `${API_BASE_URL}/files/confirm-image-upload`,
+    delete: `${API_BASE_URL}/files/delete`,
+    deleteByKey: `${API_BASE_URL}/files/delete-by-key`,
+  },
 } as const
 
 // Token storage key

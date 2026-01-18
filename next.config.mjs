@@ -39,7 +39,18 @@ const nextConfig = {
   // Experimental optimizations
   experimental: {
     // Optimize package imports (tree-shaking for large packages)
-    optimizePackageImports: ['@heroicons/react', 'framer-motion'],
+    optimizePackageImports: ['@heroicons/react', 'framer-motion', 'date-fns'],
+  },
+  // Production optimizations
+  productionBrowserSourceMaps: false,
+  // Reduce bundle size
+  modularizeImports: {
+    '@heroicons/react/24/outline': {
+      transform: '@heroicons/react/24/outline/{{member}}',
+    },
+    '@heroicons/react/24/solid': {
+      transform: '@heroicons/react/24/solid/{{member}}',
+    },
   },
 }
 

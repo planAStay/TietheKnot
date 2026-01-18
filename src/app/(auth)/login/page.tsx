@@ -1,6 +1,5 @@
 'use client'
 
-import { Logo } from '@/app/logo'
 import { Button } from '@/components/button'
 import { Checkbox, CheckboxField } from '@/components/checkbox'
 import { Field, Label } from '@/components/fieldset'
@@ -9,7 +8,6 @@ import { Strong, Text, TextLink } from '@/components/text'
 import { useAuth } from '@/lib/auth-context'
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
 import { Suspense } from 'react'
 
 function LoginForm() {
@@ -37,8 +35,8 @@ function LoginForm() {
 
     try {
       await login({ emailOrUsername, password })
-      router.push('/')
-      router.refresh()
+      // Redirect to homepage after successful login
+      window.location.href = '/'
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.')
     } finally {
@@ -48,26 +46,21 @@ function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
-      <h1 className="sr-only">Login to your account</h1>
-
-      <div>
-        <Link href="/">
-          <Logo className="text-zinc-950 dark:text-white" />
-        </Link>
-        <Text className="mt-5 text-zinc-600">
-          Login to your account to access your order history and other personalized features.
-        </Text>
+      <div className="text-center">
+        <h1 className="text-3xl font-semibold text-zinc-900">
+          Log in to TieTheKnot
+        </h1>
       </div>
 
       {success && (
-        <div className="rounded-md bg-green-50 p-4 dark:bg-green-900/20">
-          <Text className="text-sm text-green-800 dark:text-green-200">{success}</Text>
+        <div className="rounded-md bg-secondary/10 p-4 border border-secondary/30">
+          <Text className="text-sm text-secondary">{success}</Text>
         </div>
       )}
 
       {error && (
-        <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
-          <Text className="text-sm text-red-800 dark:text-red-200">{error}</Text>
+        <div className="rounded-md bg-red-50 p-4 border border-red-200">
+          <Text className="text-sm text-red-700">{error}</Text>
         </div>
       )}
 
@@ -106,10 +99,10 @@ function LoginForm() {
           <span className="text-sm font-medium">Forgot password?</span>
         </TextLink>
       </div>
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button type="submit" color="accent" className="w-full" disabled={isLoading}>
         {isLoading ? 'Logging in...' : 'Login'}
       </Button>
-      <Text>
+      <Text className="text-center">
         Don&apos;t have an account?{' '}
         <TextLink href="/register">
           <Strong>Sign up</Strong>

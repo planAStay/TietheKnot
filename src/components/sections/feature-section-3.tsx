@@ -68,7 +68,7 @@ const FeatureSection3 = ({
               Our products
             </Button>
           </div>
-          <Heading className="flex-2/3" bigger dangerouslySetInnerHTML={{ __html: heading }} />
+          <Heading className="flex-2/3 text-3xl leading-none sm:text-4xl xl:text-5xl/none" dangerouslySetInnerHTML={{ __html: heading }} />
         </div>
 
         {/* COLLECTION 1 */}

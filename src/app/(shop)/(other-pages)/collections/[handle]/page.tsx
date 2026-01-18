@@ -20,7 +20,7 @@ async function fetchVendorProfiles() {
       headers: {
         'Content-Type': 'application/json',
       },
-      next: { revalidate: 300 }, // Revalidate every 5 minutes (300 seconds)
+      cache: 'no-store', // Always fetch fresh data from backend
     })
     
     if (!response.ok) {
@@ -70,7 +70,7 @@ export default async function Collection({
         <Breadcrumb breadcrumbs={[{ id: 1, name: 'Home', href: '/' }]} currentPage="Categories" className="py-3.5" />
         <Divider />
         <div className="py-12">
-          <Heading bigger level={1} className="text-center">
+          <Heading level={1} className="text-center text-3xl leading-none sm:text-4xl xl:text-5xl/none">
             Explore vendors
           </Heading>
           <Text className="mt-3 text-center text-zinc-600">Choose a category to start planning.</Text>
@@ -139,7 +139,7 @@ export default async function Collection({
     description: profile.description || '',
     category: profile.category,
     subcategory: profile.category, // Use category as subcategory for now
-    location: profile.serviceArea || 'Not specified',
+    location: profile.baseLocation || 'Not specified',
     priceRange: profile.priceRange || '$$', // Use backend price range or default to $$
     rating: undefined, // No ratings yet in MVP
     heroImage: {
@@ -191,7 +191,7 @@ export default async function Collection({
 
         <main className="">
           <div className="flex flex-col items-center py-14 text-center lg:py-20">
-            <Heading bigger level={1} className="mt-5">
+            <Heading level={1} className="mt-5 text-3xl leading-none sm:text-4xl xl:text-5xl/none">
               <span data-slot="dim">Vendors in</span>
               <br />
               <span data-slot="italic" className="underline">

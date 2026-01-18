@@ -1,6 +1,5 @@
 'use client'
 
-import { Logo } from '@/app/logo'
 import { Button } from '@/components/button'
 import { Checkbox, CheckboxField } from '@/components/checkbox'
 import { Field, Label } from '@/components/fieldset'
@@ -9,7 +8,6 @@ import { Strong, Text, TextLink } from '@/components/text'
 import { useAuth } from '@/lib/auth-context'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -41,8 +39,8 @@ export default function Register() {
         email: formData.email,
         name: formData.name,
         password: formData.password,
-        phoneNumber: formData.phoneNumber || undefined,
-        phoneCountryCode: formData.phoneCountryCode || undefined,
+        phoneNumber: formData.phoneNumber,
+        phoneCountryCode: formData.phoneCountryCode,
       })
       // Redirect to subscription selection page after registration
       router.push('/subscription')
@@ -56,20 +54,16 @@ export default function Register() {
 
   return (
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
-      <h1 className="sr-only">Create your account</h1>
-
-      <div>
-        <Link href="/">
-          <Logo className="text-zinc-950 dark:text-white" />
-        </Link>
-        <Text className="mt-5 text-zinc-600">
-          Create a new account to join our community and get access to exclusive offers, rewards and content.
-        </Text>
+      <div className="text-center">
+        <p className="text-lg text-zinc-600 mb-2">Welcome!</p>
+        <h1 className="text-3xl font-semibold text-zinc-900">
+          Sign up for TieTheKnot
+        </h1>
       </div>
 
       {error && (
-        <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
-          <Text className="text-sm text-red-800 dark:text-red-200">{error}</Text>
+        <div className="rounded-md bg-red-50 p-4 border border-red-200">
+          <Text className="text-sm text-red-700">{error}</Text>
         </div>
       )}
 
@@ -123,31 +117,33 @@ export default function Register() {
       </Field>
 
       <Field>
-        <Label>Phone Number (Optional)</Label>
+        <Label>Phone Number</Label>
         <div className="grid grid-cols-2 gap-2">
           <Input
             type="text"
             name="phoneCountryCode"
             value={formData.phoneCountryCode}
             onChange={handleChange}
-            placeholder="+1"
+            placeholder="+94"
             autoComplete="tel-country-code"
+            required
           />
           <Input
             type="tel"
             name="phoneNumber"
             value={formData.phoneNumber}
             onChange={handleChange}
-            placeholder="1234567890"
+            placeholder="771234567"
             autoComplete="tel"
+            required
           />
         </div>
       </Field>
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button type="submit" color="accent" className="w-full" disabled={isLoading}>
         {isLoading ? 'Creating account...' : 'Create account'}
       </Button>
-      <Text>
+      <Text className="text-center">
         Already have an account?{' '}
         <TextLink href="/login">
           <Strong>Sign in</Strong>

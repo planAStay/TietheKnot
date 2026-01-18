@@ -25,9 +25,11 @@ export interface VendorProfileRequest {
   businessName: string
   category: string
   description?: string
-  serviceArea?: string
+  serviceAreas?: string[]
+  baseLocation?: string
   phone?: string
-  whatsapp?: string
+  instagramUrl?: string
+  facebookUrl?: string
   priceRange?: string
   pricingPdfUrl?: string
   imageUrls?: string[]
@@ -38,9 +40,11 @@ export interface VendorProfileResponse {
   businessName: string
   category: string
   description?: string
-  serviceArea?: string
+  serviceAreas?: string[]
+  baseLocation?: string
   phone?: string
-  whatsapp?: string
+  instagramUrl?: string
+  facebookUrl?: string
   priceRange?: string
   pricingPdfUrl?: string
   imageUrls?: string[]
@@ -51,6 +55,10 @@ export interface VendorProfileResponse {
   userId: number
   userName: string
   userEmail: string
+  approvalStatus?: 'PENDING' | 'APPROVED' | 'REJECTED'
+  adminNotes?: string
+  approvedAt?: string
+  approvedBy?: number
 }
 
 export interface VendorQuestionRequest {
@@ -99,10 +107,15 @@ export async function updateVendorProfile(data: VendorProfileRequest): Promise<V
   return handleResponse<VendorProfileResponse>(response)
 }
 
-export async function getMyVendorProfile(): Promise<VendorProfileResponse | null> {
-  const response = await fetch(API_ENDPOINTS.vendorProfiles.me, {
+export async function getMyVendorProfile(forceRefresh: boolean = false): Promise<VendorProfileResponse | null> {
+  const url = forceRefresh 
+    ? `${API_ENDPOINTS.vendorProfiles.me}?t=${Date.now()}`
+    : API_ENDPOINTS.vendorProfiles.me
+  
+  const response = await fetch(url, {
     method: 'GET',
     headers: getAuthHeaders(),
+    cache: 'no-store', // Prevent browser caching
   })
   
   if (response.status === 404) {
@@ -141,7 +154,7 @@ export async function getAllVendorProfiles(category?: string): Promise<VendorPro
   return handleResponse<VendorProfileResponse[]>(response)
 }
 
-export async function deleteVendorProfile(): Promise<void> {
+export async function deleteMyVendorProfile(): Promise<void> {
   const response = await fetch(API_ENDPOINTS.vendorProfiles.me, {
     method: 'DELETE',
     headers: getAuthHeaders(),

@@ -41,7 +41,7 @@ export function ProductForm({ product }: { product: TProductItem }) {
       <div>
         <Breadcrumb breadcrumbs={breadcrumbs} currentPage={title} />
 
-        <Heading level={1} className="mt-4" title={title} bigger>
+        <Heading level={1} className="mt-4 text-3xl leading-none sm:text-4xl xl:text-5xl/none" title={title}>
           <span data-slot="italic">{currentColor}</span>
           <br />
           <span className="lowercase" data-slot="dim">

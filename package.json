@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/diphylleia": "^5.2.7",
     "@headlessui/react": "^2.2.2",
     "@heroicons/react": "^2.1.3",
     "@hugeicons/core-free-icons": "^1.0.14",

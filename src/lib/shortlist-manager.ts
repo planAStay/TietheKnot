@@ -54,7 +54,7 @@ async function convertVendorProfileToTVendor(vendorProfileId: number): Promise<T
       description: profile.description || '',
       category: profile.category,
       subcategory: profile.category,
-      location: profile.serviceArea || 'Not specified',
+      location: profile.baseLocation || 'Not specified',
       priceRange: profile.priceRange || '$$',
       heroImage: heroImage,
       images: additionalImages,
@@ -63,7 +63,7 @@ async function convertVendorProfileToTVendor(vendorProfileId: number): Promise<T
       contact: {
         phone: profile.phone,
         email: profile.userEmail,
-        whatsapp: profile.whatsapp,
+        whatsapp: profile.phone, // Use phone as WhatsApp (common in Sri Lanka)
       },
     }
   } catch (error) {

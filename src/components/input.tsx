@@ -39,6 +39,8 @@ export const Input = forwardRef(function Input(
         className,
         // Basic layout
         'relative block w-full',
+        // Ensure text selection works on wrapper
+        'select-text',
         // Background color is moved to control and shadow is removed in dark mode so hide `before` pseudo
         'dark:before:hidden',
         // Focus ring
@@ -73,6 +75,8 @@ export const Input = forwardRef(function Input(
           'relative block w-full appearance-none rounded-full px-3.5 py-2',
           // Typography - uses semantic text color
           'text-sm/6 text-text placeholder:text-text/50',
+          // Text selection
+          'select-text',
           // Border - uses semantic colors
           'border border-text/20 data-hover:border-text/30',
           // Background color
