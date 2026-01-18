@@ -307,12 +307,12 @@ export default function VendorProfilePage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid w-full max-w-2xl grid-cols-1 gap-6 sm:gap-8">
+    <form onSubmit={handleSubmit} className="grid w-full max-w-2xl grid-cols-1 gap-8">
       <h1 className="sr-only">{isEditMode ? 'Edit' : 'Create'} Vendor Profile</h1>
 
       <div>
         <Link href="/">
-          <Logo className="text-zinc-950 dark:text-white" />
+          <Logo className="text-text" />
         </Link>
         <Text className="mt-5 text-text/70">
           {isEditMode 
@@ -489,7 +489,7 @@ export default function VendorProfilePage() {
 
       {/* Package Management Section */}
       {isEditMode && (
-        <div className="space-y-4 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="space-y-4 rounded-lg border border-text/20 bg-surface p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold">Pricing Packages</h2>
@@ -527,7 +527,7 @@ export default function VendorProfilePage() {
                 <Text className="text-sm text-zinc-500">No packages added yet. Click &quot;Add Package&quot; to get started.</Text>
               )}
               {packages.map((pkg) => (
-                <div key={pkg.id} className="rounded-md border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                <div key={pkg.id} className="rounded-md border border-text/20 bg-zinc-100 dark:bg-zinc-800 p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="font-semibold">{pkg.name}</h3>
@@ -595,7 +595,7 @@ export default function VendorProfilePage() {
               ))}
 
               {isAddingPackage && (
-                <div className="rounded-md border-2 border-dashed border-zinc-300 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                <div className="rounded-md border-2 border-dashed border-text/30 bg-zinc-100 dark:bg-zinc-800 p-4">
                   <Field>
                     <Label>Package Name *</Label>
                     <Input
@@ -680,7 +680,7 @@ export default function VendorProfilePage() {
                       {packageForm.features && packageForm.features.length > 0 && (
                         <div className="space-y-1">
                           {packageForm.features.map((feature, index) => (
-                            <div key={index} className="flex items-center gap-2 rounded-md bg-zinc-100 p-2 dark:bg-zinc-800">
+                            <div key={index} className="flex items-center gap-2 rounded-md bg-zinc-100 dark:bg-zinc-800 p-2">
                               <span className="flex-1 text-sm">{feature}</span>
                               <Button
                                 type="button"
@@ -840,7 +840,7 @@ export default function VendorProfilePage() {
                       {packageForm.features && packageForm.features.length > 0 && (
                         <div className="space-y-1">
                           {packageForm.features.map((feature, index) => (
-                            <div key={index} className="flex items-center gap-2 rounded-md bg-zinc-100 p-2 dark:bg-zinc-800">
+                            <div key={index} className="flex items-center gap-2 rounded-md bg-zinc-100 dark:bg-zinc-800 p-2">
                               <span className="flex-1 text-sm">{feature}</span>
                               <Button
                                 type="button"
