@@ -307,14 +307,14 @@ export default function VendorProfilePage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid w-full max-w-2xl grid-cols-1 gap-8">
+    <form onSubmit={handleSubmit} className="grid w-full max-w-2xl grid-cols-1 gap-6 sm:gap-8">
       <h1 className="sr-only">{isEditMode ? 'Edit' : 'Create'} Vendor Profile</h1>
 
       <div>
         <Link href="/">
           <Logo className="text-zinc-950 dark:text-white" />
         </Link>
-        <Text className="mt-5 text-zinc-600">
+        <Text className="mt-5 text-text/70">
           {isEditMode 
             ? 'Update your vendor profile information below.' 
             : 'Create your vendor profile to start listing your services on TieTheKnot.'}
@@ -493,7 +493,7 @@ export default function VendorProfilePage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold">Pricing Packages</h2>
-              <Text className="mt-1 text-sm text-zinc-600">
+              <Text className="mt-1 text-sm text-text/70">
                 Add up to 5 packages to give couples an idea of your pricing
               </Text>
             </div>
@@ -532,7 +532,7 @@ export default function VendorProfilePage() {
                     <div className="flex-1">
                       <h3 className="font-semibold">{pkg.name}</h3>
                       {(pkg.priceFrom || pkg.priceTo) && (
-                        <Text className="mt-1 text-sm text-zinc-600">
+                        <Text className="mt-1 text-sm text-text/70">
                           {pkg.priceFrom && pkg.priceTo
                             ? `$${pkg.priceFrom} - $${pkg.priceTo}`
                             : pkg.priceFrom
@@ -541,7 +541,7 @@ export default function VendorProfilePage() {
                         </Text>
                       )}
                       {pkg.description && (
-                        <Text className="mt-1 text-sm text-zinc-600">{pkg.description}</Text>
+                        <Text className="mt-1 text-sm text-text/70">{pkg.description}</Text>
                       )}
                       {pkg.features && pkg.features.length > 0 && (
                         <ul className="mt-2 space-y-1">

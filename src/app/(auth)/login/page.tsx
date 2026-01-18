@@ -45,9 +45,9 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
+    <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-6 sm:gap-8">
       <div className="text-center">
-        <h1 className="text-3xl font-semibold text-zinc-900">
+        <h1 className="text-3xl font-semibold text-text">
           Log in to TieTheKnot
         </h1>
       </div>
