@@ -552,3 +552,4 @@ function CategoryIcon({ icon }: { icon?: string }) {
   return <>{iconMap[icon || 'dots'] || iconMap.dots}</>
 }
 
+

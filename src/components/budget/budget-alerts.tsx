@@ -129,3 +129,4 @@ export default function BudgetAlerts({ alerts, onCategoryClick }: BudgetAlertsPr
   )
 }
 
+

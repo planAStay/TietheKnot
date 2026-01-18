@@ -170,3 +170,4 @@ export default function BudgetCharts({ categories, totalBudget }: BudgetChartsPr
   )
 }
 
+
