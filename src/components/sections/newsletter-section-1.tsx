@@ -13,7 +13,7 @@ export default function NewsletterSection({ className = '' }: NewsletterProps) {
     <div className={className}>
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
         <div className="max-w-xl lg:col-span-7">
-          <Heading bigger>
+          <Heading className="text-3xl leading-none sm:text-4xl xl:text-5xl/none">
             Want product <span data-slot="italic">news and updates?</span> Sign up for our newsletter.
           </Heading>
         </div>

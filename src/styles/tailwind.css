@@ -4,8 +4,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: 'DM sans', sans-serif;
-  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Diphylleia', -apple-system, BlinkMacSystemFont, 'Segoe UI', Georgia, serif;
+  --font-serif: 'Diphylleia', Georgia, serif;
   --font-sans--font-feature-settings: 'cv11';
 
   /* Theme-aware colors - these will be overridden by CSS variables */
@@ -15,16 +15,6 @@
   --color-secondary: var(--theme-secondary);
   --color-accent: var(--theme-accent);
   
-  /* Supporting neutrals - theme aware */
-  --color-blush: var(--theme-blush);
-  --color-rose-gold: var(--theme-rose-gold);
-  --color-champagne: var(--theme-champagne);
-  --color-sage: var(--theme-sage);
-  --color-dusty-rose: var(--theme-dusty-rose);
-  --color-ivory: var(--theme-ivory);
-  --color-mauve: var(--theme-mauve);
-  --color-terracotta: var(--theme-terracotta);
-
   /* Surface color for cards/modals */
   --color-surface: var(--theme-surface);
   --color-surface-elevated: var(--theme-surface-elevated);
@@ -71,6 +61,11 @@
   --color-rose-700: var(--theme-rose-700);
   --color-rose-800: var(--theme-rose-800);
   --color-rose-900: var(--theme-rose-900);
+
+  /* Header/Footer specific colors (theme-aware, inverted in dark mode) */
+  --color-header-bg: var(--theme-header-bg);
+  --color-header-text: var(--theme-header-text);
+  --color-header-border: var(--theme-header-border);
 }
 
 /* ========================================
@@ -87,16 +82,6 @@
   /* Surface colors for cards, modals, etc */
   --theme-surface: #ffffff;
   --theme-surface-elevated: #ffffff;
-
-  /* Supporting neutrals */
-  --theme-blush: #f8e6dd;
-  --theme-rose-gold: #e9c7b3;
-  --theme-champagne: #f1dcca;
-  --theme-sage: #cdd6c1;
-  --theme-dusty-rose: #d59c8b;
-  --theme-ivory: #fdf5ed;
-  --theme-mauve: #b48f84;
-  --theme-terracotta: #9b6c55;
 
   /* Zinc scale - warm cream tones for light mode */
   --theme-white: #ffffff;
@@ -124,6 +109,11 @@
   --theme-rose-800: #684e3f;
   --theme-rose-900: #4c3a30;
 
+  /* Header/Footer colors (dark in light mode) */
+  --theme-header-bg: #2c2c2c;
+  --theme-header-text: #fefcf7;
+  --theme-header-border: rgba(228, 228, 231, 0.1);
+
   color: var(--theme-text);
   background-color: var(--theme-background);
 }
@@ -142,16 +132,6 @@
   /* Surface colors for cards, modals - slightly elevated from background */
   --theme-surface: #3a3a3a;
   --theme-surface-elevated: #454545;
-
-  /* Supporting neutrals - adjusted for dark mode visibility */
-  --theme-blush: #4a3d3a;
-  --theme-rose-gold: #5c4a40;
-  --theme-champagne: #4d4339;
-  --theme-sage: #3d4436;
-  --theme-dusty-rose: #5c4440;
-  --theme-ivory: #3d3a36;
-  --theme-mauve: #6b5650;
-  --theme-terracotta: #7a5c4a;
 
   /* Zinc scale - inverted for dark mode */
   --theme-white: #2c2c2c;
@@ -178,6 +158,11 @@
   --theme-rose-700: #d4aa90;
   --theme-rose-800: #e4bca0;
   --theme-rose-900: #f0d0b8;
+
+  /* Header/Footer colors (light in dark mode - INVERTED) */
+  --theme-header-bg: #fefcf7;
+  --theme-header-text: #2c2c2c;
+  --theme-header-border: rgba(44, 44, 44, 0.1);
 
   color: var(--theme-text);
   background-color: var(--theme-background);
@@ -231,3 +216,40 @@ body {
 @utility swimlane {
   @apply grid w-full snap-x snap-mandatory scroll-px-6 grid-flow-col justify-start gap-4 overflow-x-scroll;
 }
+
+/* Animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@utility animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Ensure text selection works in form inputs */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+input[type="number"],
+input[type="password"],
+textarea {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
+/* Allow selection in form fields on all states */
+input:not([disabled]),
+textarea:not([disabled]) {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+

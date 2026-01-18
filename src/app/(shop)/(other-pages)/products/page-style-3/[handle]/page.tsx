@@ -92,7 +92,7 @@ export default async function Product({ params }: { params: Promise<{ handle: st
         <Divider className="my-16 sm:my-24 lg:my-24" />
 
         {/* THE CONTENT OF PRODUCT  */}
-        <Heading bigger className="text-center">
+        <Heading className="text-center text-3xl leading-none sm:text-4xl xl:text-5xl/none">
           <span data-slot="italic">all about the</span> <br />
           <span>PRODUCT</span>
         </Heading>

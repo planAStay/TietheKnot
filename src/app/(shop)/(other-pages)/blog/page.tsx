@@ -18,7 +18,7 @@ export default async function Page() {
   return (
     <div className="container">
       <div className="flex flex-col items-center py-14 text-center lg:py-20">
-        <Heading bigger level={1} className="mt-5">
+        <Heading level={1} className="mt-5 text-3xl leading-none sm:text-4xl xl:text-5xl/none">
           <span>Clean</span>
           <br />
           <span data-slot="italic" className="underline">

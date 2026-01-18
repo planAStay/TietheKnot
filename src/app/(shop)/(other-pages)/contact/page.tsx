@@ -85,7 +85,7 @@ const Page = () => {
     <div className="container mt-16 sm:mt-24 lg:mt-28">
       <div className="flex flex-col justify-between gap-14 lg:flex-row">
         <div className="flex flex-2/3 flex-col gap-20 overflow-hidden md:gap-24 lg:gap-28 xl:gap-32">
-          <Heading level={1} fontSize="text-7xl lg:text-8xl 2xl:text-9xl font-medium" className="relative w-fit">
+          <Heading level={1} className="relative w-fit text-7xl lg:text-8xl 2xl:text-9xl font-medium">
             <span>Contact </span>
             <span data-slot="italic">US</span>
             <VectorArrowDown2 className="absolute -end-20 top-1/2 hidden h-20 sm:block sm:h-32 xl:-end-10 2xl:top-2/3" />

@@ -22,7 +22,7 @@ export default async function Page() {
             <div className="flex w-fit items-center justify-center rounded-full border border-zinc-900 px-6 py-2.5 text-sm font-medium">
               <span className="text-xs uppercase">Thanks for ordering</span>
             </div>
-            <Heading bigger className="mt-4">
+            <Heading className="mt-4 text-3xl leading-none sm:text-4xl xl:text-5xl/none">
               Payment {` `}
               <span data-slot="italic">successful!</span>
             </Heading>

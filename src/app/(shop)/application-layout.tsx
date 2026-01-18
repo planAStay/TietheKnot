@@ -1,11 +1,7 @@
-import AsideSidebarCart from '@/components/aside-sidebar-cart'
-import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
-import AsideSidebarCategories from '@/components/aside-sidebar-categories'
-import Footer from '@/components/footer'
-import Header from '@/components/header/header'
-import FeatureSection4 from '@/components/sections/feature-section-4'
-import NewsletterSection from '@/components/sections/newsletter-section-1'
+import SimpleHeader from '@/components/simple-header'
+import SimpleFooter from '@/components/simple-footer'
 import React, { ReactNode } from 'react'
+
 interface ComponentProps {
   children: ReactNode
   header?: ReactNode
@@ -14,22 +10,17 @@ interface ComponentProps {
 
 const ApplicationLayout: React.FC<ComponentProps> = ({ children, header, footer }) => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       {/* HEADER */}
-      {header ? header : <Header />}
+      {header !== undefined ? header : <SimpleHeader />}
 
       {/* MAIN CONTENT */}
-      {children}
-      <NewsletterSection className="container mt-16 pt-5 sm:mt-28 lg:mt-32" />
-      <FeatureSection4 className="container mt-16 sm:mt-28 lg:mt-40" />
+      <main className="flex-1">
+        {children}
+      </main>
 
       {/* FOOTER */}
-      {footer ? footer : <Footer className="container mt-16 sm:mt-28 lg:mt-32" />}
-
-      {/* ASIDES */}
-      <AsideSidebarNavigation />
-      <AsideSidebarCategories />
-      <AsideSidebarCart />
+      {footer !== undefined ? footer : <SimpleFooter />}
     </div>
   )
 }

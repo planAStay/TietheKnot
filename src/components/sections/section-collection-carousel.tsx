@@ -48,7 +48,7 @@ const SectionCollectionCarousel = ({
     <div className={className}>
       <div className="flex flex-col justify-between gap-8 lg:flex-row">
         <div className="flex-2/3">
-          <Heading className="max-w-2xl" bigger dangerouslySetInnerHTML={{ __html: sectonTitle || '' }} />
+          <Heading className="max-w-2xl text-3xl leading-none sm:text-4xl xl:text-5xl/none" dangerouslySetInnerHTML={{ __html: sectonTitle || '' }} />
         </div>
 
         <div className="flex-1/3">

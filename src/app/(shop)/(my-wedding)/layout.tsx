@@ -1,26 +1,20 @@
-import AsideSidebarCart from '@/components/aside-sidebar-cart'
-import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
-import AsideSidebarCategories from '@/components/aside-sidebar-categories'
-import Footer from '@/components/footer'
-import Header from '@/components/header/header'
+'use client'
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div>
-      {/* HEADER */}
-      <Header variant="bg-transparent-text-white" hasBottomBorder={false} />
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
-      {/* MAIN CONTENT */}
-      {children}
+// This layout is disabled for MVP - wedding planning features are hidden
+export default function MyWeddingLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const router = useRouter()
 
-      {/* FOOTER */}
-      <Footer className="container mt-16 sm:mt-20" />
+  useEffect(() => {
+    // Redirect to home page - wedding planning is disabled in MVP
+    router.push('/')
+  }, [router])
 
-      {/* ASIDES */}
-      <AsideSidebarNavigation />
-      <AsideSidebarCategories />
-      <AsideSidebarCart />
-    </div>
-  )
+  return null
 }
-

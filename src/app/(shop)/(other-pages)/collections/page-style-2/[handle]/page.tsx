@@ -43,7 +43,7 @@ export default async function Collection({ params }: { params: Promise<{ handle:
         <main className="">
           <div className="flex flex-col items-center py-14 text-center lg:py-20">
             <StarSvg />
-            <Heading bigger level={1} className="mt-5">
+            <Heading level={1} className="mt-5 text-3xl leading-none sm:text-4xl xl:text-5xl/none">
               <span data-slot="dim">Collection</span>
               <br />
               <span data-slot="italic" className="underline">

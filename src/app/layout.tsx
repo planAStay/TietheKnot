@@ -1,66 +1,74 @@
-import Aside from '@/components/aside'
-import ThemeToggleFloatingConditional from '@/components/theme-toggle-floating-conditional'
 import '@/styles/tailwind.css'
-import { WeddingProvider } from '@/lib/wedding-context'
-import { ThemeProvider, themeScript } from '@/lib/theme-context'
-import clsx from 'clsx'
+import '@fontsource/diphylleia'
+import { AuthProvider } from '@/lib/auth-context'
+import NextTopLoader from 'nextjs-toploader'
 import type { Metadata } from 'next'
-import { DM_Sans, Playfair_Display } from 'next/font/google'
-
-const dm_sans = DM_Sans({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-  style: ['normal'],
-  variable: '--font-dm-sans',
-})
-const playfair_display = Playfair_Display({
-  weight: '400',
-  subsets: ['latin'],
-  display: 'swap',
-  style: 'italic',
-  variable: '--font-playfair-display',
-})
+import Aside from '@/components/aside'
+import { WeddingProvider } from '@/lib/wedding-context'
+import { ThemeProvider } from '@/lib/theme-context'
+import { ConfirmDialogProvider } from '@/components/confirm-dialog'
 
 export const metadata: Metadata = {
   title: {
     template: '%s - TieTheKnot',
-    default: 'TieTheKnot',
+    default: 'TieTheKnot - Find Your Perfect Wedding Vendors in Sri Lanka',
   },
   description:
-    'TieTheKnot is a modern wedding planner experience: explore vendors, save favorites, set your date, and request quotes.',
+    'Discover and connect with verified wedding vendors in Sri Lanka. Browse photographers, venues, caterers, and more for your special day.',
   keywords: [
-    'Next.js',
-    'Wedding Planner',
-    'Tailwind CSS',
-    'Vendors',
-    'Quotes',
-    'Favorites',
-    'Wedding',
+    'Wedding Vendors Sri Lanka',
+    'Wedding Planning',
+    'Sri Lankan Weddings',
+    'Wedding Directory',
+    'Wedding Marketplace',
   ],
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://tietheknot.lk',
+    siteName: 'TieTheKnot',
+  },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={clsx(
-        'antialiased',
-        dm_sans.variable,
-        playfair_display.variable
-      )}
+      className="antialiased"
       suppressHydrationWarning
     >
       <head>
-        {/* Prevent flash of wrong theme */}
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Preload critical font */}
+        <link
+          rel="preload"
+          href="/node_modules/@fontsource/diphylleia/files/diphylleia-400-normal.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="min-h-screen bg-background text-text transition-colors duration-300">
+        <NextTopLoader
+          color="#F5B5A9"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #F5B5A9,0 0 5px #F5B5A9"
+        />
         <ThemeProvider>
-          <Aside.Provider>
-            <WeddingProvider>{children}</WeddingProvider>
-          </Aside.Provider>
-          <ThemeToggleFloatingConditional />
+          <AuthProvider>
+            <Aside.Provider>
+              <WeddingProvider>
+                <ConfirmDialogProvider>
+                  {children}
+                </ConfirmDialogProvider>
+              </WeddingProvider>
+            </Aside.Provider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

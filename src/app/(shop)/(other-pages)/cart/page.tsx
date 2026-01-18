@@ -101,7 +101,7 @@ export default async function Page() {
             aria-labelledby="summary-heading"
             className="mt-16 rounded-lg border border-zinc-900/10 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
           >
-            <Heading fontSize="text-2xl font-medium text-zinc-950" level={3}>
+            <Heading level={3} className="text-2xl font-medium text-zinc-950">
               <span data-slot="italic">Order</span> summary
             </Heading>
 

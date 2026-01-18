@@ -1,43 +1,102 @@
-import { Logo } from '@/app/logo'
+'use client'
+
 import { Button } from '@/components/button'
-import { Field, Label } from '@/components/fieldset'
+import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
-import { Strong, Text, TextLink } from '@/components/text'
-import type { Metadata } from 'next'
+import { Text } from '@/components/text'
+import { forgotPassword, type ForgotPasswordRequest } from '@/lib/api/auth'
 import Link from 'next/link'
+import { useState } from 'react'
 
-export const metadata: Metadata = {
-  title: 'Forgot password',
-  description: 'Reset your password to regain access to your account.',
-}
+export default function ForgotPasswordPage() {
+  const [email, setEmail] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
-export default function Login() {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setSuccess(false)
+    setIsLoading(true)
+
+    try {
+      const data: ForgotPasswordRequest = { email }
+      await forgotPassword(data)
+      setSuccess(true)
+      setEmail('') // Clear the form
+    } catch (err) {
+      console.error('Forgot password error:', err)
+      setError(err instanceof Error ? err.message : 'Failed to send reset link. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <form action="" method="POST" className="grid w-full max-w-sm grid-cols-1 gap-8">
-      <h1 className="sr-only">Reset your password</h1>
-      <div>
-        <Link href="/">
-          <Logo className="text-zinc-950 dark:text-white" />
-        </Link>
-        <Text className="mt-5 text-zinc-600">Enter your email and we’ll send you a link to reset your password.</Text>
+    <div className="flex min-h-screen items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center">
+          <Heading level={1} className="text-3xl font-bold">
+            Forgot Password?
+          </Heading>
+          <Text className="mt-2 text-zinc-600">
+            Enter your email address and we&apos;ll send you a link to reset your password.
+          </Text>
+        </div>
+
+        {error && (
+          <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3">
+            <Text className="text-sm text-red-700">{error}</Text>
+          </div>
+        )}
+
+        {success ? (
+          <div className="space-y-4">
+            <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3">
+              <Text className="text-sm text-green-700 font-medium mb-2">
+                ✓ Check your email
+              </Text>
+              <Text className="text-sm text-green-600">
+                If an account exists with this email, you will receive a password reset link shortly.
+              </Text>
+            </div>
+            
+            <div className="text-center">
+              <Link href="/login" className="text-sm text-pink-500 hover:text-pink-600 font-medium">
+                ← Back to Login
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-zinc-700 mb-1">
+                Email Address
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="your@email.com"
+                disabled={isLoading}
+              />
+            </div>
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Sending...' : 'Send Reset Link'}
+            </Button>
+
+            <div className="text-center">
+              <Link href="/login" className="text-sm text-zinc-600 hover:text-zinc-900">
+                ← Back to Login
+              </Link>
+            </div>
+          </form>
+        )}
       </div>
-      <Field>
-        <Label>Email</Label>
-        <Input type="email" name="email" />
-      </Field>
-      <Button type="submit" className="w-full">
-        Reset password
-      </Button>
-      <Text>
-        Don’t have an account?{' '}
-        <TextLink href="/register">
-          <Strong>Sign up</Strong>
-        </TextLink>{' '}
-        or{' '}
-        <TextLink href="/login">
-          <Strong>Sign in</Strong>
-        </TextLink>
-      </Text>
-    </form>
+    </div>
   )
 }

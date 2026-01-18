@@ -17,7 +17,7 @@ const Page = () => {
       <div className="flex flex-col justify-between gap-8 overflow-hidden lg:flex-row lg:gap-6 xl:gap-2.5">
         <div className="flex flex-2/3 flex-col gap-20 md:gap-24 lg:gap-28 xl:gap-32">
           <div className="relative">
-            <Heading level={1} fontSize="text-7xl lg:text-8xl 2xl:text-9xl font-medium" className="relative w-fit">
+            <Heading level={1} className="relative w-fit text-7xl lg:text-8xl 2xl:text-9xl font-medium">
               <span>About </span>
               <span data-slot="italic">US</span>
 
@@ -65,7 +65,7 @@ const Page = () => {
 
       {/* SECTION 2 */}
       <div className="mt-24 sm:mt-28 lg:mt-40">
-        <Heading level={2} bigger>
+        <Heading level={2} className="text-3xl leading-none sm:text-4xl xl:text-5xl/none">
           Some interesting information <br />
           about the <span data-slot="italic">Bitpan store!</span>
         </Heading>
@@ -90,7 +90,7 @@ const Page = () => {
               </Text>
 
               <div className="mt-24">
-                <Heading bigger>
+                <Heading className="text-3xl leading-none sm:text-4xl xl:text-5xl/none">
                   <span>+40</span>
                   {` `}
                   <span data-slot="dim">years</span>
@@ -101,7 +101,7 @@ const Page = () => {
               </div>
 
               <div className="mt-11">
-                <Heading bigger>
+                <Heading className="text-3xl leading-none sm:text-4xl xl:text-5xl/none">
                   <span>+5000</span>
                   {` `}
                   <span data-slot="dim">clients</span>
