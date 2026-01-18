@@ -239,6 +239,11 @@ export default function DashboardClient() {
         </div>
       </section>
 
+      {/* Timeline & Checklist Section */}
+      <section className="container py-12">
+        <WeddingTimelineChecklist />
+      </section>
+
       {/* Budget Planning Section - Summary */}
       <section id="budget" className="container py-12">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -343,11 +348,6 @@ export default function DashboardClient() {
             </button>
           </div>
         )}
-      </section>
-
-      {/* Timeline & Checklist Section */}
-      <section className="container py-12">
-        <WeddingTimelineChecklist />
       </section>
 
       {/* Jump Right In - Featured Vendors */}
